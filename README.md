@@ -34,7 +34,7 @@ See also:
 ### Adding repository
 
 ```
-$ flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+$ flatpak remote-add --if-not-exists "flathub" "https://dl.flathub.org/repo/flathub.flatpakrepo"
 ```
 
 See also:
@@ -44,15 +44,15 @@ See also:
 ### Prepare
 
 ```
-$ flatpak install flathub "org.kde.Sdk//5.11"
+$ flatpak install "flathub" "org.kde.Sdk//5.11"
 ```
 
 ```
-$ flatpak install flathub "org.kde.Platform//5.11"
+$ flatpak install "flathub" "org.kde.Platform//5.11"
 ```
 
 ```
-$ flatpak install flathub "io.qt.qtwebkit.BaseApp//5.11"
+$ flatpak install "flathub" "io.qt.qtwebkit.BaseApp//5.11"
 ```
 
 ### Build
