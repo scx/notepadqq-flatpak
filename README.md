@@ -44,15 +44,15 @@ See also:
 ### Prepare
 
 ```
-$ flatpak install flathub org.kde.Sdk//5.11
+$ flatpak install flathub "org.kde.Sdk//5.11"
 ```
 
 ```
-$ flatpak install flathub org.kde.Platform//5.11
+$ flatpak install flathub "org.kde.Platform//5.11"
 ```
 
 ```
-$ flatpak install flathub io.qt.qtwebkit.BaseApp//5.11
+$ flatpak install flathub "io.qt.qtwebkit.BaseApp//5.11"
 ```
 
 ### Build
@@ -64,31 +64,31 @@ $ mkdir -p build && flatpak-builder "build" "com.notepadqq.Notepadqq.yaml" --for
 ### Install
 
 ```
-$ flatpak-builder --repo=repo --force-clean build com.notepadqq.Notepadqq.yaml
+$ flatpak-builder --repo="repo" --force-clean "build" "com.notepadqq.Notepadqq.yaml"
 ```
 
 ```
-$ flatpak --user remote-add --no-gpg-verify notepadqq repo
+$ flatpak --user remote-add --no-gpg-verify "notepadqq" "repo"
 ```
 
 ```
-$ flatpak --user install notepadqq com.notepadqq.Notepadqq
+$ flatpak --user install "notepadqq" "com.notepadqq.Notepadqq"
 ```
 
 ### Run
 
 ```
-$ flatpak run com.notepadqq.Notepadqq
+$ flatpak run "com.notepadqq.Notepadqq"
 ```
 
 ### Uninstall
 
 ```
-$ flatpak --user uninstall com.notepadqq.Notepadqq
+$ flatpak --user uninstall "com.notepadqq.Notepadqq"
 ```
 
 ```
-$ flatpak --user remote-delete notepadqq
+$ flatpak --user remote-delete "notepadqq"
 ```
 
 See also: [Building your first Flatpak](http://docs.flatpak.org/en/latest/first-build.html)
