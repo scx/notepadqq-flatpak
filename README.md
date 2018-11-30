@@ -51,10 +51,6 @@ $ flatpak install "flathub" "org.kde.Sdk//5.11"
 $ flatpak install "flathub" "org.kde.Platform//5.11"
 ```
 
-```
-$ flatpak install "flathub" "io.qt.qtwebkit.BaseApp//5.11"
-```
-
 ### Build
 
 ```
