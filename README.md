@@ -61,6 +61,12 @@ $ flatpak install "flathub" "io.qt.qtwebkit.BaseApp//5.11"
 $ mkdir -p "build" && flatpak-builder "build" "com.notepadqq.Notepadqq.yaml" --force-clean --install-deps-from="flathub"
 ```
 
+### Test
+
+```
+$ flatpak-builder --run "build" "com.notepadqq.Notepadqq.yaml" "sh"
+```
+
 ### Install
 
 ```
