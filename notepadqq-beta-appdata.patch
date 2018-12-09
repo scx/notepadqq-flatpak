@@ -1,6 +1,6 @@
 diff -Naur notepadqq-beta.orig/support_files/notepadqq.appdata.xml notepadqq-beta/support_files/notepadqq.appdata.xml
 --- notepadqq-beta.orig/support_files/notepadqq.appdata.xml	2018-09-14 16:33:21.000000000 +0200
-+++ notepadqq-beta/support_files/notepadqq.appdata.xml	2018-11-27 23:38:43.141200000 +0100
++++ notepadqq-beta/support_files/notepadqq.appdata.xml	2018-12-09 01:28:09.174649489 +0100
 @@ -1,6 +1,6 @@
 - <?xml version="1.0" encoding="UTF-8"?>
 +<?xml version="1.0" encoding="UTF-8"?>
@@ -19,14 +19,17 @@ diff -Naur notepadqq-beta.orig/support_files/notepadqq.appdata.xml notepadqq-bet
    <screenshots>
      <screenshot type="default">
        <image>https://camo.githubusercontent.com/7ad45b50ed7f7075ad4ba93ce23d3fa40e56fba2/68747470733a2f2f6e6f746570616471712e636f6d2f732f696d616765732f736e617073686f74312e706e67</image>
-@@ -28,4 +28,10 @@
+@@ -28,4 +28,13 @@
    <url type="homepage">https://github.com/notepadqq/notepadqq</url>
    <url type="bugtracker">https://github.com/notepadqq/notepadqq/issues</url>
    <url type="help">https://github.com/notepadqq/notepadqq/wiki</url>
++  <content_rating type="oars-1.0">
++    <content_attribute id="social-info">moderate</content_attribute>
++  </content_rating>
 +  <provides>
 +    <binary>notepadqq</binary>
 +  </provides>
 +  <releases>
-+    <release date="2018-05-11" version="1.4.8"/>
++    <release version="1.4.8" date="2018-05-10"/>
 +  </releases>
  </component>
