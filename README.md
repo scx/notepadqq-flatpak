@@ -67,6 +67,12 @@ $ flatpak-builder "build" "com.notepadqq.Notepadqq.yaml" --force-clean --install
 $ flatpak-builder --run "build" "com.notepadqq.Notepadqq.yaml" "sh"
 ```
 
+### Test run
+
+```
+$ flatpak-builder --run "build" "com.notepadqq.Notepadqq.yaml" "notepadqq"
+```
+
 ### Install
 
 ```
