@@ -18,3 +18,5 @@ post-install:
   - echo 'install licenses';
     install -d "${FLATPAK_DEST}/share/licenses/uchardet";
     install -p -m 0644 "../COPYING" "${FLATPAK_DEST}/share/licenses/uchardet/";
+cleanup:
+  - /bin
