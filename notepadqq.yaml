@@ -2,8 +2,6 @@ name: notepadqq
 buildsystem: qmake
 config-opts:
   - QMAKE_STRIP=
-  - INCLUDEPATH+="${FLATPAK_DEST}/include/QtWebKitWidgets"
-  - INCLUDEPATH+="${FLATPAK_DEST}/include/QtWebKit"
   - LRELEASE=lrelease
 build-options:
   env:

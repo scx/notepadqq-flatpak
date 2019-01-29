@@ -44,11 +44,11 @@ See also:
 ### Prepare
 
 ```
-$ flatpak install "flathub" "org.kde.Sdk//5.11"
+$ flatpak install "flathub" "org.kde.Sdk//5.12"
 ```
 
 ```
-$ flatpak install "flathub" "org.kde.Platform//5.11"
+$ flatpak install "flathub" "org.kde.Platform//5.12"
 ```
 
 ### Build
