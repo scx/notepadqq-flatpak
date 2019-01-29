@@ -76,11 +76,11 @@ $ flatpak-builder --repo="repo" --force-clean "build" "com.notepadqq.Notepadqq.y
 ```
 
 ```
-$ flatpak --user remote-add --no-gpg-verify "notepadqq-beta" "repo"
+$ flatpak --user remote-add --no-gpg-verify "notepadqq-qtwebengine" "repo"
 ```
 
 ```
-$ flatpak --user install "notepadqq-beta" "com.notepadqq.Notepadqq"
+$ flatpak --user install "notepadqq-qtwebengine" "com.notepadqq.Notepadqq"
 ```
 
 ### Run
@@ -96,7 +96,7 @@ $ flatpak --user uninstall "com.notepadqq.Notepadqq"
 ```
 
 ```
-$ flatpak --user remote-delete "notepadqq-beta"
+$ flatpak --user remote-delete "notepadqq-qtwebengine"
 ```
 
 See also: [Building your first Flatpak](http://docs.flatpak.org/en/latest/first-build.html)

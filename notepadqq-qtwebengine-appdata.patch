@@ -1,0 +1,20 @@
+diff -Naur notepadqq.orig/support_files/notepadqq.appdata.xml notepadqq/support_files/notepadqq.appdata.xml
+--- notepadqq.orig/support_files/notepadqq.appdata.xml	2019-01-29 10:23:16.089738085 +0100
++++ notepadqq/support_files/notepadqq.appdata.xml	2019-01-29 10:25:38.563398374 +0100
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <component type="desktop">
+-  <id>notepadqq.desktop</id>
++  <id>com.notepadqq.Notepadqq</id>
+   <metadata_license>MIT</metadata_license>
+   <project_license>GPL-3.0</project_license>
+   <name>Notepadqq</name>
+@@ -18,7 +18,7 @@
+     <category>Development</category>
+     <category>Utility</category>
+   </categories>
+-  
++  <launchable type="desktop-id">com.notepadqq.Notepadqq.desktop</launchable>
+   <screenshots>
+     <screenshot type="default">
+       <image>https://camo.githubusercontent.com/7ad45b50ed7f7075ad4ba93ce23d3fa40e56fba2/68747470733a2f2f6e6f746570616471712e636f6d2f732f696d616765732f736e617073686f74312e706e67</image>

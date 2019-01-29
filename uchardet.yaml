@@ -1,0 +1,20 @@
+name: uchardet
+buildsystem: cmake-ninja
+builddir: true
+config-opts:
+  - -DCMAKE_BUILD_TYPE=RelWithDebInfo
+  - -DBUILD_STATIC=0
+sources:
+  # Source0
+  - type: archive
+    url: https://www.freedesktop.org/software/uchardet/releases/uchardet-0.0.6.tar.xz
+    sha256: 8351328cdfbcb2432e63938721dd781eb8c11ebc56e3a89d0f84576b96002c61
+post-install:
+  # install docs
+  - echo 'install docs';
+    install -d "${FLATPAK_DEST}/share/doc/uchardet";
+    install -p -m 0644 "../AUTHORS" "${FLATPAK_DEST}/share/doc/uchardet/";
+  # install licenses
+  - echo 'install licenses';
+    install -d "${FLATPAK_DEST}/share/licenses/uchardet";
+    install -p -m 0644 "../COPYING" "${FLATPAK_DEST}/share/licenses/uchardet/";

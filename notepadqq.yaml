@@ -2,18 +2,19 @@ name: notepadqq
 buildsystem: qmake
 config-opts:
   - QMAKE_STRIP=
+  - DEFINES+=USE_DBUS
   - LRELEASE=lrelease
 build-options:
   env:
     QMAKEPATH: "/app/lib"
 sources:
   # Source0
-  - type: archive
-    url: https://github.com/notepadqq/notepadqq/archive/beta.tar.gz
-    sha256: f0a568770106d896419f7af2d509d14d422f5dc0a32b86ac4aad38c854d0929f
+  - type: git
+    url: https://github.com/notepadqq/notepadqq.git
+    commit: e6e1ac37913cb3014f7b5c5adae4c6380114d6ad
   # Patch0
   - type: patch
-    path: notepadqq-beta-appdata.patch
+    path: notepadqq-qtwebengine-appdata.patch
   # fix desktop file
   - type: shell
     commands:
