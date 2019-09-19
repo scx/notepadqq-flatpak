@@ -84,11 +84,11 @@ $ flatpak-builder --repo="repo" --force-clean "build" "com.notepadqq.Notepadqq.y
 ### Install
 
 ```
-$ flatpak --user remote-add --no-gpg-verify "notepadqq" "repo"
+$ flatpak --user remote-add --no-gpg-verify "notepadqq-qtwebkit" "repo"
 ```
 
 ```
-$ flatpak --user install "notepadqq" "com.notepadqq.Notepadqq"
+$ flatpak --user install "notepadqq-qtwebkit" "com.notepadqq.Notepadqq"
 ```
 
 ### Run
@@ -104,7 +104,7 @@ $ flatpak --user uninstall "com.notepadqq.Notepadqq"
 ```
 
 ```
-$ flatpak --user remote-delete "notepadqq"
+$ flatpak --user remote-delete "notepadqq-qtwebkit"
 ```
 
 ### Build single-file bundle
