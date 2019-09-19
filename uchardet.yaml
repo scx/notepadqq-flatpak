@@ -3,7 +3,7 @@ buildsystem: cmake-ninja
 builddir: true
 config-opts:
   - -DCMAKE_BUILD_TYPE=RelWithDebInfo
-  - -DBUILD_STATIC=0
+  - -DBUILD_STATIC=OFF
 sources:
   # Source0
   - type: archive

@@ -14,12 +14,7 @@ sources:
     commit: e6e1ac37913cb3014f7b5c5adae4c6380114d6ad
   # Patch0
   - type: patch
-    path: notepadqq-qtwebengine-appdata.patch
-  # fix desktop file
-  - type: shell
-    commands:
-      - echo 'fix desktop file';
-        desktop-file-edit --remove-key=OnlyShowIn "support_files/shortcuts/notepadqq.desktop";
+    path: notepadqq-qtwebengine-xdg.patch
 post-install:
   # create symlink
   - echo 'create symlink';
