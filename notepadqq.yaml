@@ -11,10 +11,7 @@ sources:
   # Source0
   - type: git
     url: https://github.com/notepadqq/notepadqq.git
-    commit: e0636f1d0fba68b0464b387569b3a4de21027e49
-  # Patch0
-  - type: patch
-    path: notepadqq-1.9.99-xdg.patch
+    commit: c74eda18c8df184228837d5b06b8a3f681ad0bb8
 post-install:
   # create symlink
   - echo 'create symlink';
