@@ -15,12 +15,7 @@ sources:
     sha256: 13fba9abd84c59de27fbe92f74e2763b57588fcf9c88af10ec67313b0abbc9d0
   # Patch0
   - type: patch
-    path: notepadqq-1.4.8-appdata.patch
-  # fix desktop file
-  - type: shell
-    commands:
-      - echo 'fix desktop file';
-        desktop-file-edit --remove-key=OnlyShowIn "support_files/shortcuts/notepadqq.desktop";
+    path: notepadqq-1.4.8-xdg.patch
 post-install:
   # create symlink
   - echo 'create symlink';

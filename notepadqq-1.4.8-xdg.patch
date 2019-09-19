@@ -1,0 +1,281 @@
+From b8394792a002debd85574aeb79800d6ba46a6b20 Mon Sep 17 00:00:00 2001
+From: Jan De Luyck <jdeluyck@users.noreply.github.com>
+Date: Fri, 15 Jun 2018 11:55:01 +0200
+Subject: [PATCH 1/7] chore: Remove Icon line from appdata.xml (#712)
+
+---
+ support_files/notepadqq.appdata.xml | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/support_files/notepadqq.appdata.xml b/support_files/notepadqq.appdata.xml
+index f8dae7a4e..10e8742f4 100644
+--- a/support_files/notepadqq.appdata.xml
++++ b/support_files/notepadqq.appdata.xml
+@@ -4,7 +4,6 @@
+   <metadata_license>MIT</metadata_license>
+   <project_license>GPL-3.0</project_license>
+   <name>Notepadqq</name>
+-  <icon width="96" height="96">https://user-images.githubusercontent.com/4319621/36906314-e3f99680-1e35-11e8-90fd-f959c9641f36.png</icon>
+   <summary>An advanced text editor</summary>
+   <description>
+     <p>
+
+From 6b80d126341243f84eb02a1863320d1bc4b9bd53 Mon Sep 17 00:00:00 2001
+From: scx <scx.mail@gmail.com>
+Date: Sat, 1 Dec 2018 20:18:15 +0100
+Subject: [PATCH 2/7] chore: Enhance AppData file (#808)
+
+---
+ README.md                           | 2 +-
+ support_files/notepadqq.appdata.xml | 8 +++++++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/README.md b/README.md
+index 0824c55ab..c756a0f85 100644
+--- a/README.md
++++ b/README.md
+@@ -8,7 +8,7 @@
+ 
+ #### What is it?
+ 
+-Notepadqq is a text editor designed from developers, for developers. 
++Notepadqq is a text editor designed by developers, for developers. 
+ 
+ ![screenshot_20180302_163505](https://notepadqq.com/s/images/snapshot1.png)
+ 
+diff --git a/support_files/notepadqq.appdata.xml b/support_files/notepadqq.appdata.xml
+index 10e8742f4..5f0d67552 100644
+--- a/support_files/notepadqq.appdata.xml
++++ b/support_files/notepadqq.appdata.xml
+@@ -1,4 +1,4 @@
+- <?xml version="1.0" encoding="UTF-8"?>
++<?xml version="1.0" encoding="UTF-8"?>
+ <component type="desktop">
+   <id>notepadqq.desktop</id>
+   <metadata_license>MIT</metadata_license>
+@@ -28,4 +28,10 @@
+   <url type="homepage">https://github.com/notepadqq/notepadqq</url>
+   <url type="bugtracker">https://github.com/notepadqq/notepadqq/issues</url>
+   <url type="help">https://github.com/notepadqq/notepadqq/wiki</url>
++  <provides>
++    <binary>notepadqq</binary>
++  </provides>
++  <releases>
++    <release version="1.4.8" date="2018-05-10"/>
++  </releases>
+ </component>
+
+From 3c16a4134855639ff23b3275a0ceac3dcc30a2da Mon Sep 17 00:00:00 2001
+From: scx <scx.mail@gmail.com>
+Date: Mon, 10 Dec 2018 15:41:49 +0100
+Subject: [PATCH 3/7] chore: add OARS metadata (#811)
+
+---
+ support_files/notepadqq.appdata.xml | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/support_files/notepadqq.appdata.xml b/support_files/notepadqq.appdata.xml
+index 5f0d67552..e00dcb8e5 100644
+--- a/support_files/notepadqq.appdata.xml
++++ b/support_files/notepadqq.appdata.xml
+@@ -28,6 +28,9 @@
+   <url type="homepage">https://github.com/notepadqq/notepadqq</url>
+   <url type="bugtracker">https://github.com/notepadqq/notepadqq/issues</url>
+   <url type="help">https://github.com/notepadqq/notepadqq/wiki</url>
++  <content_rating type="oars-1.0">
++    <content_attribute id="social-info">moderate</content_attribute>
++  </content_rating>
+   <provides>
+     <binary>notepadqq</binary>
+   </provides>
+
+From 303e8c2a3d6e55f1d05f2c810fc6fe8aa980a16e Mon Sep 17 00:00:00 2001
+From: scx <scx.mail@gmail.com>
+Date: Thu, 19 Sep 2019 16:52:34 +0200
+Subject: [PATCH 4/7] Update AppData file
+
+ - Fix description
+ - Fix screenshot
+ - Remove categories (should be obtained from desktop file)
+ - Add launchable type
+ - Update homepage URL
+ - Add faq URL
+ - Add donation URL
+ - Add translate URL
+---
+ support_files/notepadqq.appdata.xml | 22 ++++++++--------------
+ 1 file changed, 8 insertions(+), 14 deletions(-)
+
+diff --git a/support_files/notepadqq.appdata.xml b/support_files/notepadqq.appdata.xml
+index e00dcb8e5..9dd095ee5 100644
+--- a/support_files/notepadqq.appdata.xml
++++ b/support_files/notepadqq.appdata.xml
+@@ -6,28 +6,22 @@
+   <name>Notepadqq</name>
+   <summary>An advanced text editor</summary>
+   <description>
+-    <p>
+-    Notepadqq is an advanced text editor designed to make life easier for developers.
+-    </p>
+-    <p>
+-    It includes real-time syntax highlighting for over one hundred languages, regular expression searches, 
+-    and text manipulation with multiple cursors.
+-    </p>
++    <p>Notepadqq is an advanced text editor designed to make life easier for developers.</p>
++    <p>It includes real-time syntax highlighting for over one hundred languages, regular expression searches, and text manipulation with multiple cursors.</p>
+   </description>
+-  <categories>
+-    <category>Development</category>
+-    <category>Utility</category>
+-  </categories>
+-  
++  <launchable type="desktop-id">notepadqq.desktop</launchable>
+   <screenshots>
+     <screenshot type="default">
+-      <image>https://camo.githubusercontent.com/7ad45b50ed7f7075ad4ba93ce23d3fa40e56fba2/68747470733a2f2f6e6f746570616471712e636f6d2f732f696d616765732f736e617073686f74312e706e67</image>
++      <image>https://notepadqq.com/s/images/snapshot1.png</image>
+     </screenshot>
+   </screenshots>
+   <developer_name>The Notepadqq Team</developer_name>
+-  <url type="homepage">https://github.com/notepadqq/notepadqq</url>
++  <url type="homepage">https://notepadqq.com</url>
+   <url type="bugtracker">https://github.com/notepadqq/notepadqq/issues</url>
++  <url type="faq">https://notepadqq.com/wp/faq</url>
+   <url type="help">https://github.com/notepadqq/notepadqq/wiki</url>
++  <url type="donation">https://notepadqq.com/wp/donations</url>
++  <url type="translate">https://github.com/notepadqq/notepadqq/wiki/Translate-Notepadqq</url>
+   <content_rating type="oars-1.0">
+     <content_attribute id="social-info">moderate</content_attribute>
+   </content_rating>
+
+From 864e2a4993b89677e9098c37f8ffce7f3f1809fb Mon Sep 17 00:00:00 2001
+From: scx <scx.mail@gmail.com>
+Date: Thu, 19 Sep 2019 16:56:18 +0200
+Subject: [PATCH 5/7] Update desktop file
+
+ - Add Version entry
+ - Add TryExec entry
+ - Add StartupWMClass entry
+ - Add Keywords entries
+---
+ support_files/shortcuts/notepadqq.desktop | 35 +++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
+
+diff --git a/support_files/shortcuts/notepadqq.desktop b/support_files/shortcuts/notepadqq.desktop
+index 7811f29e2..c5cf2f341 100644
+--- a/support_files/shortcuts/notepadqq.desktop
++++ b/support_files/shortcuts/notepadqq.desktop
+@@ -1,4 +1,5 @@
+ [Desktop Entry]
++Version=1.1
+ Encoding=UTF-8
+ Name=Notepadqq
+ Name[de_DE]=Notepadqq
+@@ -18,13 +19,47 @@ Comment[fr]=Editer des fichier de code source
+ Comment[it_IT]=Modifica codici sorgenti
+ Comment[hu_HU]=Forráskódfájlok szerkesztése
+ Comment[pl]=Edycja plików z kodem źródłowym
++TryExec=notepadqq
+ Exec=notepadqq %U
+ Terminal=false
+ Type=Application
+ StartupNotify=false
++StartupWMClass=notepadqq
+ MimeType=text/plain;text/html;text/x-php;text/x-c;text/x-shellscript;
+ Icon=notepadqq
+ Categories=Development;Utility;TextEditor;
++Keywords=Text;Editor;Plaintext;Write;
++Keywords[ca]=Text;Editor;text simple;escriure;
++Keywords[cs]=text;editor;prostý text;psát;psaní;
++Keywords[da]=Tekst;Editor;Redigering;Tekstredigering;Skrive;Skriv;
++Keywords[de]=Text;Editor;Klartext;Schreiben;
++Keywords[el]=Text;Editor;Plaintext;Write;κείμενο;επεξεργαστής;εγγραφή;γράψιμο;
++Keywords[en_GB]=Text;Editor;Plaintext;Write;
++Keywords[eo]=Teksto;Redaktilo;Plata teksto;Skribi;
++Keywords[es]=texto;editor;plano;escribir;
++Keywords[eu]=Testua;Editorea;Testu soila;Idatzi;
++Keywords[fa]=Text;Editor;Plaintext;Write;ویرایشگر متن;متن;ویرایشگر;نوشتار;
++Keywords[fi]=Text;Editor;Plaintext;Write;teksti;muokkain;editori;tekstieditori;tekstimuokkain;
++Keywords[fr]=texte brut;éditeur;écrire;
++Keywords[fur]=Text;Editor;Test sempliç;Scrivi;
++Keywords[gl]=Texto;Editor;Texto plano;Escribir;
++Keywords[hr]=Tekst;Uređivač;Izvoran tekst;Piši;
++Keywords[hu]=Szöveg;Szerkesztő;Egyszerű szöveg;Írás;
++Keywords[id]=Teks;Penyunting;Teks Polos;Tulis;
++Keywords[it]=Editor;Testo;Text;Scrivere;
++Keywords[ja]=Text;Editor;Plaintext;Write;テキスト;エディター;プレーンテキスト;
++Keywords[ko]=Text;텍스트;Editor;편집기;Plaintext;일반텍스트;Write;글쓰기;작성;지에디트;
++Keywords[lt]=Tekstas;Redaktorius;Grynasis tekstas;Rašymas;
++Keywords[lv]=Teksts;Redaktors;Vienkāršs teksts;Rakstīt;
++Keywords[nb]=Tekst;Redigering;Vanlig tekst;Skriv;
++Keywords[pa]=ਸ਼ਬਦ;ਟੈਕਸਟ;ਸੰਪਾਦਕ;ਐਡੀਟਰ;ਪਲੇਨਟੈਕਸਟ;
++Keywords[pl]=Tekst;Text;Edytor;Zwykły tekst;Pisanie;Pisz;Napisz;Write;
++Keywords[pt_BR]=Texto;Editor;Texto simples;Plaintext;Escrever;Write;
++Keywords[ro]=Text;Editor;Plaintext;Write;Text simplu;Scrie;
++Keywords[sr]=Text;Editor;Plaintext;Write;текст;уређивач;обичан текст;писање;tekst;uređivač;običan tekst;pisanje;
++Keywords[sv]=Text;Redigerare;Vanlig text;Skriv;
++Keywords[tr]=Metin;Düzenleyici;Düzyazı;Yaz;
++Keywords[vi]=Text;văn;bản;van;ban;Editor;sửa;sua;soạn;thảo;soan;thao;chữ;chu;Plaintext;Chữ thường;Chu thuong;Write;Ghi;Lưu;Luu;
+ Actions=Window;Document;
+ 
+ [Desktop Action Window]
+
+From 47349bf5da5ef02406466d2ce38d1e7057aabc56 Mon Sep 17 00:00:00 2001
+From: scx <scx.mail@gmail.com>
+Date: Thu, 19 Sep 2019 17:04:51 +0200
+Subject: [PATCH 6/7] Fix GenericName in desktop file
+
+---
+ support_files/shortcuts/notepadqq.desktop | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/support_files/shortcuts/notepadqq.desktop b/support_files/shortcuts/notepadqq.desktop
+index c5cf2f341..3c77e805f 100644
+--- a/support_files/shortcuts/notepadqq.desktop
++++ b/support_files/shortcuts/notepadqq.desktop
+@@ -7,12 +7,12 @@ Name[fr]=Notepadqq
+ Name[it_IT]=Notepadqq
+ Name[hu_HU]=Notepadqq
+ Name[pl]=Notepadqq
+-GenericName=Notepadqq source code editor
+-GenericName[de_DE]=Notepadqq Quelltext-Editor
+-GenericName[fr]=Notepadqq éditeur de code source
+-GenericName[it_IT]=Editor di codice sorgente Notepadqq
+-GenericName[hu_HU]=Notepadqq forráskódszerkesztő
+-GenericName[pl]=Edytor kodu źródłowego Notepadqq
++GenericName=Source Code Editor
++GenericName[de_DE]=Quelltext-Editor
++GenericName[fr]=Éditeur de code source
++GenericName[it_IT]=Editor di codice sorgente
++GenericName[hu_HU]=Forráskód szerkesztő
++GenericName[pl]=Edytor kodu źródłowego
+ Comment=Edit source code files
+ Comment[de_DE]=Quelltext bearbeiten
+ Comment[fr]=Editer des fichier de code source
+
+From 9c744ec035934725022702691f0320cc14a1cac7 Mon Sep 17 00:00:00 2001
+From: scx <scx.mail@gmail.com>
+Date: Thu, 19 Sep 2019 17:12:52 +0200
+Subject: [PATCH 7/7] Update desktop file: Add X-GNOME-FullName entries
+
+---
+ support_files/shortcuts/notepadqq.desktop | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/support_files/shortcuts/notepadqq.desktop b/support_files/shortcuts/notepadqq.desktop
+index 3c77e805f..0f4228cab 100644
+--- a/support_files/shortcuts/notepadqq.desktop
++++ b/support_files/shortcuts/notepadqq.desktop
+@@ -13,6 +13,12 @@ GenericName[fr]=Éditeur de code source
+ GenericName[it_IT]=Editor di codice sorgente
+ GenericName[hu_HU]=Forráskód szerkesztő
+ GenericName[pl]=Edytor kodu źródłowego
++X-GNOME-FullName=Notepadqq Source Code Editor
++X-GNOME-FullName[de_DE]=Notepadqq Quelltext-Editor
++X-GNOME-FullName[fr]=Notepadqq éditeur de code source
++X-GNOME-FullName[it_IT]=Editor di codice sorgente Notepadqq
++X-GNOME-FullName[hu_HU]=Notepadqq forráskód szerkesztő
++X-GNOME-FullName[pl]=Edytor kodu źródłowego Notepadqq
+ Comment=Edit source code files
+ Comment[de_DE]=Quelltext bearbeiten
+ Comment[fr]=Editer des fichier de code source

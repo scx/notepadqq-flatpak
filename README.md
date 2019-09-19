@@ -4,7 +4,7 @@ Notepadqq is a text editor designed by developers, for developers.
 
 ![notepadqq-flatpak screenshot](notepadqq-flatpak.png)
 
-[Homepage](https://github.com/notepadqq/notepadqq)
+[Homepage](https://notepadqq.com)
 
 This repo is about flatpak package.
 
@@ -55,6 +55,8 @@ $ flatpak install "flathub" "org.kde.Platform//5.11"
 $ flatpak install "flathub" "io.qt.qtwebkit.BaseApp//5.11"
 ```
 
+Clone this repository, then checkout the right branch.
+
 ### Build
 
 ```
@@ -73,11 +75,13 @@ $ flatpak-builder --run "build" "com.notepadqq.Notepadqq.yaml" "sh"
 $ flatpak-builder --run "build" "com.notepadqq.Notepadqq.yaml" "notepadqq"
 ```
 
-### Install
+### Create repo
 
 ```
 $ flatpak-builder --repo="repo" --force-clean "build" "com.notepadqq.Notepadqq.yaml"
 ```
+
+### Install
 
 ```
 $ flatpak --user remote-add --no-gpg-verify "notepadqq" "repo"
@@ -103,7 +107,24 @@ $ flatpak --user uninstall "com.notepadqq.Notepadqq"
 $ flatpak --user remote-delete "notepadqq"
 ```
 
-See also: [Building your first Flatpak](http://docs.flatpak.org/en/latest/first-build.html)
+### Build single-file bundle
+
+```
+$ flatpak build-bundle "repo" "notepadqq.flatpak" "com.notepadqq.Notepadqq" --runtime-repo="https://flathub.org/repo/flathub.flatpakrepo"
+```
+
+### Install single-file bundle
+
+If you have already [installed](#install) the package, you have to [uninstall](#uninstall) it before continuing.
+
+```
+$ flatpak --user install "notepadqq.flatpak"
+```
+
+See also:
+
+* [Building your first Flatpak](http://docs.flatpak.org/en/latest/first-build.html)
+* [Single-file bundles](http://docs.flatpak.org/en/latest/single-file-bundles.html#single-file-bundles)
 
 ## FAQ
 
@@ -130,5 +151,5 @@ No, I only created the flatpak package for it.
 
 See also:
 
-* [Notepadqq readme](https://github.com/notepadqq/notepadqq/blob/master/README.md)
+* [GitHub repo](https://github.com/notepadqq/notepadqq)
 
