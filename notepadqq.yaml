@@ -20,9 +20,7 @@ post-install:
     ln -sf "${FLATPAK_DEST}/lib/notepadqq/notepadqq-bin" "${FLATPAK_DEST}/bin/notepadqq";
   # install docs
   - echo 'install docs';
-    install -d "${FLATPAK_DEST}/share/doc/notepadqq";
-    install -p -m 0644 *.md "${FLATPAK_DEST}/share/doc/notepadqq/";
+    install -p -D -m 0644 *.md -t "${FLATPAK_DEST}/share/doc/notepadqq/";
   # install licenses
   - echo 'install licenses';
-    install -d "${FLATPAK_DEST}/share/licenses/notepadqq";
-    install -p -m 0644 "COPYING" "${FLATPAK_DEST}/share/licenses/notepadqq/";
+    install -p -D -m 0644 "COPYING" -t "${FLATPAK_DEST}/share/licenses/notepadqq/";
