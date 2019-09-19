@@ -80,11 +80,11 @@ $ flatpak-builder --repo="repo" --force-clean "build" "com.notepadqq.Notepadqq.y
 ### Install
 
 ```
-$ flatpak --user remote-add --no-gpg-verify "notepadqq-qtwebengine" "repo"
+$ flatpak --user remote-add --no-gpg-verify "notepadqq-git" "repo"
 ```
 
 ```
-$ flatpak --user install "notepadqq-qtwebengine" "com.notepadqq.Notepadqq"
+$ flatpak --user install "notepadqq-git" "com.notepadqq.Notepadqq"
 ```
 
 ### Run
@@ -100,7 +100,7 @@ $ flatpak --user uninstall "com.notepadqq.Notepadqq"
 ```
 
 ```
-$ flatpak --user remote-delete "notepadqq-qtwebengine"
+$ flatpak --user remote-delete "notepadqq-git"
 ```
 
 ### Build single-file bundle
