@@ -13,12 +13,7 @@ sources:
     sha256: f0a568770106d896419f7af2d509d14d422f5dc0a32b86ac4aad38c854d0929f
   # Patch0
   - type: patch
-    path: notepadqq-beta-appdata.patch
-  # fix desktop file
-  - type: shell
-    commands:
-      - echo 'fix desktop file';
-        desktop-file-edit --remove-key=OnlyShowIn "support_files/shortcuts/notepadqq.desktop";
+    path: notepadqq-beta-xdg.patch
 post-install:
   # create symlink
   - echo 'create symlink';
