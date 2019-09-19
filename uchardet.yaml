@@ -12,11 +12,9 @@ sources:
 post-install:
   # install docs
   - echo 'install docs';
-    install -d "${FLATPAK_DEST}/share/doc/uchardet";
-    install -p -m 0644 "../AUTHORS" "${FLATPAK_DEST}/share/doc/uchardet/";
+    install -p -D -m 0644 "../AUTHORS" -t "${FLATPAK_DEST}/share/doc/uchardet/";
   # install licenses
   - echo 'install licenses';
-    install -d "${FLATPAK_DEST}/share/licenses/uchardet";
-    install -p -m 0644 "../COPYING" "${FLATPAK_DEST}/share/licenses/uchardet/";
+    install -p -D -m 0644 "../COPYING" -t "${FLATPAK_DEST}/share/licenses/uchardet/";
 cleanup:
   - /bin
