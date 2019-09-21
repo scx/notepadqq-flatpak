@@ -11,7 +11,7 @@ sources:
   # Source0
   - type: git
     url: https://github.com/notepadqq/notepadqq.git
-    commit: c74eda18c8df184228837d5b06b8a3f681ad0bb8
+    commit: fdb59addcc280c743950f5049836fd6df3ccbe0c
 post-install:
   # create symlink
   - echo 'create symlink';
