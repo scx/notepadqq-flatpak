@@ -35,7 +35,6 @@ finish-args:
   # libGL error: failed to load driver: i965
   - --device=dri
 modules:
-  - uchardet.yaml
   - notepadqq.yaml
 cleanup:
   - /include
