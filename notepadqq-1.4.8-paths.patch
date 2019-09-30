@@ -1,0 +1,22 @@
+diff -Naur notepadqq-1.4.8.orig/src/ui/include/nqqsettings.h notepadqq-1.4.8/src/ui/include/nqqsettings.h
+--- notepadqq-1.4.8.orig/src/ui/include/nqqsettings.h	2018-05-11 00:26:47.000000000 +0200
++++ notepadqq-1.4.8/src/ui/include/nqqsettings.h	2019-09-29 00:25:03.056256452 +0200
+@@ -5,6 +5,7 @@
+ #include <QString>
+ #include <QList>
+ #include <QAction>
++#include <QStandardPaths>
+ 
+ /*
+  * The use of NQQ_SETTING creates several functions:
+@@ -109,8 +110,8 @@
+     END_CATEGORY(Search)
+ 
+     BEGIN_CATEGORY(Extensions)
+-        NQQ_SETTING(RuntimeNodeJS,  QString, QString())
+-        NQQ_SETTING(RuntimeNpm,     QString, QString())
++        NQQ_SETTING(RuntimeNodeJS,  QString, QStandardPaths::findExecutable("node"))
++        NQQ_SETTING(RuntimeNpm,     QString, QStandardPaths::findExecutable("npm"))
+     END_CATEGORY(Extensions)
+ 
+     BEGIN_CATEGORY(Languages)

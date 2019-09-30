@@ -145,6 +145,31 @@ Try:
 3. install the *com.notepadqq.Notepadqq* as a [flatpak package](http://docs.flatpak.org/en/latest/first-build.html#install-the-app)
 4. set the [XDG_RUNTIME_DIR](https://github.com/flatpak/flatpak/issues/534#issuecomment-378824515) environment variable: `XDG_RUNTIME_DIR="/run/user/${UID}"`
 
+### How to build an extension?
+
+Go to the extension directory, then:
+```
+$ flatpak run --command='bash' 'com.notepadqq.Notepadqq' -c 'node /app/share/notepadqq/extension_tools/pack.js . npm'
+```
+
+It should create a `*.nqqext` file.
+
+See [notepadqq-extensions](https://github.com/scx/notepadqq-extensions) for details.
+
+### How to install an extension?
+
+1. Select `Extensions`, then `Install extensions`.
+2. Select a `*.nqqext` file, then press `Open`. 
+3. Press `Install` or `Update`.
+4. Press `OK`.
+5. Restart **Notepadqq**.
+
+### How do I find my installed extensions?
+
+They should be available from the `Extensions` menu.
+
+All extensions are located in the `~/.var/app/com.notepadqq.Notepadqq/config/Notepadqq/extensions/` directory.
+
 ### Are you the author of Notepadqq?
 
 No, I only created the flatpak package for it.
