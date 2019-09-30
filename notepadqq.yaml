@@ -12,6 +12,12 @@ sources:
   - type: git
     url: https://github.com/notepadqq/notepadqq.git
     commit: fdb59addcc280c743950f5049836fd6df3ccbe0c
+  # Patch1
+  - type: patch
+    path: notepadqq-1.9.99-paths.patch
+  # Patch2
+  - type: patch
+    path: notepadqq-1.4.8-preferences.patch
 post-install:
   # create symlink
   - echo 'create symlink';
@@ -23,5 +29,6 @@ post-install:
   - echo 'install licenses';
     install -p -D -m 0644 "COPYING" -t "${FLATPAK_DEST}/share/licenses/notepadqq/";
 modules:
+  - nodejs.yaml
   - uchardet.yaml
   - fonts.yaml
