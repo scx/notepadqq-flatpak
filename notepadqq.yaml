@@ -14,6 +14,12 @@ sources:
   # Patch0
   - type: patch
     path: notepadqq-beta-xdg.patch
+  # Patch1
+  - type: patch
+    path: notepadqq-1.9.99-paths.patch
+  # Patch2
+  - type: patch
+    path: notepadqq-1.4.8-preferences.patch
 post-install:
   # create symlink
   - echo 'create symlink';
@@ -25,4 +31,5 @@ post-install:
   - echo 'install licenses';
     install -p -D -m 0644 "COPYING" -t "${FLATPAK_DEST}/share/licenses/notepadqq/";
 modules:
+  - nodejs.yaml
   - fonts.yaml

@@ -1,0 +1,42 @@
+diff -Naur node-v0.12.18.orig/deps/npm/lib/config/defaults.js node-v0.12.18/deps/npm/lib/config/defaults.js
+--- node-v0.12.18.orig/deps/npm/lib/config/defaults.js	2016-12-21 13:14:28.000000000 +0100
++++ node-v0.12.18/deps/npm/lib/config/defaults.js	2019-09-29 14:37:02.110015849 +0200
+@@ -81,8 +81,19 @@
+ if (home) process.env.HOME = home
+ else home = path.resolve(temp, "npm-" + uidOrPid)
+ 
++var xdgConfigHome = home
++var xdgCacheHome = home
++var xdgDataHome = home
++var xdgRuntimeDir = temp
++if (process.platform !== "win32") {
++  xdgConfigHome = process.env.XDG_CONFIG_HOME || path.resolve(home, ".config")
++  xdgCacheHome = process.env.XDG_CACHE_HOME ||  path.resolve(home, ".cache")
++  xdgDataHome = process.env.XDG_DATA_HOME ||  path.resolve(home, ".local", "share")
++  xdgRuntimeDir = process.env.XDG_RUNTIME_DIR ||  path.resolve(temp, ".npm-" + uidOrPid)
++}
++
+ var cacheExtra = process.platform === "win32" ? "npm-cache" : ".npm"
+-var cacheRoot = process.platform === "win32" && process.env.APPDATA || home
++var cacheRoot = process.platform === "win32" && process.env.APPDATA || xdgCacheHome
+ var cache = path.resolve(cacheRoot, cacheExtra)
+ 
+ 
+@@ -149,7 +160,7 @@
+     , heading: "npm"
+     , "if-present": false
+     , "ignore-scripts": false
+-    , "init-module": path.resolve(home, ".npm-init.js")
++    , "init-module": path.resolve(xdgConfigHome, ".npm-init.js")
+     , "init-author-name" : ""
+     , "init-author-email" : ""
+     , "init-author-url" : ""
+@@ -207,7 +218,7 @@
+                     || process.getuid() !== 0
+     , usage : false
+     , user : process.platform === "win32" ? 0 : "nobody"
+-    , userconfig : path.resolve(home, ".npmrc")
++    , userconfig : path.resolve(xdgConfigHome, ".npmrc")
+     , umask: process.umask ? process.umask() : umask.fromString("022")
+     , version : false
+     , versions : false
