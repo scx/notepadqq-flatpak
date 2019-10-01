@@ -1,0 +1,18 @@
+name: nodejs
+sources:
+  # Supported Node versions: 0.10, 0.11, 0.12
+  - type: archive
+    url: https://nodejs.org/dist/v0.12.18/node-v0.12.18.tar.gz
+    sha256: 6b48461dff7a002cedba45a016af81f66a79b465cee1d7bfe5bd74910c1a7bfa
+  - type: patch
+    path: node-v0.12.18-xdg.patch
+post-install:
+  # install licenses
+  - echo 'install licenses';
+    install -p -D -m 0644 "LICENSE" -t "${FLATPAK_DEST}/share/licenses/nodejs/";
+cleanup:
+  - /share/doc
+  - /lib/node_modules/npm/changelogs
+  - /lib/node_modules/npm/doc
+  - /lib/node_modules/npm/html
+  - /lib/node_modules/npm/man
