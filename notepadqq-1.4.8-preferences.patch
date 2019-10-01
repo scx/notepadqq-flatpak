@@ -1,0 +1,41 @@
+diff -Naur notepadqq-1.4.8.orig/src/ui/frmpreferences.ui notepadqq-1.4.8/src/ui/frmpreferences.ui
+--- notepadqq-1.4.8.orig/src/ui/frmpreferences.ui	2018-05-11 00:26:47.000000000 +0200
++++ notepadqq-1.4.8/src/ui/frmpreferences.ui	2019-09-29 03:14:27.943662215 +0200
+@@ -721,10 +721,17 @@
+                 <item row="1" column="1">
+                  <layout class="QHBoxLayout" name="horizontalLayout_3">
+                   <item>
+-                   <widget class="QLineEdit" name="txtNodejs"/>
++                   <widget class="QLineEdit" name="txtNodejs">
++                    <property name="readOnly">
++                     <bool>true</bool>
++                    </property>
++                   </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="btnNodejsBrowse">
++                    <property name="enabled">
++                     <bool>false</bool>
++                    </property>
+                     <property name="text">
+                      <string>Browse...</string>
+                     </property>
+@@ -742,10 +749,17 @@
+                 <item row="2" column="1">
+                  <layout class="QHBoxLayout" name="horizontalLayout_6">
+                   <item>
+-                   <widget class="QLineEdit" name="txtNpm"/>
++                   <widget class="QLineEdit" name="txtNpm">
++                    <property name="readOnly">
++                     <bool>true</bool>
++                    </property>
++                   </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="btnNpmBrowse">
++                    <property name="enabled">
++                     <bool>false</bool>
++                    </property>
+                     <property name="text">
+                      <string>Browse...</string>
+                     </property>
