@@ -11,7 +11,7 @@ sources:
   # Source0
   - type: git
     url: https://github.com/notepadqq/notepadqq.git
-    commit: 9f8ee0baeefa60f6af15ddfeb969614c38115999
+    commit: 2d34384376b86a09787298a2192627fbcf91e09c
   # Patch1
   - type: patch
     path: notepadqq-1.9.99-paths.patch
