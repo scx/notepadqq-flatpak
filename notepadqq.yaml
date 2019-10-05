@@ -18,6 +18,9 @@ sources:
   # Patch2
   - type: patch
     path: notepadqq-1.4.8-preferences.patch
+  # Patch4
+  - type: patch
+    path: notepadqq-1.9.99-run.patch
 post-install:
   # create symlink
   - echo 'create symlink';
