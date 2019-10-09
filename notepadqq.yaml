@@ -21,6 +21,10 @@ sources:
   # Patch4
   - type: patch
     path: notepadqq-1.9.99-run.patch
+  # Patch5
+  - type: patch
+    path: notepadqq-1.9.99-icons-bundled.patch
+    use-git: true
 post-install:
   # create symlink
   - echo 'create symlink';
