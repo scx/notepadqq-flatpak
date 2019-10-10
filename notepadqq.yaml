@@ -28,6 +28,9 @@ sources:
   # Patch6
   - type: patch
     path: notepadqq-1.9.99-icons-fallback.patch
+  # Patch7
+  - type: patch
+    path: notepadqq-1.9.99-icons-alignment.patch
 post-install:
   # create symlink
   - echo 'create symlink';
