@@ -25,6 +25,9 @@ sources:
   - type: patch
     path: notepadqq-1.9.99-icons-bundled.patch
     use-git: true
+  # Patch6
+  - type: patch
+    path: notepadqq-1.9.99-icons-fallback.patch
 post-install:
   # create symlink
   - echo 'create symlink';
