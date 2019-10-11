@@ -170,6 +170,16 @@ They should be available from the `Extensions` menu.
 
 All extensions are located in the `~/.var/app/com.notepadqq.Notepadqq/config/Notepadqq/extensions/` directory.
 
+### How to run commands from the host?
+
+Use [flatpak-spawn](http://docs.flatpak.org/en/latest/flatpak-command-reference.html#flatpak-spawn) with the `--host` option.
+
+For example:
+
+```
+flatpak-spawn --host cat /etc/os-release
+```
+
 ### Are you the author of Notepadqq?
 
 No, I only created the flatpak package for it.
