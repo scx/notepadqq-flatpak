@@ -1,0 +1,2849 @@
+From 75c7ae9c07f455d87331bd676a972fd48d7e2f8d Mon Sep 17 00:00:00 2001
+From: Daniele Di Sarli <danieleds0@gmail.com>
+Date: Tue, 25 Sep 2018 12:10:21 +0200
+Subject: [PATCH 01/13] style: fix tabs in resources.qrc
+
+---
+ src/ui/resources.qrc | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/ui/resources.qrc b/src/ui/resources.qrc
+index 07df5a1a9..d4609d5c6 100644
+--- a/src/ui/resources.qrc
++++ b/src/ui/resources.qrc
+@@ -21,8 +21,8 @@
+ 		<file alias="16x16/edit-paste.png">icons/notepadqq/16x16/edit-paste.png</file>
+ 		<file alias="16x16/edit-redo.png">icons/notepadqq/16x16/edit-redo.png</file>
+ 		<file alias="16x16/edit-undo.png">icons/notepadqq/16x16/edit-undo.png</file>
+-                <file alias="16x16/math-rendering.png">icons/notepadqq/16x16/math-rendering.png</file>
+-                <file alias="128x128/math-rendering.png">icons/notepadqq/128x128/math-rendering.png</file>
++		<file alias="16x16/math-rendering.png">icons/notepadqq/16x16/math-rendering.png</file>
++		<file alias="128x128/math-rendering.png">icons/notepadqq/128x128/math-rendering.png</file>
+ 		<file alias="16x16/media-playback-start.png">icons/notepadqq/16x16/media-playback-start.png</file>
+ 		<file alias="16x16/media-playback-stop.png">icons/notepadqq/16x16/media-playback-stop.png</file>
+ 		<file alias="16x16/media-record.png">icons/notepadqq/16x16/media-record.png</file>
+
+From 62100842ca97aa91124c3d1b59f5bc325d0c53e9 Mon Sep 17 00:00:00 2001
+From: Teklad <jkinnaird1991@gmail.com>
+Date: Tue, 15 May 2018 01:49:10 -0500
+Subject: [PATCH 02/13] refactor: sort include directives (#680)
+
+---
+ src/ui/iconprovider.cpp                       |  1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/ui/iconprovider.cpp b/src/ui/iconprovider.cpp
+index 1267599b8..341ffda82 100644
+--- a/src/ui/iconprovider.cpp
++++ b/src/ui/iconprovider.cpp
+@@ -1,4 +1,5 @@
+ #include "include/iconprovider.h"
++
+ #include <QDebug>
+ 
+ IconProvider::IconProvider()
+
+From 177d9fe942059947415295340963c02ae51c48ff Mon Sep 17 00:00:00 2001
+From: Daniele Di Sarli <danieleds0@gmail.com>
+Date: Mon, 17 Sep 2018 20:31:13 +0200
+Subject: [PATCH 03/13] fix: give priority to the scalable resolution icon
+
+---
+ src/ui/iconprovider.cpp | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/src/ui/iconprovider.cpp b/src/ui/iconprovider.cpp
+index 341ffda82..71e82418b 100644
+--- a/src/ui/iconprovider.cpp
++++ b/src/ui/iconprovider.cpp
+@@ -1,6 +1,7 @@
+ #include "include/iconprovider.h"
+ 
+ #include <QDebug>
++#include <QFileInfo>
+ 
+ IconProvider::IconProvider()
+ {
+@@ -24,15 +25,16 @@ QIcon IconProvider::fromTheme(const QString &name)
+                     QPair<int, QString>(128, "128x128"),
+         };
+ 
++        if (QFileInfo(basePath.arg("scalable").arg(name).arg("svg")).exists()) {
++            icon.addFile(basePath.arg("scalable").arg(name).arg("svg"),
++                         QSize(512, 512));
++        }
++
+         for (const QPair<int, QString> & size : sizes) {
+             icon.addFile(basePath.arg(size.second).arg(name).arg("png"),
+                          QSize(size.first, size.first));
+-
+         }
+ 
+-        icon.addFile(basePath.arg("scalable").arg(name).arg("svg"),
+-                     QSize(512, 512));
+-
+         // Warn about missing icons.
+         // This works also as a workaround for this Qt bug in macOS: https://bugreports.qt.io/browse/QTBUG-58344
+         if (icon.pixmap(1, 1).isNull()) {
+
+From 48db9a0ebfcd8cec6c4e47550e5d0ad06de75445 Mon Sep 17 00:00:00 2001
+From: Daniele Di Sarli <danieleds0@gmail.com>
+Date: Tue, 25 Sep 2018 12:26:37 +0200
+Subject: [PATCH 04/13] new icon theme
+
+---
+ .../icons/notepadqq/128x128/document-save.png | Bin 11059 -> 0 bytes
+ .../icons/notepadqq/16x16/document-save.png   | Bin 589 -> 0 bytes
+ .../notepadqq/16x16/edit-find-replace.png     | Bin 985 -> 0 bytes
+ src/ui/icons/notepadqq/16x16/edit-find.png    | Bin 875 -> 0 bytes
+ src/ui/icons/notepadqq/16x16/edit-redo.png    | Bin 770 -> 0 bytes
+ src/ui/icons/notepadqq/16x16/edit-undo.png    | Bin 798 -> 0 bytes
+ src/ui/icons/notepadqq/16x16/word-wrap.png    | Bin 367 -> 0 bytes
+ src/ui/icons/notepadqq/16x16/zoom-in.png      | Bin 701 -> 0 bytes
+ src/ui/icons/notepadqq/16x16/zoom-out.png     | Bin 722 -> 0 bytes
+ .../icons/notepadqq/64x64/document-save.png   | Bin 3692 -> 0 bytes
+ .../notepadqq/scalable/document-save.svg      |   1 +
+ .../notepadqq/scalable/edit-find-replace.svg  |   1 +
+ src/ui/icons/notepadqq/scalable/edit-find.svg |   1 +
+ src/ui/icons/notepadqq/scalable/edit-redo.svg |   1 +
+ src/ui/icons/notepadqq/scalable/edit-undo.svg |   1 +
+ src/ui/icons/notepadqq/scalable/word-wrap.svg |   1 +
+ src/ui/icons/notepadqq/scalable/zoom-in.svg   |   1 +
+ src/ui/icons/notepadqq/scalable/zoom-out.svg  |   1 +
+ src/ui/resources.qrc                          |  18 ++++++++----------
+ 19 files changed, 16 insertions(+), 10 deletions(-)
+ delete mode 100644 src/ui/icons/notepadqq/128x128/document-save.png
+ delete mode 100644 src/ui/icons/notepadqq/16x16/document-save.png
+ delete mode 100644 src/ui/icons/notepadqq/16x16/edit-find-replace.png
+ delete mode 100644 src/ui/icons/notepadqq/16x16/edit-find.png
+ delete mode 100644 src/ui/icons/notepadqq/16x16/edit-redo.png
+ delete mode 100644 src/ui/icons/notepadqq/16x16/edit-undo.png
+ delete mode 100644 src/ui/icons/notepadqq/16x16/word-wrap.png
+ delete mode 100644 src/ui/icons/notepadqq/16x16/zoom-in.png
+ delete mode 100644 src/ui/icons/notepadqq/16x16/zoom-out.png
+ delete mode 100644 src/ui/icons/notepadqq/64x64/document-save.png
+ create mode 100644 src/ui/icons/notepadqq/scalable/document-save.svg
+ create mode 100644 src/ui/icons/notepadqq/scalable/edit-find-replace.svg
+ create mode 100644 src/ui/icons/notepadqq/scalable/edit-find.svg
+ create mode 100644 src/ui/icons/notepadqq/scalable/edit-redo.svg
+ create mode 100644 src/ui/icons/notepadqq/scalable/edit-undo.svg
+ create mode 100644 src/ui/icons/notepadqq/scalable/word-wrap.svg
+ create mode 100644 src/ui/icons/notepadqq/scalable/zoom-in.svg
+ create mode 100644 src/ui/icons/notepadqq/scalable/zoom-out.svg
+
+diff --git a/src/ui/icons/notepadqq/128x128/document-save.png b/src/ui/icons/notepadqq/128x128/document-save.png
+deleted file mode 100644
+index 61975c9b4f738b836cc3b50610ec75c90d5fe837..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 11059
+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
+
+diff --git a/src/ui/icons/notepadqq/16x16/document-save.png b/src/ui/icons/notepadqq/16x16/document-save.png
+deleted file mode 100644
+index dcadd6306b416ded1cce0f240605762e717294b2..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 589
+zcmV-T0<!&yP)<h;3K|Lk000e1NJLTq000mG000mO1^@s6AM^iV0006MNkl<ZILn=q
+zy=qiJ7>1uYJ9}pT+^DHc0(S8NtQ681e=b3^7jg%77G8n1MXo>$3Wfwh)JT%T5U`Sf
+z=}ZENcrd$r&YqcXK8xLrB&#C6?Jy7T&u6BlW^Q_ki}Uk0lKc1W7J$*H{7#86DjLn|
+z>g#hGn;-M-t&PjJR}`&@iOHFEyKU~=zD1fk{-z&U#?sOYn(d1KScAqib)uSBUj~9e
+z5CP1okE)7uDNz+w@csS(pbDigi4q8^_`D>DV9YomszFqdC`gnMKoJo_jP!iOmmUd!
+z0APqw5mAEo13(-CBu0uNP~-(7LUINWRSBXPV~7$7J`4aT#2}RY5>-R9)y5AW&pN2p
+zYjnHEl)l7|9B33$=h)f#%;QH7snr_862Y7lsVHErrPuASyZeRIxnB`%wSt!l@854y
+z<UNwa;Hqv|Rs<pvB1t8|)#^CsaIP|PpadU?F;Z_dn7e+J*(<Y%LbG0{TD2IUYAsva
+zpLq9SlRVFf!(+1wgy89Rj%hUNEG#_W+4Gkyue@RL>624E^h4n7+B)6`OmcDuN(cdx
+zlCqxwu)lY}!QTE@k=gf*vR@+N(P&32L@Oc|?+JF0tJCRF<ef2qF9X2`f(WX^2tJgD
+zMbXQ8ox}6ZR-ISNE6mMZV|w}$YisLFPF_GnXtkPTS;n`cuk?$YBhukggBat(|D(*v
+b%Kz#omrzv^_nk^k00000NkvXXu0mjfURMwR
+
+diff --git a/src/ui/icons/notepadqq/16x16/edit-find-replace.png b/src/ui/icons/notepadqq/16x16/edit-find-replace.png
+deleted file mode 100644
+index 7ec5a265576f41d7ba347ec20eb9d50b2917c862..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 985
+zcmV;~119{5P)<h;3K|Lk000e1NJLTq000mG000mO1^@s6AM^iV000A^Nkl<ZILl?z
+zYiL_#7zgm@J@3iM<>c0wG;La&*2OLB#n{n7J7tcnH60AsTC_t{HWa@oj0vLRpdcz<
+zJ`^X2Zmb`y)ZN(TR;J79I>jlBy3v|s=_To+ZIY(Br#a2JzJ8Dvod2&6&kr8>KZp<l
+z8)<#*2O~!4s0yQQNg*Bp0GdM6qD&@aLWTn;_7&lQpben;@C7eJq0?QB4ztH;Q#tJh
+zFdAv7NCJf8IqBq2vpGRh4u(ehZ~PB%zcl7$RjMn`wz_rsY!dvF<I>9V0+z&esD1bm
+z<;^z^;ay#A@cI`wx!%zDTdywvW(R;Y5ONZ^22UAjids0}Znn(??#Q#DDL|@{-(itM
+zZg-RE)>Nz^mlpQ+bo<aN9)@y`eg%wk3$TR(FURBOvBm9s$7QPO!4)3Q%uErZI`rWa
+z9d(nReLU3o!r(yPV82(qd-vuU{p#W_u}+6(TUwx?(}KCKo>tF>YiUXmx@&YS69@z(
+z%#^RUxf>U{cJ7QyQe_4J^cszZ?R~7uQPS8@<Cd+^+}s9NFPsHiFbHmyFi(p-=g}Y)
+zD1w4DBpGgMdOW?Ot!+uA;!DfR!J~z-V;$R4bC*pWdm)rkU_2TDM#loDCKaA7?4uR2
+z0)i+2rqw`!TGH#;itZtXR}@2~G`wd!TF;zs@9ooQ^=rVc#^C#s3rINwoC$Al_&HIe
+zKoO=h#SGADwJbn=iy#OpAtzyeq^||7XC|G#KBHET5myjFnx6*4+7gWXF5Vs({_Z{i
+z040h1#8NKKTP;SK)o%0sIh$=v_&@EGQ_&mF-hPwTfDu=aAQ6~{#TW+{!!9{f60dIb
+zfKrGuoG2!XvMhjF%MgCG`b%Tff5z!MVASf-zssQr%tZ@ujv0b`@d$<PUtZn>;=g=e
+zl!<b1IvFT$H7DqIU0>rzeft@$fkIqChD0a=kw_lKsQ2L4#Xn%6vkGY_@wmfoefmFD
+zcI-alJ@<Ud-|T6}dL<6!WD=602+S{};iKFk`S0Qis!^{hyIZSiTNMi@PJO$^3xanO
+zNcoSLi7cmW-Jf7mT7kLagAly;mwYVs-0hM~Un9{=StON*YU-W%$<7^S27_|??4|rB
+zaQGR|Hx`5T#kXI63K4}Pxm(xntjFf}w2zXtje8w-YcBwdS}bO+w%Xbd3@-q^F^n$d
+zylJ)^B&7U4!g#{{!Cdaa*Nv~Fe{|TbJ=tvjN;aDZ0Eqnqbg{m$A-XKS00000NkvXX
+Hu0mjf?ugds
+
+diff --git a/src/ui/icons/notepadqq/16x16/edit-find.png b/src/ui/icons/notepadqq/16x16/edit-find.png
+deleted file mode 100644
+index e947757acf46f21e9ea522a43813293eabc5995a..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 875
+zcmV-x1C;!UP)<h;3K|Lk000e1NJLTq000mG000mO1^@s6AM^iV0009rNkl<ZILnpO
+z-D_KA90&04^PIQ5o}^jQC80KH9T?iiu7#-;*NZIL3XbV+6j6M+*o`kG{sUeq-Z@Y~
+zt5ak{iVPjLFbQ>2$H0qGjB9J!W!<{9by?bGCQWkAbDr}YFJ^-;7vlHoclF^1-`|fo
+zj)UC{96PH^gya;7WVvt#0YIjtVA;;B?KtnwPd;A5KSFkazL&nrsFX~NB;&!sL_|sK
+z^+VTX7@VQFQRN?hw^U_ZJhS-eQ|JB#q@MpG<5iUDqXQ|=o$Xu5pP%97^^(M`7Gn4G
+ziZ@<;QF?eJjaT0LzPYy5I9xpWY#Sl_o<5<=l$MU9`Xax~&)G|hmq3(yJ|40cQ>mW7
+z#Y?N*)lGKj(d-y`;khI9wGZ<Z%NF~Vr(UiB00lR4y*^)H^Y(3AySj`H&(*gMJrF$g
+z+2lLg2gl!j;{5dcp$CWk$1hy?$(fs5##lNLgl*<_H=tCoY}Dgb=Zn8`Np0lQ{mIhE
+zfdea?8y^Aq*5z_tJ2*15p?XCA^vn--GSs0E+sy6)vSl_0T||LkLUK8`iakC1H;2>d
+zHAOM&>+1`-#+I$`?EK#Ek+!><HFI1g8Z5Il*an1UfLRQZtbsz~KA+d{>`_f2{Du&K
+z7N{#epVv?ojT6U>TD=9qjdlwZf)%!ETaY!)X6Wi?j47<jr9glwfxz9FF{ZSfSijrv
+zw^ujHfNd7q0JqH9wd#f$4(YPjec#ySrS0Ux^()bGS$NB3;a#|XC3<<Ol60&0j`wya
+z<l@be%`IcLU1RLv>$*f}X()Doq-lU#CJ0f=Uw6mlJOJESw;r?1;8DL{BjHeh{8&8a
+zI5*B7yScjZN&ArEqZ1j0%HIq``n;5C*l7w*99e?nKu~6P=x&)(8-?F~#^E6iGp9dq
+zHJYs_H_Ds&_9@3lCo+`KsZMuT-{T2sKGg?8D4JFil}5!b*Vjl?tBBEoPC3%y#pH=o
+zJ0@cp^4DjIk51?WBqtG?6}bCM6r^A~V%AwXvrTy8&1hFbdgP(upejL3eR<~2-+=#0
+zd~bLhz{yZ3*o<|CyBCTj{4d~7WIupu09^o9{{T8Ce8t)4#Yq4F002ovPDHLkV1m<B
+Bwle?#
+
+diff --git a/src/ui/icons/notepadqq/16x16/edit-redo.png b/src/ui/icons/notepadqq/16x16/edit-redo.png
+deleted file mode 100644
+index e6ae43625b479347837dce6a75e00f1da6df7900..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 770
+zcmV+d1O5DoP)<h;3K|Lk000e1NJLTq000mG000mO1^@s6AM^iV0008XNkl<ZILoDz
+zy>FXU6vlt&zF&UreE2JkLr7y9l2mC0NG)ZEz|=@A6;w#=0%c-mVPz@*Ly=gjF3^ps
+z45+BI9V#^>r8WZ+MMMdrO=^g3?AVU|zV}{+v{4Nsk93yvNWY__^Bfub)c0GD25R<P
+zj^pzSrcvt*rjmK0IHohw!fF9)!GcnX>&Mo3R<6pZ7>k-J9wK`vYZ|o<R={FOG*cuO
+zLTtPb5E1?@3GzPC(g6Q0A-UvpbZU`8Do+$e=twhpauO38(4a&S_yHTu4Zgj6ms~1D
+za-WB<><oIvvmce14U1c=cYj>Dvs~q!wb#*+=7q!a#1nnKJbmrrhd0h%{33C6cm=EN
+zdpNuuTcdRx-M_P3T>&t$!B~UA5^cw1m&TSWE7cMuZa)i9@xYWZoZ9VnUTb$-r=J?r
+z#aX6`Gk`&qkekUYeo(q_Yy7HL8UonAWq~fL`B&4eZ`Y@v8o$@pQC1KXN)+{8J@}0W
+zEFPb~6?~@79IPNUF(lyeqd$4c%%$h9%+!;aq!*A-b$%r#w!7U{f5e8_)!IEax7Tq4
+z`9_u1yXJdyO-9cLTkT%Iz)48I8jwCRN_u*POlq8zjAFH>v$x0YR+pXi7QKx=&d)vt
+zuR!(dpFVMQ)B4V+gKlY>?LO^BpPKC8CLBED;<bIedWdSeINJ#(HYdpE^2osAjC=39
+zelOe=i8A(qiDgr)3IuTk5zto9#?XyA@rx(s!p<K(3C9u)T0K^8+`GAVf3Gb5v`cI>
+z@k2dy-@}&+sD#Bj1|ycoml~B5XHLCL!&3RKax*yQmNQ#96avasc+a^*fZC-xDk~5I
+z4k)cA13W6%tGC@ZD8qi-6;B3>C-@WI0bp!voc1}r4^WVPm>K-=)!HwK^Xko^92@{d
+z5LZa$lKYJW;6Et^?dLmJMm~0r{^yyjwfrCb0}xCm0vp@XssI2007*qoM6N<$f;d}f
+AK>z>%
+
+diff --git a/src/ui/icons/notepadqq/16x16/edit-undo.png b/src/ui/icons/notepadqq/16x16/edit-undo.png
+deleted file mode 100644
+index c0acbf135b2d47ee1a19f78d9693192af3bd2e6c..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 798
+zcmV+(1L6FMP)<h;3K|Lk000e1NJLTq000mG000mO1^@s6AM^iV0008zNkl<ZILl3w
+z&1+m`7{!0j`@VO+?o1{#og|KpXlv0%O%dCu3xy&@x^p2|P{Fl-KsQ||7|=gKM0C@Y
+z__0&ag<UE|>?T1gtybG)K9b2~GLw7n%)RgXx|npxfwO!L=N!%>%mW92KO&r3T4=7T
+zly`L!Fj#LPkwOx|AA%o&8#tt=DD*>wGCcKqlcK6pvK5{=@m$&(w6l^g6~Djm9VQKs
+zi9iZI0!HBWJ@gdC{SbqNNo;YGh;i&YpMU#>IseYNJGa6O3I~G2O`Tcr8IXa?JYqf0
+zdJG=2#A2hY{pmOBi$89D1t(m%@K5bC-}X5#7#_mUs3`lqs`|cQpt)A-z5nr>^#}L5
+zM1`2zsRm)CN~87&VOT*2IgHiVu_Zc8NPCtu#nXK7(TDpce4=>c%C)un?;F3;2?ywg
+zp<n1RSE<o1ZDUFWoP#vZi2E_^tzDAMnC0H%bZEyy1IlZK2a{)$lX?{%JNqd5rvhQA
+zNJ&C8nh7Z}5z#1SGECTBX<=>#Fp~QQ1xD#*(+!79E7kJKg{Qgo^`E1?m2RcJSVQMb
+zK`UXBPLkn&2fWmL-V%7#+UcM>S}Oo8Fn%(r>|c-iuX2&OVkJ^a2#g_b@=4C*60J2p
+z137DkCzqO3nq}02>?w{RxJ>=aYu9&Gru|#zu7C#tyn`&wxctT?s^R?h+<bW$mI|>7
+z`AgxBt_4Kkh4)q$+IPA?|K@H|U96H>OPZy;wssL?0`jJCI|$5O3C!O*(0>>#cz;X;
+z#hFi*-xdendt7FD<;9mtv&nP>N`4uq>A%+69LT0218--4fE<w{>*rTj84d?nXAu#C
+zAos(tKP)E)iSn7>GEAoPJoZd8h=$%?ALkq%k5Y<UKDV*k+9B#hXr(aoSM&HA$3z}R
+zQHrb`vm;%+Om{3=$mjEF>uyJ-w;i&eogwh}ODTQ~vqG5`de}=4qh^_u5`0M*-m{qd
+cP;Zp@9|3MlM;E-Yp#T5?07*qoM6N<$f{jvmQUCw|
+
+diff --git a/src/ui/icons/notepadqq/16x16/word-wrap.png b/src/ui/icons/notepadqq/16x16/word-wrap.png
+deleted file mode 100644
+index fde57d7082ce7e88b24fbba8429a5ceb832c9350..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 367
+zcmV-#0g(QQP)<h;3K|Lk000e1NJLTq000mG000mO1^@s6AM^iV0003tNkl<ZILn=p
+zu}i~16o<dNgl>*5&Yc`ep{vf01{K^2BCe$%LMOMzCE(`T)k&R#i-X`MB}3OP{sj&~
+zb3G2u;hJk=NsE2(;3e<g_kO=SF&qxxfhOC<Gz6N1!C=oA^Y7^-NeBUqF^tD!lv3n*
+zPM+r|rBF&SpU=@+qqU~Iq}S^KIDim>R;#s@hp;FnlL@og%&XX>px^IT6|~#!+AUh!
+z%6Fq7RuyDf<~RRU(CuCVuygUm&*%iPoOb{zC7n*ERzdlJq!bl^EQ%<Kh@uE7rB7>J
+z?q9zW1ny`MEc+EeT^!uLVX?J+e~Cqu>$Ce0_Yc^;dR}j#3@GyD<`63!;(K(8c|2bL
+zgkQ84Af@E<?g%UF!narfcnfKo*82Q<I4<xjy^WW+DMDZx$MLrF(_apKhFnLbJ}CeI
+N002ovPDHLkV1n|mrO^NY
+
+diff --git a/src/ui/icons/notepadqq/16x16/zoom-in.png b/src/ui/icons/notepadqq/16x16/zoom-in.png
+deleted file mode 100644
+index 0d61b4eb82f537257456fc1cc3a6f0890e28274e..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 701
+zcmV;u0z&<XP)<h;3K|Lk000e1NJLTq000mG000mO1^@s6AM^iV0007nNkl<ZILnQb
+zTS${(7{~wb_ibx=Vs82Q>9m~Z3`2}C=^_tE7kQ!GXfBH&T;`zzUagC6A}>m?z%pqO
+z*#R#KA?reE1%+PdgtChu$2>4+9yWAaPCxcNT`XnD7X9Jjg$Lf>`yBo+BO+|8xw)OU
+zJATIby?#NhR;^}b<@x&hdbaQnv2DP`rWVn+?!Iibeo_jeNI@wGF<Gn2%+7ymdE7e|
+zl|V$OIb9cDQC9Jgh?a?Hg@`OfG(<#ii;o<CQdi$_l!y>1IK~*~a?W1wwY*RRZ~}M+
+zfB<*_EZ8Q#=r#k=ty9%CT%-ax0DBV>^?5m&VgUfF9LfPeI)F3)3jvA=EV|}((Ev$>
+zMWyioBmfB<5GMgK0Db^)0mw+z8+e{q3ef<|43Yp~e-Ox71T;$Ew+vJP7zH5c^<uUp
+zZF-^sHiqB5np)g~mIsPBpjZx_S^#%H&mh_Bo?GWQ?pGv$f{0{A=B4LpITzGv!an24
+z%EJi_H6?}<$8s^_2S#5%NL*c-wb*R7V8k`@22+_Lz3E#=_XH6Ub##qWYSA@1*Lp`b
+zn{SQ-c++4s%F}koNB_o#X7?Hukg2iutf??owFUr)kM*IXvK}u79t{*|CyYcSt5m9C
+zug_oAdAoD+P(gk<fZ3f2Vl!HnD1zb)t*hZLX*8O##>VqBZFj7A*4AQnjI_yuLkFt+
+zz(iBX+bJy&%DWKY=zVyr9*?JV<ip6<d-uC_0Gpnhn^*75K$+V%r9U%BL`3@fK~m(k
+zf9DORvfcdxV1gh_n$0(ei0n?MD+NRp8f1Q3zfjxb<`1^_N4gvyx}+pq+m)+>JkRf8
+j;otdx#TeuNdMNk@S?OXl+`o&c00000NkvXXu0mjfap5_?
+
+diff --git a/src/ui/icons/notepadqq/16x16/zoom-out.png b/src/ui/icons/notepadqq/16x16/zoom-out.png
+deleted file mode 100644
+index a49743b692685419bae27fec59eed94c7f265a1f..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 722
+zcmV;@0xkWCP)<h;3K|Lk000e1NJLTq000mG000mO1^@s6AM^iV0007+Nkl<ZILnQb
+zT}YE*6vzMX`)+GFmASRo>8s}E*D@?I!la9qB3<N#2BEnugm9T3ec;u)h%EA=f^IC6
+z7Lk1*Q3z=lURY4*g_}eM1v%8ooT+o@oKDx?(}f=l*`hxjo`(a^@A;o|o`)eKY^lD!
+znRAT)iuL>ayj(8xWMt$lcXqa~;~!$S02k^Sw988imj(ttNqMc7LctKUi7K@|)9}pt
+zq+=*5frwCksxq$FSp0~H=7?yXh^$1^OGNJr4jp}3Syg?Qh!81QhGAH@Yw}u$^`#tu
+z3&3*#1i%Mi+HU)zUJC?opDZh9BN<=;?2b<ma<cT=TmS>&Mh*Z{0i*z!4p2;B#yzEu
+z2GHc?7sUYx0*GgU*dP!C;3oh#fb?WR$8nsLj|P}y5aa=*g@CLXKq&=QM4%MFAOKzv
+zw3)%+nl~C?wZHH6=*&7)9FWff1>(l40&ws11QLA<&Lx&*e@6mHh)9&^FTP00s+Fhk
+zdrT)v4#ZcN7wV23$;N~q7<~IM!81E)wcG8Xh-2h*W}_sv?pw<P8x6aNTJ8^1a{g61
+z*LYX7SZ)jhcvo#QiDQoOkN(wF<<2omAW}`mS#zF3wurtrJ&02%QCL!iSKW`hb5%AI
+z5s5OHtlzinFKxTiHnKn0a2&wowgW|a!z^uTJ@{v9OR>5}PxwtrrE;jI<~)r##^=3@
+zi!s{{)|gQ5-m=bGr_By15`h&DGzL8aEPV(s)$8>ZB?-b;rAm3Qwe{AR(>bM2OG^!a
+z)0vIZ?50uSOb?yD`GbV29+KoVf9G^&<IZ{kFg(wXSS;6xh#W4LI|)Rz(MUs67hlo7
+z!0l`9igY+U)EbSw>GG8xj^lPQ;otdx#V`!F`G!J&0c##)wyHCKp8x;=07*qoM6N<$
+Eg4Rk(YybcN
+
+diff --git a/src/ui/icons/notepadqq/64x64/document-save.png b/src/ui/icons/notepadqq/64x64/document-save.png
+deleted file mode 100644
+index 7f30dca59032a574c7ffae810c23a575037b43a2..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 3692
+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
+KMNUMnLSTX?a{amh
+
+diff --git a/src/ui/icons/notepadqq/scalable/document-save.svg b/src/ui/icons/notepadqq/scalable/document-save.svg
+new file mode 100644
+index 000000000..3fb2a8df0
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/document-save.svg
+@@ -0,0 +1 @@
++<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+\ No newline at end of file
+diff --git a/src/ui/icons/notepadqq/scalable/edit-find-replace.svg b/src/ui/icons/notepadqq/scalable/edit-find-replace.svg
+new file mode 100644
+index 000000000..9b57f3a8d
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/edit-find-replace.svg
+@@ -0,0 +1 @@
++<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M11 6c1.38 0 2.63.56 3.54 1.46L12 10h6V4l-2.05 2.05C14.68 4.78 12.93 4 11 4c-3.53 0-6.43 2.61-6.92 6H6.1c.46-2.28 2.48-4 4.9-4zm5.64 9.14c.66-.9 1.12-1.97 1.28-3.14H15.9c-.46 2.28-2.48 4-4.9 4-1.38 0-2.63-.56-3.54-1.46L10 12H4v6l2.05-2.05C7.32 17.22 9.07 18 11 18c1.55 0 2.98-.51 4.14-1.36L20 21.49 21.49 20l-4.85-4.86z"/></svg>
+\ No newline at end of file
+diff --git a/src/ui/icons/notepadqq/scalable/edit-find.svg b/src/ui/icons/notepadqq/scalable/edit-find.svg
+new file mode 100644
+index 000000000..19c9df70d
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/edit-find.svg
+@@ -0,0 +1 @@
++<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
+\ No newline at end of file
+diff --git a/src/ui/icons/notepadqq/scalable/edit-redo.svg b/src/ui/icons/notepadqq/scalable/edit-redo.svg
+new file mode 100644
+index 000000000..408527662
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/edit-redo.svg
+@@ -0,0 +1 @@
++<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 16h9V7l-3.6 3.6z"/></svg>
+\ No newline at end of file
+diff --git a/src/ui/icons/notepadqq/scalable/edit-undo.svg b/src/ui/icons/notepadqq/scalable/edit-undo.svg
+new file mode 100644
+index 000000000..fbc9edf6e
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/edit-undo.svg
+@@ -0,0 +1 @@
++<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
+\ No newline at end of file
+diff --git a/src/ui/icons/notepadqq/scalable/word-wrap.svg b/src/ui/icons/notepadqq/scalable/word-wrap.svg
+new file mode 100644
+index 000000000..5b90e8890
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/word-wrap.svg
+@@ -0,0 +1 @@
++<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path d="M4 19h6v-2H4v2zM20 5H4v2h16V5zm-3 6H4v2h13.25c1.1 0 2 .9 2 2s-.9 2-2 2H15v-2l-3 3 3 3v-2h2c2.21 0 4-1.79 4-4s-1.79-4-4-4z"/></svg>
+\ No newline at end of file
+diff --git a/src/ui/icons/notepadqq/scalable/zoom-in.svg b/src/ui/icons/notepadqq/scalable/zoom-in.svg
+new file mode 100644
+index 000000000..dd0ecbd59
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/zoom-in.svg
+@@ -0,0 +1 @@
++<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14zm.5-7H9v2H7v1h2v2h1v-2h2V9h-2z"/></svg>
+\ No newline at end of file
+diff --git a/src/ui/icons/notepadqq/scalable/zoom-out.svg b/src/ui/icons/notepadqq/scalable/zoom-out.svg
+new file mode 100644
+index 000000000..5f22c70e2
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/zoom-out.svg
+@@ -0,0 +1 @@
++<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14zM7 9h5v1H7z"/></svg>
+\ No newline at end of file
+diff --git a/src/ui/resources.qrc b/src/ui/resources.qrc
+index d4609d5c6..aca170944 100644
+--- a/src/ui/resources.qrc
++++ b/src/ui/resources.qrc
+@@ -8,19 +8,17 @@
+ 		<file alias="16x16/document-open.png">icons/notepadqq/16x16/document-open.png</file>
+ 		<file alias="16x16/document-print.png">icons/notepadqq/16x16/document-print.png</file>
+ 
+-		<file alias="16x16/document-save.png">icons/notepadqq/16x16/document-save.png</file>
+-		<file alias="64x64/document-save.png">icons/notepadqq/64x64/document-save.png</file>
+-		<file alias="128x128/document-save.png">icons/notepadqq/128x128/document-save.png</file>
++		<file alias="scalable/document-save.svg">icons/notepadqq/scalable/document-save.svg</file>
+ 
+ 		<file alias="16x16/document-save-all.png">icons/notepadqq/16x16/document-save-all.png</file>
+ 		<file alias="16x16/document-save-as.png">icons/notepadqq/16x16/document-save-as.png</file>
+ 		<file alias="16x16/edit-copy.png">icons/notepadqq/16x16/edit-copy.png</file>
+ 		<file alias="16x16/edit-cut.png">icons/notepadqq/16x16/edit-cut.png</file>
+-		<file alias="16x16/edit-find.png">icons/notepadqq/16x16/edit-find.png</file>
+-		<file alias="16x16/edit-find-replace.png">icons/notepadqq/16x16/edit-find-replace.png</file>
++		<file alias="scalable/edit-find.svg">icons/notepadqq/scalable/edit-find.svg</file>
++		<file alias="scalable/edit-find-replace.svg">icons/notepadqq/scalable/edit-find-replace.svg</file>
+ 		<file alias="16x16/edit-paste.png">icons/notepadqq/16x16/edit-paste.png</file>
+-		<file alias="16x16/edit-redo.png">icons/notepadqq/16x16/edit-redo.png</file>
+-		<file alias="16x16/edit-undo.png">icons/notepadqq/16x16/edit-undo.png</file>
++		<file alias="scalable/edit-redo.svg">icons/notepadqq/scalable/edit-redo.svg</file>
++		<file alias="scalable/edit-undo.svg">icons/notepadqq/scalable/edit-undo.svg</file>
+ 		<file alias="16x16/math-rendering.png">icons/notepadqq/16x16/math-rendering.png</file>
+ 		<file alias="128x128/math-rendering.png">icons/notepadqq/128x128/math-rendering.png</file>
+ 		<file alias="16x16/media-playback-start.png">icons/notepadqq/16x16/media-playback-start.png</file>
+@@ -32,10 +30,10 @@
+ 		<file alias="16x16/document-unsaved.png">icons/notepadqq/16x16/document-unsaved.png</file>
+ 		<file alias="16x16/preferences-other.png">icons/notepadqq/16x16/preferences-other.png</file>
+ 		<file alias="16x16/show-special-chars.png">icons/notepadqq/16x16/show-special-chars.png</file>
+-		<file alias="16x16/word-wrap.png">icons/notepadqq/16x16/word-wrap.png</file>
+-		<file alias="16x16/zoom-in.png">icons/notepadqq/16x16/zoom-in.png</file>
++		<file alias="scalable/word-wrap.svg">icons/notepadqq/scalable/word-wrap.svg</file>
++		<file alias="scalable/zoom-in.svg">icons/notepadqq/scalable/zoom-in.svg</file>
+ 		<file alias="16x16/zoom-original.png">icons/notepadqq/16x16/zoom-original.png</file>
+-		<file alias="16x16/zoom-out.png">icons/notepadqq/16x16/zoom-out.png</file>
++		<file alias="scalable/zoom-out.svg">icons/notepadqq/scalable/zoom-out.svg</file>
+     </qresource>
+     <qresource prefix="/translations">
+         <file alias="notepadqq_de.qm">../translations/notepadqq_de.qm</file>
+
+From 1bf18567ebfcd142e3deb0abf35d03f59dc6a97d Mon Sep 17 00:00:00 2001
+From: Daniele Di Sarli <danieleds0@gmail.com>
+Date: Wed, 26 Sep 2018 00:19:42 +0200
+Subject: [PATCH 05/13] Add SVGIconEngine to load an SVG icon from a string
+
+---
+ src/ui/iconprovider.cpp        |  8 ++++++-
+ src/ui/include/svgiconengine.h | 26 ++++++++++++++++++++
+ src/ui/svgiconengine.cpp       | 44 ++++++++++++++++++++++++++++++++++
+ src/ui/ui.pro                  |  6 +++--
+ 4 files changed, 81 insertions(+), 3 deletions(-)
+ create mode 100644 src/ui/include/svgiconengine.h
+ create mode 100644 src/ui/svgiconengine.cpp
+
+diff --git a/src/ui/iconprovider.cpp b/src/ui/iconprovider.cpp
+index 71e82418b..11d3f651c 100644
+--- a/src/ui/iconprovider.cpp
++++ b/src/ui/iconprovider.cpp
+@@ -1,4 +1,5 @@
+ #include "include/iconprovider.h"
++#include "include/svgiconengine.h"
+ 
+ #include <QDebug>
+ #include <QFileInfo>
+@@ -11,14 +12,19 @@ QIcon IconProvider::fromTheme(const QString &name)
+ {
+     // FIXME Cache the icons
+ 
++    QString basePath = ":/icons/notepadqq/%1/%2.%3";
++
+     if (QIcon::hasThemeIcon(name)) {
+         return QIcon::fromTheme(name);
+ 
++    } else if (QFileInfo(basePath.arg("scalable").arg(name).arg("svg")).exists()) {
++        return QIcon(SVGIconEngine::fromFile(basePath.arg("scalable").arg(name).arg("svg")));
++
+     } else {
+         // QIcon::setThemeName("notepadqq");
+         QIcon icon;
++        return icon;
+ 
+-        QString basePath = ":/icons/notepadqq/%1/%2.%3";
+         QList<QPair<int, QString>> sizes {
+                     QPair<int, QString>(16, "16x16"),
+                     QPair<int, QString>(64, "64x64"),
+diff --git a/src/ui/include/svgiconengine.h b/src/ui/include/svgiconengine.h
+new file mode 100644
+index 000000000..8bbfa0da8
+--- /dev/null
++++ b/src/ui/include/svgiconengine.h
+@@ -0,0 +1,26 @@
++#ifndef SVGICONENGINE_H
++#define SVGICONENGINE_H
++
++#include <QIconEngine>
++#include <QSvgRenderer>
++
++class SVGIconEngine : public QIconEngine {
++
++  QByteArray data;
++
++public:
++  explicit SVGIconEngine(const std::string &iconBuffer);
++  void paint(QPainter *painter, const QRect &rect, QIcon::Mode mode,
++             QIcon::State state) override;
++  QIconEngine *clone() const override;
++  QPixmap pixmap(const QSize &size, QIcon::Mode mode,
++                 QIcon::State state) override;
++
++  static SVGIconEngine *fromFile(const QString &fileName);
++signals:
++
++public slots:
++
++};
++
++#endif // SVGICONENGINE_H
+diff --git a/src/ui/svgiconengine.cpp b/src/ui/svgiconengine.cpp
+new file mode 100644
+index 000000000..4c59898cf
+--- /dev/null
++++ b/src/ui/svgiconengine.cpp
+@@ -0,0 +1,44 @@
++#include "include/svgiconengine.h"
++#include <QFile>
++#include <QPainter>
++#include <QGraphicsColorizeEffect>
++
++
++SVGIconEngine::SVGIconEngine(const std::string &iconBuffer) {
++    //std::string new_str = QString::fromStdString(iconBuffer).replace("fill=\"none\"", "fill=\"#ff5544\"").toStdString();
++    data = QByteArray::fromStdString(iconBuffer);
++}
++
++SVGIconEngine* SVGIconEngine::fromFile(const QString &fileName) {
++    QFile file(fileName);
++    if (!file.open(QIODevice::ReadOnly)) return new SVGIconEngine("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\"></svg>");
++    return new SVGIconEngine(file.readAll().toStdString());
++}
++
++void SVGIconEngine::paint(QPainter *painter, const QRect &rect,
++                          QIcon::Mode mode, QIcon::State) {
++  QSvgRenderer renderer(data);
++  renderer.render(painter, rect);
++
++
++
++  // FIXME Handle different modes and states
++}
++
++QIconEngine *SVGIconEngine::clone() const { return new SVGIconEngine(*this); }
++
++QPixmap SVGIconEngine::pixmap(const QSize &size, QIcon::Mode mode,
++                              QIcon::State state) {
++  // This function is necessary to create an EMPTY pixmap. It's called always
++  // before paint()
++
++  QImage img(size, QImage::Format_ARGB32);
++  img.fill(qRgba(0, 0, 0, 0));
++  QPixmap pix = QPixmap::fromImage(img, Qt::NoFormatConversion);
++  {
++    QPainter painter(&pix);
++    QRect r(QPoint(0.0, 0.0), size);
++    this->paint(&painter, r, mode, state);
++  }
++  return pix;
++}
+diff --git a/src/ui/ui.pro b/src/ui/ui.pro
+index 092b24046..ad9479b12 100644
+--- a/src/ui/ui.pro
++++ b/src/ui/ui.pro
+@@ -108,7 +108,8 @@ SOURCES += main.cpp\
+     Search/searchobjects.cpp \
+     Search/searchinstance.cpp \
+     stats.cpp \
+-    Sessions/backupservice.cpp
++    Sessions/backupservice.cpp \
++    svgiconengine.cpp
+ 
+ HEADERS  += include/mainwindow.h \
+     include/topeditorcontainer.h \
+@@ -156,7 +157,8 @@ HEADERS  += include/mainwindow.h \
+     include/Search/filereplacer.h \
+     include/Search/searchinstance.h \
+     include/stats.h \
+-    include/Sessions/backupservice.h
++    include/Sessions/backupservice.h \
++    include/svgiconengine.h
+ 
+ FORMS    += mainwindow.ui \
+     frmabout.ui \
+
+From 314d2000296ab1286bfb30c2c699eb241138c39a Mon Sep 17 00:00:00 2001
+From: Daniele Di Sarli <danieleds0@gmail.com>
+Date: Sat, 31 Aug 2019 18:31:30 +0200
+Subject: [PATCH 06/13] Support dynamic dark/light UI
+
+---
+ src/ui/svgiconengine.cpp | 22 +++++++++++++++++++---
+ 1 file changed, 19 insertions(+), 3 deletions(-)
+
+diff --git a/src/ui/svgiconengine.cpp b/src/ui/svgiconengine.cpp
+index 4c59898cf..ac3784085 100644
+--- a/src/ui/svgiconengine.cpp
++++ b/src/ui/svgiconengine.cpp
+@@ -2,6 +2,8 @@
+ #include <QFile>
+ #include <QPainter>
+ #include <QGraphicsColorizeEffect>
++#include <QApplication>
++#include <QPalette>
+ 
+ 
+ SVGIconEngine::SVGIconEngine(const std::string &iconBuffer) {
+@@ -17,12 +19,26 @@ SVGIconEngine* SVGIconEngine::fromFile(const QString &fileName) {
+ 
+ void SVGIconEngine::paint(QPainter *painter, const QRect &rect,
+                           QIcon::Mode mode, QIcon::State) {
+-  QSvgRenderer renderer(data);
+-  renderer.render(painter, rect);
+ 
++    QSvgRenderer renderer(data);
+ 
++    // First we render the SVG onto a temporary QImage
++    QImage img(rect.size(), QImage::Format_ARGB32);
++    img.fill(qRgba(0, 0, 0, 0));
++    QPainter painter_i(&img);
++    renderer.render(&painter_i, rect);
+ 
+-  // FIXME Handle different modes and states
++    auto bgColor = QApplication::palette().color(QPalette::Window);
++    bool darkUI = bgColor.lightnessF() < 0.5;
++    if (darkUI) {
++        img.invertPixels();
++    }
++
++    // Finally we paint our image onto the correct painter.
++    painter->setOpacity(0.8);
++    painter->drawImage(rect, img);
++
++    // FIXME Handle different modes and states
+ }
+ 
+ QIconEngine *SVGIconEngine::clone() const { return new SVGIconEngine(*this); }
+
+From d7bf8d105314133d0a40434b88121be49aab4ded Mon Sep 17 00:00:00 2001
+From: Daniele Di Sarli <danieleds0@gmail.com>
+Date: Sat, 31 Aug 2019 20:04:58 +0200
+Subject: [PATCH 07/13] add lots of new icons from Kde 'Breeze' theme
+
+---
+ src/ui/iconprovider.cpp                       |   1 -
+ .../notepadqq/16x16/document-close-all.png    | Bin 498 -> 0 bytes
+ .../icons/notepadqq/16x16/document-close.png  | Bin 446 -> 0 bytes
+ src/ui/icons/notepadqq/16x16/document-new.png | Bin 325 -> 0 bytes
+ .../icons/notepadqq/16x16/document-open.png   | Bin 751 -> 0 bytes
+ .../notepadqq/16x16/document-save-all.png     | Bin 815 -> 0 bytes
+ src/ui/icons/notepadqq/16x16/edit-copy.png    | Bin 623 -> 0 bytes
+ src/ui/icons/notepadqq/16x16/edit-cut.png     | Bin 777 -> 0 bytes
+ src/ui/icons/notepadqq/16x16/edit-paste.png   | Bin 795 -> 0 bytes
+ .../icons/notepadqq/16x16/math-rendering.png  | Bin 386 -> 0 bytes
+ .../notepadqq/16x16/show-special-chars.png    | Bin 340 -> 0 bytes
+ .../notepadqq/scalable/document-close-all.svg |   8 +++++++
+ .../notepadqq/scalable/document-close.svg     |   6 ++++++
+ .../icons/notepadqq/scalable/document-new.svg |   5 +++++
+ .../notepadqq/scalable/document-open.svg      |   5 +++++
+ .../notepadqq/scalable/document-save-all.svg  |   5 +++++
+ .../notepadqq/scalable/document-save.svg      |   6 +++++-
+ src/ui/icons/notepadqq/scalable/edit-copy.svg |   5 +++++
+ src/ui/icons/notepadqq/scalable/edit-cut.svg  |   5 +++++
+ .../icons/notepadqq/scalable/edit-paste.svg   |   5 +++++
+ .../notepadqq/scalable/math-rendering.svg     |  12 +++++++++++
+ .../notepadqq/scalable/show-special-chars.svg |  10 +++++++++
+ src/ui/resources.qrc                          |  20 +++++++++---------
+ 23 files changed, 81 insertions(+), 12 deletions(-)
+ delete mode 100644 src/ui/icons/notepadqq/16x16/document-close-all.png
+ delete mode 100644 src/ui/icons/notepadqq/16x16/document-close.png
+ delete mode 100644 src/ui/icons/notepadqq/16x16/document-new.png
+ delete mode 100644 src/ui/icons/notepadqq/16x16/document-open.png
+ delete mode 100644 src/ui/icons/notepadqq/16x16/document-save-all.png
+ delete mode 100644 src/ui/icons/notepadqq/16x16/edit-copy.png
+ delete mode 100644 src/ui/icons/notepadqq/16x16/edit-cut.png
+ delete mode 100644 src/ui/icons/notepadqq/16x16/edit-paste.png
+ delete mode 100644 src/ui/icons/notepadqq/16x16/math-rendering.png
+ delete mode 100644 src/ui/icons/notepadqq/16x16/show-special-chars.png
+ create mode 100644 src/ui/icons/notepadqq/scalable/document-close-all.svg
+ create mode 100755 src/ui/icons/notepadqq/scalable/document-close.svg
+ create mode 100755 src/ui/icons/notepadqq/scalable/document-new.svg
+ create mode 100755 src/ui/icons/notepadqq/scalable/document-open.svg
+ create mode 100755 src/ui/icons/notepadqq/scalable/document-save-all.svg
+ mode change 100644 => 100755 src/ui/icons/notepadqq/scalable/document-save.svg
+ create mode 100755 src/ui/icons/notepadqq/scalable/edit-copy.svg
+ create mode 100755 src/ui/icons/notepadqq/scalable/edit-cut.svg
+ create mode 100755 src/ui/icons/notepadqq/scalable/edit-paste.svg
+ create mode 100644 src/ui/icons/notepadqq/scalable/math-rendering.svg
+ create mode 100644 src/ui/icons/notepadqq/scalable/show-special-chars.svg
+
+diff --git a/src/ui/iconprovider.cpp b/src/ui/iconprovider.cpp
+index 11d3f651c..f852d4553 100644
+--- a/src/ui/iconprovider.cpp
++++ b/src/ui/iconprovider.cpp
+@@ -23,7 +23,6 @@ QIcon IconProvider::fromTheme(const QString &name)
+     } else {
+         // QIcon::setThemeName("notepadqq");
+         QIcon icon;
+-        return icon;
+ 
+         QList<QPair<int, QString>> sizes {
+                     QPair<int, QString>(16, "16x16"),
+diff --git a/src/ui/icons/notepadqq/16x16/document-close-all.png b/src/ui/icons/notepadqq/16x16/document-close-all.png
+deleted file mode 100644
+index 31f9a03f9a9d902aa9b010446fcee8550bbc84cd..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 498
+zcmV<O0S*3%P)<h;3K|Lk000e1NJLTq000mG000mO1^@s6AM^iV0005GNkl<ZILnQb
+zF^CgE6o$W?3r?GE79lWpyQPJYaE;pt9u{(?Wf~!!*Gd$zO=rMHdy8NpXSoK8U9iY?
+zULzTK2s?$~l;fUo7P*Z_Zex7SJl>oC<DWM(o#k@**f}?$CA8L$MC1){w$bVU=K!6e
+zD9-!+{uOZufubld#yk^|w}1tHZSGqGLI_xEsj7+)0!k?WthK~(Op+weMdazGK58<h
+z6jfD`W!W}2V`B^=@(QS$UPMc5bCc)!IF93Sk|YmA<QO<>1^mm+1?ZhI=8lMb-(yFF
+z5C|dQy~leGz+f=ITKlor>)qW6XzVv@lV@3mbMEC%z$WCfldVH+J@@M=s+fYapbhEa
+z5yZFt50FnM7(2r}9HC4?ILSH9r<iO+q_w_XmgQ$yJ(|`*=2OgYgt9s0FHqes#%LC^
+z36Y3=1NML@P1Cw{2Hv7#1NV;q7N2y%c_QEktB>(pYkj{g%lB8@XhT?hK+T2_JRbPz
+zSM|LMF+e0DpX$24Uf1=0nx<=gdU(W1nd3qiuU2Af!5j?f%;$4heNQgII=x=+rgQFV
+o12NTtFSE(|7R<pAxv_uk4?k(yhf!pM9RL6T07*qoM6N<$f-sok)&Kwi
+
+diff --git a/src/ui/icons/notepadqq/16x16/document-close.png b/src/ui/icons/notepadqq/16x16/document-close.png
+deleted file mode 100644
+index 886c9e0a293e3ffdcc1aa95def13f67f996fea5f..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 446
+zcmV;v0YUzWP)<h;3K|Lk000e1NJLTq000mG000mO1^@s6AM^iV0004nNkl<ZILnQb
+zA#B_*6hPmds>x#sb4fIhwJJ$f(y$%eG_r03cd)2h;o#_CSyfh8vZ-S`n6ebDhJmg^
+zVs_RQoS6&mqP20m+m{T!?f?92eGftiSZjCNw*AAJNRs4p(=<PU0T2KNAq2G6A<y%5
+z^<0%Duar7&n&xaZ6^0Ktc<-a(oWnT>z}EIQx5k`iS@v;dF&Oqw5kfqhCrQG7QE+R_
+zk1WfMfQ{%1S7iynVr9^ojmP6hV68Rt`CM%D4c?4KkMa)EUBi2il(JiX5dk`b&Y}+*
+z^$u8T&<FG*0%)z5%Cp&%1^Y$uFujWa&-H`(b%LFqQ+=;NN?z_Bz}~0WpswpkIWZ-^
+zx+MQ_h)`R2T~b$5q*CF(I`Mk)ntbvFVM;I+q$y5F>Khvy7-OP`TUdkGRPgrq-;Li=
+z7S_c8rBr0lN{PRjA}$ZXI~*``fRse7{8XreujuOv>r<Rq7Mm8-yW{0=wARwLZTJ_&
+oR~Ia*3$PZXBrPV)cis>00lSIJ;1@y0H2?qr07*qoM6N<$g3b!fYybcN
+
+diff --git a/src/ui/icons/notepadqq/16x16/document-new.png b/src/ui/icons/notepadqq/16x16/document-new.png
+deleted file mode 100644
+index e58d6f1ddadbabc7890cf29bcf29a2f4a759473f..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 325
+zcmV-L0lNN)P)<h;3K|Lk000e1NJLTq000mG000mO1^@s6AM^iV0003DNkl<ZILm!f
+zF>-`33|z?`!lmOKnS6jR@Lozfevm#z@&USJjO|SmGqQnGCCm0|wOS#Gd7eLpVR$3?
+zgZ~hbl7b`vAm<EK#kOsq(=@#UfCqrS?;qnh3V>HUi2|@J%cIo1?XvGXL<AxNRXv!9
+z2uL0PHq-*-oGZE|CkYXObMC~-+XG3EL`v!Clyg4xu)181P*@boSJ8raTeP2^0a%cO
+zLCzT|rAoAt+fQBBokg?)S`kaF<X7xYTd*6jHJjgxXw71~*iE!iF|Z&OwA|S@w*c+K
+z7UXsW?>(Gzv^G}N%F?$!2q7TGh?J73YNbQ#M3M+0)BrKYuXSBtNd8`RX^j+P{4VD|
+X&7t_DPJGND00000NkvXXu0mjfalnao
+
+diff --git a/src/ui/icons/notepadqq/16x16/document-open.png b/src/ui/icons/notepadqq/16x16/document-open.png
+deleted file mode 100644
+index 0108036726da5ea654be3c49fb59e45b76143ab7..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 751
+zcmV<L0ucR)P)<h;3K|Lk000e1NJLTq000mG000mO1^@s6AM^iV0008ENkl<ZILlp;
+zKW`jG7{-6Iv)=XHVVw_h*ei2Fwm2&%fm}o+X^|yYu82@9K7cFB1qBTsfRBJgjpQon
+zELRZ}76FMM9Ff>cLK5ICj1&L4JNCRgJ2NkZ*^|xFjOLy9`RSeKRVyni0Bme*P-=aB
+z{oRFyg?g*i3O6@5KWa9c%^(Qgtc*t!K^RSrS86jpp5(iqcXvY(;i8t7mfEYUt9O$m
+zX?gF9wY4>Ax7$sCqtx*5Sr>ws>mSVUSMQrB91e$<0LRD2*B2KT-)}S;m+D1f+1~k$
+z#+4?sGjHL6yl`P)t;Je9YSdc0v$Hb~AR>qe&RR~6kB9@|otY~LieUlPBcYskjsQxj
+zOMg;IVV%PmgE2YQf$`uKI4^`I&k4hDWN^+=<{}~}rA8nDj6Lr`X*@!Bu)oivy}c2j
+z9Q*%w5y4s^D+F5@gqXY#Lg(D2u#7R@dp|OdAe=+eVTO21A(}LIgyo2(YPFiW2q@ph
+z3t3^v3x_yI|ICnCPk7OM^Tv((^78WSBuRpDvT_UFTgH@SI2bVSV+^dv%Q+zG%+E(z
+zmbom;=03c3?PeUu<av(w9udKd5Jxc$UGV(XYfh!Xcx4Rl&H+_mUMUp^TDLM|5E0CO
+zXSo5bH9CrUb@&gqQl&Po2}E=N^npVa1anHMIi=KCnYz{*tu-nLs8lN?(^KTRr`OMT
+z@jBzMm!F1!2mVAPjiP9_Ua!9q1OZ_fGU)fojiKA^n*Bdsy!>Hj@8mh1*=JI<Y4_XT
+zr8@mt2(bI)iM!fvZ)I7QZf|eDH!(5MPSbR<-|O8wIyrefJvH^cR_fl)gP%GFZ%=(a
+zNVooW2M<2)-oNv3w1vH=Pg7v)lUuib$+N7UBuVvZr}Ic@oht<&-~N;@zPcl)FMs?s
+h^68h|`*$A${0mCGjRhfWzX<>U002ovPDHLkV1hgOUFrY;
+
+diff --git a/src/ui/icons/notepadqq/16x16/document-save-all.png b/src/ui/icons/notepadqq/16x16/document-save-all.png
+deleted file mode 100644
+index 0e3ac303d3a91fbea1a9ec7819ba26ee0248d79c..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 815
+zcmV+~1JL}5P)<h;3K|Lk000e1NJLTq000mG000mO1^@s6AM^iV0008^Nkl<ZILlR#
+z&1)TH6vlt^&U-U+XYS37rdlYm5=xA=(1n|d8xcXlg|1u$QMCU-b}n2<K@p^aP^cR>
+ziYO7qkA(|Slr(~%MNL{vG}t6JNt4{qnL9J@yzd+rO+x*_vp5`{=iwYqO`ZAat#_`7
+zh)9;_G8hbHFc?bzP)Rxx5s{BR{X(92>UoKq_lBw#@!pjW`0C4V(CH{uwXrb(!XO|F
+z0s!PtiaWScSYEzCI_%^NpDl1}vx8C!U0G-HQ2{`bl^pCJ5CnBfYp9$<DaFZ?_tWk7
+z@N0^PX3zP(ZqEUJqZvEm#^iUeUwT(WL_YueTRDB^yz~Z%h=>%0k-`|MD)}FK`yF}w
+z$>(J9zNy!=h{Ki^fIN4Ic!c!`0IfB0e2m8t&50IqSf?<?=t_j@a1k|PwC^#>3_1=N
+z3{vDSujhH((~3Fh^eJsY7>t!VierBK;d@@bxXJ43P3loZW(;^9!>mA#YUNIV4(p_u
+z!4!tdA-d-K>}+qcwXx3GM`r1Edzi99d5+RnRB{}F@;r=jn9^cxNmUt?t14`1dGPcD
+zyfpU$d2aA)A<gkRQL{zdXc0BW57i=S)X+M>l_lbNXy=@t=NU<oaM0~B8Vz~%#X0h<
+zKoG`i0lCR>w!&4G*7!KJT8+{<Jf+Y@k%viYi0T1Jl470X+R`G=KJzrb@)#z4&d$za
+zD@PnhEdBfoi`Rc=dU_g91U*W6p8ywb@7nF<mF4lWFfjrbUzy{>j~Dp+k4@fw^9`J<
+zI59cFWu^G-`k$0VLFFpc%*@PX5%JQbe`<byes0j+A<uH!TU*@vcY}6&n}62VSzBA<
+z=3lGq?%t*>4c0oWvz{J}M#o>idiDJdSe)t6Zf}$4DWx&A+uK-cF{NdH?*N;3+1=G-
+zNhj1tX3z5geg*n~y|%QNKX&2K`24wtSy{QEoO3jrvFz{dD8SE>y(kQ$9qs#yyGS=S
+tHYTQ~rjF(lz$DNFd>}h4=m0~2{{Shtzu3v30jB@}002ovPDHLkV1nNNk#Yb4
+
+diff --git a/src/ui/icons/notepadqq/16x16/edit-copy.png b/src/ui/icons/notepadqq/16x16/edit-copy.png
+deleted file mode 100644
+index 79d8c79309059d5e9b535663fc119b9e4a677cf3..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 623
+zcmV-#0+9WQP)<h;3K|Lk000e1NJLTq000mG000mO1^@s6AM^iV0006uNkl<ZILn2S
+zPfrt36vcn<bxKPuQV41U!~v6%xFRMdM(f4}ap@Of<wwB1D~usw!J1D}*A!?cK%sV&
+zX*;drw8M1XdoEi31O!iVHt*z}d+x~<#u%=mP<S(0D7^hRHT588j8Oo_XtdS<2q6$c
+zh*qn0y1BXe1!K$w*VfjOtE-=0_j<k9{0CcGTg9cNrE$x)ZF_n7{Ri8A`YfN%FU-!)
+zJ_lqJMfCeI*I^7~vl+BDk!{<;nwgn-xxW7O^FTE0?(SiXVUSqdFc8BhDJ5|nBQu$M
+z2ae<TT5H1aj3_!A8t7YT3}~$p0%R_iJ8>MRCZ$9O!Fi`zt6MoJ-T(q?XQ$-*zV89V
+zaep}BGQq!~)TJg%rBb(At$qhk+Mtxd07~mSsL*;4)dC2D?m^V=gEoMI|0Fn12_OMZ
+zPk&dMjYfnJ7sA#1xK6DN+6+qsC>D$Ry<YeS41G0dSt)e~<KZANFmPS><izs=DJ4cJ
+zz!2Z~q)|!{$1!TSo@H4BgT=*s`{xh0E)xmP!jLG67)d4>NhV39QjDh4WHO_Sjb)jf
+zoM0k1&iMV@$oBTOumI-g7kaf?ZBJU(tL#{oV(}Y^gha{&N-2UMpc{0fFbV_Lbr0Qo
+zz1VKIJI!Wu!UEXX*w8C0D~F>aNv0k?qTTuBmCKcS_2}4hoJuvFPVF}v&7*R;eB}GB
+z!!QiJi_<=DJ)h6Nn0`F{&TBL(b8}B>?M}yYUDvN2ANRNee*rX+>Nm=0+qnP$002ov
+JPDHLkV1h-19=QMj
+
+diff --git a/src/ui/icons/notepadqq/16x16/edit-cut.png b/src/ui/icons/notepadqq/16x16/edit-cut.png
+deleted file mode 100644
+index a11bd6b512e4367fea24b31b4729be046dd58892..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 777
+zcmV+k1NQuhP)<h;3K|Lk000e1NJLTq000mG000mO1^@s6AM^iV0008eNkl<ZILnQb
+zO-NKx6vzMf-TU5s&l#PX8B-fKLmyh>!gLCQ#8ilaXwgQjKq9TBU=g&gO)VlS2;2!#
+z^tCT(6O|U_q7NF8X(lId1a&@irg!K0?z=4vX_4fAbvTRPIfwuM5d2Xj5*etju69zX
+z)I&|vP*+z6r4#^wQHpZ83{QGsx(?6tU|A;eg#xsAJdVB1%?O9WM+XN7$7*V7x`hzf
+zth87x=I`w4Lgr^?w6?aE4i69CKX&w(-*sIm&x2BGeUpCza=F~o#>U3yBO@bco;-g1
+z>{NgM_U`V(?<<uGET0diWkF|bLjYxr1v)x9hWh&Y;<1*Noo^>5oP!5Dwtt+O5=0|!
+ztE?)(Qz(_ofC4m1p_GEIGYBC-Baz65OeXU=pU<Bl06)^(%R|8sm}MPG&Lm&&X=<9C
+z{V@w$*y{iQTXbC)wh*APSPV+3nRF_3Z*p>SWo|CJtF^r?&>9LdwOl-zlX7SJd-A|9
+z+h(4pg1XMG2_Z%)rKcUoc}1hqC<q~7l!`*J_-1-~`qr)6cglLj?mTyX$e&#<wSD>g
+zsWT7=^aq1m2MdMbj$Cf(hGkm&4bG3#Xfz4{AcVlSZE()<BbAy+FXdErxzzh|d_3{>
+z+qWUhw3<2RH7lhO<(z*qxUt)|?JVi(=~=Ub5G*V%f-#0fA^~m~egMgEC>#PI1D@wT
+zC>EFDR90_Tmf7yQt24!wl`HH1Fvg&18s_KcQK?kmNm<e;y(xr!ebsfxJWoo;aUOBb
+zFWa^N=la^|y1rH{E-WCOPNPsL005+v0Ps#qS@fiQp@6$m%6XfKSKQ!mU3YDAeSJL|
+z8X7jr$u`5#=X^fj1*&OR0n89WS`6KQ$xWEt{D0O7Ap?xDJf-v^fGmInr4)Xj4}PB?
+z?0*2I)R-%!r2&@+Ayg^#;ZGlgZ2IQ_jgWnWkh1{7fA@a_P{uUtw#1~H00000NkvXX
+Hu0mjf9ZqJX
+
+diff --git a/src/ui/icons/notepadqq/16x16/edit-paste.png b/src/ui/icons/notepadqq/16x16/edit-paste.png
+deleted file mode 100644
+index 7c35dd82e121f3686f3e1d3b80a3868d852101dc..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 795
+zcmV+$1LXXPP)<h;3K|Lk000e1NJLTq000mG000mO1^@s6AM^iV0008wNkl<ZILmF4
+zOK6-`6vuz}&Np9XCNs?RVV<=aO;OZZEY>U(tx6VFi%3zIt|}^skD@Nzh){4NC=|D`
+z3l~Ol<H~MC2qHojMQzfEHK`_js3DVid^6v7?>)!GOrwh)IGol0$L}1DdF%LY_D|i7
+z^tQ=L6Gum8UYIWp#gWZL(YNQm`m~;W|EBYnpfNVTPNmi&w(#@SNj~{vohTPYPnSyN
+zCsLzHZpcpEF@4*}ks~uEpU*M1Z|v0{=9VNRX+9##IW?aH3)X-&01(w`6Q>`3X!hRa
+z&A_A2zJwQ}+s!t`Vu6E)4(IBp&z<`6<9C>hI$XH4;foOq8;vp-uHD)Ph=hVlhRYmR
+zem#%RGGkB_h~wCVAXxF(kkIN_x2bzs{Nn&w$PWM^gwzFgyLDE+{t$v=z2Ql+fQSRN
+z6idTg#<7u%-2ThPo)fXnO4f!5I2)-7KI@UsSz3DzvvNIQd`vm@_WNXMmu@eBHK@XK
+z$Wz|yv2wW*&(F_a1I|XG3R%ihr^?#F7g?-&#{WLgiLHd?EyM5Edz^f%j_Y$`Yrz1u
+zS~UiUP{nyqrMty<7grg-Ylc5_1z!1VnR303T>Xuck4)ft4h2-8Tp33DXTqu~sq>8F
+zTfDY;hW1b2;Hov^d+uYjR;Hj16-5R;$f4Swk*eaIqvw>W?J(I~p-`P=G-ptW_$%|M
+z21LRj$^ak?RuF>E(6qy1^A;9HA0RAV#CS-P9?w(*-V4slPB?_V&5nU{j;>dx%_{G%
+zzCmNx{XGBr2l%W@u={By>5ejhNI>L<0YoZ75Fv^SgtSdQpE0p-jHK1T2cegF%>VR7
+z<i8uFJ>P9M6FTh-2}-vm_==~Uq%^iW7-M$+{zf_H5D9&Njjp`6bgA(qDgvr$H*rII
+z4;(8G4^3NkakDB9mnarX2EcsuGWY<-^gB5C@t?=f+<EBeEShCE1H^G0U0z$;o|~I{
+Z@LwzGlhg|^^eX@W002ovPDHLkV1mxwecu28
+
+diff --git a/src/ui/icons/notepadqq/16x16/math-rendering.png b/src/ui/icons/notepadqq/16x16/math-rendering.png
+deleted file mode 100644
+index f4f264e39998241442d1dfbe96d8b733cc16dc3f..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 386
+zcmeAS@N?(olHy`uVBq!ia0vp^0wB!61|;P_|4#%`Y)RhkE)4%caKYZ?lYt_f1s;*b
+z3=G`DAk4@xYmNj^kiEpy*OmPdizuh6?(#>=B7s7(nIRD+&iT2ysd*(pE(3#eQEFmI
+zYKlU6W=V#EyQgnJie4%^Q2d#vi(`nz>9dz@y__9ISReQcO1rWgm7jFV@5-@bhgf%X
+zb1YiBwc2C$HC7LW7g{k5b0Z=;lx8$6n%a_HJfG(<cVEK8#)n1c&)DAC|ImJ6uQrdN
+zTWG;P!|vIK7PvJA*DPpu)oF=;tiohfdCT}@vvN$!e$k~@BDk&RsBD=0QMy7?aK^j~
+z7kq8h|Gmm*E&F(5!od|T34H83{C7;<kgv*g+_3X@OEj1Dzs#B2l50Z0EIgK8aQfl)
+z4-?qmyWR~o$=2E_&0619`Q^fS)_Ie7t<S$><Bi@ipS$E^-)j%UqgHw!yR2pY-Q@qn
+X6sY3b(SOez6od?(u6{1-oD!M<pTm>*
+
+diff --git a/src/ui/icons/notepadqq/16x16/show-special-chars.png b/src/ui/icons/notepadqq/16x16/show-special-chars.png
+deleted file mode 100644
+index cd2846cbc3c6d6eed7c07d0da2da22d87df50090..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 340
+zcmV-a0jvIrP)<h;3K|Lk000e1NJLTq000mG000mO1^@s6AM^iV0003SNkl<ZILoDx
+z-%7(!42QqOx&B$VIX5o`)**<Z-~;#`zJ{;pjjtfy@4_2V1~NK}UE@Vhbt_#vFc5M`
+z$aj88;GZTfwavOYZ?zlX1;{s=4Cn!e`v4v*jaM$7I>?r4t&x3K$ptQUoVNnjm0US@
+zUME*;a!)$|h6tkC2r%Hm?cuA?Bvu5$^FszllUBf7RqunSe+}UIVFsXjz+g1t?DDpG
+z1QE&nC|pj@XYT-m(KrPVRs1kwI=g5Fn3*M?%kPtTvI6izFDu0v8Ead$E)jsm$D0A9
+z>Cyml%Sn<2uk&a2vfgo|fcZT?224caZqOY@<G$`k5VSZQv0HA8Fcg(7KxZf5@A{iB
+mGqcJ+O&TC{URvV(m+}J=kWn|bh!eB`0000<MNUMnLSTZR^N?Kt
+
+diff --git a/src/ui/icons/notepadqq/scalable/document-close-all.svg b/src/ui/icons/notepadqq/scalable/document-close-all.svg
+new file mode 100644
+index 000000000..8dd923578
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/document-close-all.svg
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="utf-8"?>
++<svg version="1.2" baseProfile="tiny" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
++	 x="0px" y="0px" viewBox="0 0 16 16" xml:space="preserve">
++<path d="M5,4.2V14h4.1v-0.8H5.9V5h6.5v4.1h0.8V4.2H5.9H5z M10.5,10l-0.6,0.6l1.5,1.5l-1.5,1.5l0.6,0.6l1.5-1.5l1.5,1.5l0.6-0.6
++	L12.5,12l1.5-1.5L13.4,10L12,11.4L10.5,10z"/>
++<path d="M2.6,2v9.8c0.8,0,1.6,0,2.4,0c0-0.3,0-0.5,0-0.8c-0.5,0-1.1,0-1.6,0V2.8h6.5c0,0.7,0,1.5,0,2.2c0.3,0,0.5,0,0.8,0
++	c0-1,0-2,0-3H3.4H2.6z"/>
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/document-close.svg b/src/ui/icons/notepadqq/scalable/document-close.svg
+new file mode 100755
+index 000000000..25372eaf1
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/document-close.svg
+@@ -0,0 +1,6 @@
++<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
++  <path
++     style="fill:currentColor;fill-opacity:1;stroke:none" 
++     d="m3 2v12h5v-1h-4v-10h8v5h1v-6h-9zm6.707 7.03l-.707.707 1.793 1.793-1.793 1.793.707.707 1.793-1.793 1.793 1.793.707-.707-1.793-1.793 1.793-1.793-.707-.707-1.793 1.793z"
++      />
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/document-new.svg b/src/ui/icons/notepadqq/scalable/document-new.svg
+new file mode 100755
+index 000000000..9ade9bd84
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/document-new.svg
+@@ -0,0 +1,5 @@
++<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
++  <path style="fill:currentColor;fill-opacity:1;stroke:none" 
++     d="M 3 2 L 3 14 L 8 14 L 8 13 L 4 13 L 4 3 L 9 3 L 9 6 L 12 6 L 12 9 L 13 9 L 13 6 L 13 5 L 10 2 L 9 2 L 3 2 z M 10 9 L 10 11 L 8 11 L 8 12 L 10 12 L 10 14 L 11 14 L 11 12 L 13 12 L 13 11 L 11 11 L 11 9 L 10 9 z "
++     />
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/document-open.svg b/src/ui/icons/notepadqq/scalable/document-open.svg
+new file mode 100755
+index 000000000..2bf2da48d
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/document-open.svg
+@@ -0,0 +1,5 @@
++<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
++ <path style="fill:currentColor;fill-opacity:1;stroke:none" 
++     d="M 2 2 L 2 3 L 2 6 L 2 7 L 2 13 L 2 14 L 14 14 L 14 13 L 14 6 L 14 5 L 14 4 L 9.0078125 4 L 7.0078125 2 L 7 2.0078125 L 7 2 L 3 2 L 2 2 z M 3 3 L 6.5917969 3 L 7.59375 4 L 7 4 L 7 4.0078125 L 6.9921875 4 L 4.9921875 6 L 3 6 L 3 3 z M 3 7 L 13 7 L 13 13 L 3 13 L 3 7 z "
++     />
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/document-save-all.svg b/src/ui/icons/notepadqq/scalable/document-save-all.svg
+new file mode 100755
+index 000000000..4b443bed6
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/document-save-all.svg
+@@ -0,0 +1,5 @@
++<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
++ <path style="fill:currentColor;fill-opacity:1;stroke:none" 
++     d="M 5 2 L 5 4 L 2 4 L 2 14 L 12 14 L 12 12 L 14 12 L 14 4.28125 L 11.71875 2 L 11.6875 2 L 11 2 C 10.99995 1.99997 5 2 5 2 z M 6 3 L 11.28125 3 L 13 4.71875 L 13 5 L 13 11 L 12 11 L 12 6.28125 L 9.71875 4 L 9.6875 4 L 9 4 L 6 4 L 6 3 z M 3 5 L 4 5 L 4 8 L 9 8 L 9 7 L 9 5 L 9.28125 5 L 11 6.71875 L 11 7 L 11 13 L 10 13 L 10 11 L 4 11 L 4 13 L 3 13 L 3 5 z M 5 5 L 7 5 L 7 7 L 5 7 L 5 5 z M 5 12 L 9 12 L 9 13 L 5 13 L 5 12 z "
++     />
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/document-save.svg b/src/ui/icons/notepadqq/scalable/document-save.svg
+old mode 100644
+new mode 100755
+index 3fb2a8df0..8ae72fb01
+--- a/src/ui/icons/notepadqq/scalable/document-save.svg
++++ b/src/ui/icons/notepadqq/scalable/document-save.svg
+@@ -1 +1,5 @@
+-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+\ No newline at end of file
++<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
++ <path style="fill:currentColor;fill-opacity:1;stroke:none" 
++     d="M 2 2 L 2 14 L 3 14 L 4 14 L 10 14 L 11 14 L 12 14 L 14 14 L 14 4.28125 L 11.71875 2 L 11.6875 2 L 11 2 L 4 2 L 3 2 L 2 2 z M 3 3 L 4 3 L 5 3 L 5 6 L 5 7 L 11 7 L 11 6 L 11 3 L 11.28125 3 L 13 4.71875 L 13 5 L 13 13 L 12 13 L 12 9 L 11 9 L 5 9 L 3.96875 9 L 3.96875 13 L 3 13 L 3 3 z M 6 3 L 7.90625 3 L 7.90625 6 L 6 6 L 6 3 z M 5 10 L 6 10 L 10 10 L 11 10 L 11 13 L 10 13 L 6 13 L 5 13 L 5 10 z "
++     />
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/edit-copy.svg b/src/ui/icons/notepadqq/scalable/edit-copy.svg
+new file mode 100755
+index 000000000..f97d97cf4
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/edit-copy.svg
+@@ -0,0 +1,5 @@
++<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
++ <path style="fill:currentColor;fill-opacity:1;stroke:none" 
++     d="M 3 2 L 3 13 L 6 13 L 6 14 L 11 14 L 14 11 L 14 4 L 13 4 L 13 2 L 3.7851562 2 L 3 2 z M 4 3 L 12 3 L 12 4 L 6 4 L 6 12 L 4 12 L 4 3 z M 7 5 L 13 5 L 13 10 L 10 10 L 10 13 L 7 13 L 7 5 z "
++     />
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/edit-cut.svg b/src/ui/icons/notepadqq/scalable/edit-cut.svg
+new file mode 100755
+index 000000000..c40ba21cf
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/edit-cut.svg
+@@ -0,0 +1,5 @@
++<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
++ <path style="fill:currentColor;fill-opacity:1;stroke:none" 
++     d="M 5 2 C 4.567 2.75 4.34825 2.75 4.78125 3.5 L 7.40625 8 L 5.90625 10.21875 C 5.63425 10.08075 5.325 10 5 10 C 3.895 10 3 10.895 3 12 C 3 13.105 3.895 14 5 14 C 6.105 14 7 13.105 7 12 C 7 11.595 6.86325 11.22125 6.65625 10.90625 C 6.65125 10.89825 6.66125 10.882 6.65625 10.875 L 7.09375 10.25 C 7.89575 10.225 8.008 9.65725 8.5 9.65625 C 8.511 9.65625 8.52025 9.65525 8.53125 9.65625 L 8.5625 9.71875 L 9.34375 10.875 L 9.34375 10.90625 C 9.13775 11.22125 8.9980469 11.595 8.9980469 12 C 8.9980469 13.105 9.8930469 14 10.998047 14 C 12.103047 14 12.998047 13.105 12.998047 12 C 12.998047 10.895 12.103047 10 10.998047 10 C 10.673047 10 10.36475 10.08075 10.09375 10.21875 L 8.59375 8 C 8.59375 8 11.22875 3.492 11.21875 3.5 C 11.65175 2.75 11.431047 2.75 10.998047 2 L 7.9980469 7.125 L 5 2 z M 7.9980469 8 L 8 8 C 8.276 8 8.5 8.224 8.5 8.5 C 8.5 8.754 8.3075 8.968 8.0625 9 L 7.9375 9 C 7.6925 8.968 7.4980469 8.754 7.4980469 8.5 C 7.4980469 8.224 7.7220469 8 7.9980469 8 z M 4.9980469 11 C 5.5500469 11 5.9980469 11.448 5.9980469 12 C 5.9980469 12.552 5.5500469 13 4.9980469 13 C 4.4460469 13 3.9980469 12.552 3.9980469 12 C 3.9980469 11.448 4.4460469 11 4.9980469 11 z M 10.998047 11 C 11.550047 11 11.998047 11.448 11.998047 12 C 11.998047 12.552 11.550047 13 10.998047 13 C 10.446047 13 9.9980469 12.552 9.9980469 12 C 9.9980469 11.448 10.446047 11 10.998047 11 z "
++     />
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/edit-paste.svg b/src/ui/icons/notepadqq/scalable/edit-paste.svg
+new file mode 100755
+index 000000000..ee224370b
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/edit-paste.svg
+@@ -0,0 +1,5 @@
++<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
++ <path style="fill:currentColor;fill-opacity:1;stroke:none" 
++       d="M 5 2 L 5 3 L 3 3 L 3 14 L 7 14 L 8 14 L 12 14 L 13 14 L 13 13 L 13 9 L 13 3 L 11 3 L 11 2 L 5 2 z M 4 4 L 5 4 L 5 5 L 11 5 L 11 4 L 12 4 L 12 6 L 12 12 L 12 13 L 8 13 L 7 13 L 4 13 L 4 12 L 4 6 L 4 4 z M 5 7 L 5 8 L 10 8 L 10 7 L 5 7 z M 5 10 L 5 11 L 8 11 L 8 10 L 5 10 z "
++     />
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/math-rendering.svg b/src/ui/icons/notepadqq/scalable/math-rendering.svg
+new file mode 100644
+index 000000000..1ea30ba58
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/math-rendering.svg
+@@ -0,0 +1,12 @@
++<?xml version="1.0" encoding="utf-8"?>
++<svg version="1.2" baseProfile="tiny" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
++	 x="0px" y="0px" viewBox="0 0 24 24" xml:space="preserve">
++<path fill="none" d="M0,0h24v24H0V0z"/>
++<g>
++	<path d="M19.4,5.7v2.3h-3.6l-0.3,4.7c-0.1,0.8-0.1,1.5-0.1,2.1c0,1.4,0.2,2.3,0.5,2.6s0.7,0.5,1.2,0.5c1,0,1.6-0.6,1.8-1.9h0.6
++		c-0.3,2.9-1.5,4.3-3.4,4.3c-0.9,0-1.6-0.3-2.2-0.8S13,18.1,13,17c0-0.7,0.1-2.3,0.3-4.6l0.4-4.5h-3.3c-0.2,3.8-0.5,6.5-0.8,8.2
++		c-0.3,1.7-0.6,2.9-1,3.4c-0.4,0.5-0.9,0.8-1.5,0.8c-0.5,0-0.9-0.1-1.2-0.4s-0.5-0.6-0.5-1.1c0-0.4,0.3-1,0.8-1.8
++		c0.8-1.1,1.4-2.2,1.8-3.4c0.4-1.2,0.7-3.1,0.9-5.7H8C7.1,7.9,6.5,8.1,6,8.5c-0.5,0.4-0.9,0.9-1.3,1.6H4.2c0.3-1.1,0.7-2,1.2-2.7
++		s1-1.2,1.5-1.4s1.4-0.3,2.7-0.3H19.4z"/>
++</g>
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/show-special-chars.svg b/src/ui/icons/notepadqq/scalable/show-special-chars.svg
+new file mode 100644
+index 000000000..76f56a6e6
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/show-special-chars.svg
+@@ -0,0 +1,10 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!-- Generator: Adobe Illustrator 21.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
++<svg version="1.2" baseProfile="tiny" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
++	 x="0px" y="0px" viewBox="0 0 24 24" xml:space="preserve">
++<path fill="none" d="M0,0h24v24H0V0z"/>
++<g>
++	<path d="M16.1,22h-1.4V5.2h-1.8V22h-1.4v-9.3c-1.3,0-2.4-0.5-3.2-1.3c-0.8-0.8-1.2-1.9-1.2-3.2c0-1.3,0.4-2.4,1.3-3.1
++		C9.2,4.3,10.4,4,12,4h4.1V22z"/>
++</g>
++</svg>
+diff --git a/src/ui/resources.qrc b/src/ui/resources.qrc
+index aca170944..787ad0867 100644
+--- a/src/ui/resources.qrc
++++ b/src/ui/resources.qrc
+@@ -2,24 +2,24 @@
+     <qresource prefix="icons/notepadqq">
+ 		<file alias="index.theme">icons/notepadqq/index.theme</file>
+ 
+-		<file alias="16x16/document-close.png">icons/notepadqq/16x16/document-close.png</file>
+-		<file alias="16x16/document-close-all.png">icons/notepadqq/16x16/document-close-all.png</file>
+-		<file alias="16x16/document-new.png">icons/notepadqq/16x16/document-new.png</file>
+-		<file alias="16x16/document-open.png">icons/notepadqq/16x16/document-open.png</file>
++		<file alias="scalable/document-close.svg">icons/notepadqq/scalable/document-close.svg</file>
++		<file alias="scalable/document-close-all.svg">icons/notepadqq/scalable/document-close-all.svg</file>
++		<file alias="scalable/document-new.svg">icons/notepadqq/scalable/document-new.svg</file>
++		<file alias="scalable/document-open.svg">icons/notepadqq/scalable/document-open.svg</file>
+ 		<file alias="16x16/document-print.png">icons/notepadqq/16x16/document-print.png</file>
+ 
+ 		<file alias="scalable/document-save.svg">icons/notepadqq/scalable/document-save.svg</file>
+ 
+-		<file alias="16x16/document-save-all.png">icons/notepadqq/16x16/document-save-all.png</file>
++		<file alias="scalable/document-save-all.svg">icons/notepadqq/scalable/document-save-all.svg</file>
+ 		<file alias="16x16/document-save-as.png">icons/notepadqq/16x16/document-save-as.png</file>
+-		<file alias="16x16/edit-copy.png">icons/notepadqq/16x16/edit-copy.png</file>
+-		<file alias="16x16/edit-cut.png">icons/notepadqq/16x16/edit-cut.png</file>
++		<file alias="scalable/edit-copy.svg">icons/notepadqq/scalable/edit-copy.svg</file>
++		<file alias="scalable/edit-cut.svg">icons/notepadqq/scalable/edit-cut.svg</file>
+ 		<file alias="scalable/edit-find.svg">icons/notepadqq/scalable/edit-find.svg</file>
+ 		<file alias="scalable/edit-find-replace.svg">icons/notepadqq/scalable/edit-find-replace.svg</file>
+-		<file alias="16x16/edit-paste.png">icons/notepadqq/16x16/edit-paste.png</file>
++		<file alias="scalable/edit-paste.svg">icons/notepadqq/scalable/edit-paste.svg</file>
+ 		<file alias="scalable/edit-redo.svg">icons/notepadqq/scalable/edit-redo.svg</file>
+ 		<file alias="scalable/edit-undo.svg">icons/notepadqq/scalable/edit-undo.svg</file>
+-		<file alias="16x16/math-rendering.png">icons/notepadqq/16x16/math-rendering.png</file>
++		<file alias="scalable/math-rendering.svg">icons/notepadqq/scalable/math-rendering.svg</file>
+ 		<file alias="128x128/math-rendering.png">icons/notepadqq/128x128/math-rendering.png</file>
+ 		<file alias="16x16/media-playback-start.png">icons/notepadqq/16x16/media-playback-start.png</file>
+ 		<file alias="16x16/media-playback-stop.png">icons/notepadqq/16x16/media-playback-stop.png</file>
+@@ -29,7 +29,7 @@
+ 		<file alias="16x16/document-saved.png">icons/notepadqq/16x16/document-saved.png</file>
+ 		<file alias="16x16/document-unsaved.png">icons/notepadqq/16x16/document-unsaved.png</file>
+ 		<file alias="16x16/preferences-other.png">icons/notepadqq/16x16/preferences-other.png</file>
+-		<file alias="16x16/show-special-chars.png">icons/notepadqq/16x16/show-special-chars.png</file>
++		<file alias="scalable/show-special-chars.svg">icons/notepadqq/scalable/show-special-chars.svg</file>
+ 		<file alias="scalable/word-wrap.svg">icons/notepadqq/scalable/word-wrap.svg</file>
+ 		<file alias="scalable/zoom-in.svg">icons/notepadqq/scalable/zoom-in.svg</file>
+ 		<file alias="16x16/zoom-original.png">icons/notepadqq/16x16/zoom-original.png</file>
+
+From eb6370af3caa95b0e10ab485c94552ebcd38e0c8 Mon Sep 17 00:00:00 2001
+From: Daniele Di Sarli <danieleds0@gmail.com>
+Date: Sat, 31 Aug 2019 23:56:50 +0200
+Subject: [PATCH 08/13] Allow to have icons with custom colors
+
+---
+ .../icons/notepadqq/16x16/document-print.png  | Bin 662 -> 0 bytes
+ .../notepadqq/16x16/document-save-as.png      | Bin 805 -> 0 bytes
+ .../notepadqq/scalable/document-close.svg     |   4 +-
+ .../icons/notepadqq/scalable/document-new.svg |   3 +-
+ .../notepadqq/scalable/document-open.svg      |   3 +-
+ .../notepadqq/scalable/document-print.svg     |   4 ++
+ .../notepadqq/scalable/document-save-all.svg  |   3 +-
+ .../notepadqq/scalable/document-save-as.svg   |   4 ++
+ .../notepadqq/scalable/document-save.svg      |   3 +-
+ src/ui/icons/notepadqq/scalable/edit-copy.svg |   3 +-
+ src/ui/icons/notepadqq/scalable/edit-cut.svg  |   3 +-
+ .../icons/notepadqq/scalable/edit-paste.svg   |   3 +-
+ src/ui/include/svgiconengine.h                |  14 ++++-
+ src/ui/resources.qrc                          |   4 +-
+ src/ui/svgiconengine.cpp                      |  53 +++++++++++++++---
+ 15 files changed, 76 insertions(+), 28 deletions(-)
+ delete mode 100644 src/ui/icons/notepadqq/16x16/document-print.png
+ delete mode 100644 src/ui/icons/notepadqq/16x16/document-save-as.png
+ create mode 100755 src/ui/icons/notepadqq/scalable/document-print.svg
+ create mode 100755 src/ui/icons/notepadqq/scalable/document-save-as.svg
+
+diff --git a/src/ui/icons/notepadqq/16x16/document-print.png b/src/ui/icons/notepadqq/16x16/document-print.png
+deleted file mode 100644
+index aa4692bc8271005c3ccedcba1640d12fd74182da..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 662
+zcmV;H0%`q;P)<h;3K|Lk000e1NJLTq000mG000mO1^@s6AM^iV0007ANkl<ZILn1n
+zO;1xn6g_w5^-X!NbitE?HpT^eS&)<sD`VLZaOX<gnz-_xm>55P0Rm|dyRo_;fiAk%
+z;6fG{C6S0i0v4J#GjHa)z&5Qm@gygiJ2U4b_uNa&j4qNSdAPW^IAd)F03hnVTpn_{
+z0Q>u&KQx;=PkJI|?y*{(f5*(6WsaTmJ$ldVJu@@&+S>ZJeocTrIG1GrptZ&@M9~Pe
+zPF??<=r5#{g#TjjivWPyMxEX?8l#m;rJ}X@S3(3Lf-x3_Lg8wo(I^fWIOnd{YPGvU
+z$UG522mv7kh%Py31o3ipb-A`tF9QH6rJ|?Lp1-eFZ<qHz?L|TgfEk_{LWn=vxSoO5
+z2Gi3wvAw->aDVyUjX+8{Jv%#Fbk0Lci71K?st{?aVU32%98{=~&*!02jdr^Ytqtbp
+z<_bhK6U1>Wl~Vam=K{w+f8gxw6joc<%py%wq-hFkEIOSI+UIQ;V=y%}g;Hr^B#vVl
+z5Yd=1Mj37R<L)j_j!)p6hqW5USXg6VtcA4(+GrSUE@@0iL`h(+9shoG6r`Pw`SSGu
+z?O$z3DSHzm5M+>p%;k`eVtD6qcz6iMEVC?|2#hh~we>YGq=fShrO6Wd*Lz^*L^!{=
+zK;vx#xgf~A_mi};vNAeaEIzQ-&KKgst#bLA?56%Vq?Bm2S{O@`mQw1~+3D#EFtf7O
+zCa>#t+S=N3&N<GqY$%;`+-x?Pnc=;^!pxxnpo1VdxwEvyL?na|kWvn%5CUNsc6Z_!
+wfT8|=7Zw&CtGprr!$SbTo@sM)^HI0{4Yhh_soJT<mH+?%07*qoM6N<$g0qV+lmGw#
+
+diff --git a/src/ui/icons/notepadqq/16x16/document-save-as.png b/src/ui/icons/notepadqq/16x16/document-save-as.png
+deleted file mode 100644
+index bcafda9a883c2fc3399e21d8500e2093fc8aa488..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 805
+zcmV+=1KRwFP)<h;3K|Lk000e1NJLTq000mG000mO1^@s6AM^iV0008)Nkl<ZILm#K
+z%WK?K9K}EPH+LrUNYYHyB&|v(p+4FsHZ7&ng$+?8(CEf)lR}`hZY(0Le}NkX6-5!0
+zx`-PsVn<x~s=Kxsja9k}Hd6~Bl{SxQGMV4&e($|5lCB~iIGY3KeED*Y>f7}=03!0k
+z(BR;~GpA2&lu9L>bNm;S!W$#%>u;)^wVB#=-O<qnK$0Xo3&mp3$jEa&eSJImKP)fZ
+z<HG0D?C5@ERA(|70JP59Akf5df>=)&#oLTpYqZuRslj=V7?bGK7ywdZNK=D&2xCJO
+zrvP{$69hP*xwJ~YnBUZ$!&-}e@T>O@=N++eL`h1NYz72Mks3o1h1BcwIIkES+J|)x
+zD;Djo1;B~LT1%1$tuQ8vVw6$<tgbARw3^(i*V(gom}V<QM6gx}j0i>q5kXReSWltU
+zNxs;Q3bHg-R>)=)SFc@VN6(`S9XL!9r-(6#2x`}31Do~0A6;Et2lo%|qx+$UiQ<^O
+zPd~-*@GuuX`;@u4IR^GTNj9qyW0;?>v(bv0+Bu8&9-YmS$>o{-{RSJ&CWj6kV0`>I
+zUrbN)<4-@+mdmqv=PsE{hGL<eQhPh#(P9O>M=1~yf*|1Km&TYpd6H{0HLRq(dgc_}
+z<uZjro|)ffsr~vVVH{!71RaGT0Qt5&_g5PnJ$i)K&Yq=Ot@6>wpYUDvE21c(P$&Sf
+zz7cZe%IxNPjSvj<SEy8Wv$nqGk34&r^KYKx`fQC~E?-7uv!MrOfc5)p7-MkG;_>Jg
+zMn?$aq}1En+j0Kf8+?1|693#;;GMVMV)Xg(ZEH-8V8x)628GhCR;z9Q&@)pfPQ3EO
+z#fx9^!TawrF)<0i)YQbbfJS4L<$DW21_+93^w_c2UmP2I@AlufZ{ECB|9+sqUzN+{
+zLb+V-%;mEAG&OC`xj-pJ5Cpc-XvosilJ(vhP=BdhRv)kIu1qd0E`At>;mp>d98d&G
+jKpxOrx&R5#+G6@I!9sIvP0%&W00000NkvXXu0mjfnpcI&
+
+diff --git a/src/ui/icons/notepadqq/scalable/document-close.svg b/src/ui/icons/notepadqq/scalable/document-close.svg
+index 25372eaf1..220d731a3 100755
+--- a/src/ui/icons/notepadqq/scalable/document-close.svg
++++ b/src/ui/icons/notepadqq/scalable/document-close.svg
+@@ -1,6 +1,4 @@
+ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+-  <path
+-     style="fill:currentColor;fill-opacity:1;stroke:none" 
+-     d="m3 2v12h5v-1h-4v-10h8v5h1v-6h-9zm6.707 7.03l-.707.707 1.793 1.793-1.793 1.793.707.707 1.793-1.793 1.793 1.793.707-.707-1.793-1.793 1.793-1.793-.707-.707-1.793 1.793z"
++  <path d="m3 2v12h5v-1h-4v-10h8v5h1v-6h-9zm6.707 7.03l-.707.707 1.793 1.793-1.793 1.793.707.707 1.793-1.793 1.793 1.793.707-.707-1.793-1.793 1.793-1.793-.707-.707-1.793 1.793z"
+       />
+ </svg>
+diff --git a/src/ui/icons/notepadqq/scalable/document-new.svg b/src/ui/icons/notepadqq/scalable/document-new.svg
+index 9ade9bd84..2bcfa9c8f 100755
+--- a/src/ui/icons/notepadqq/scalable/document-new.svg
++++ b/src/ui/icons/notepadqq/scalable/document-new.svg
+@@ -1,5 +1,4 @@
+ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+-  <path style="fill:currentColor;fill-opacity:1;stroke:none" 
+-     d="M 3 2 L 3 14 L 8 14 L 8 13 L 4 13 L 4 3 L 9 3 L 9 6 L 12 6 L 12 9 L 13 9 L 13 6 L 13 5 L 10 2 L 9 2 L 3 2 z M 10 9 L 10 11 L 8 11 L 8 12 L 10 12 L 10 14 L 11 14 L 11 12 L 13 12 L 13 11 L 11 11 L 11 9 L 10 9 z "
++  <path d="M 3 2 L 3 14 L 8 14 L 8 13 L 4 13 L 4 3 L 9 3 L 9 6 L 12 6 L 12 9 L 13 9 L 13 6 L 13 5 L 10 2 L 9 2 L 3 2 z M 10 9 L 10 11 L 8 11 L 8 12 L 10 12 L 10 14 L 11 14 L 11 12 L 13 12 L 13 11 L 11 11 L 11 9 L 10 9 z "
+      />
+ </svg>
+diff --git a/src/ui/icons/notepadqq/scalable/document-open.svg b/src/ui/icons/notepadqq/scalable/document-open.svg
+index 2bf2da48d..4ed386866 100755
+--- a/src/ui/icons/notepadqq/scalable/document-open.svg
++++ b/src/ui/icons/notepadqq/scalable/document-open.svg
+@@ -1,5 +1,4 @@
+ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+- <path style="fill:currentColor;fill-opacity:1;stroke:none" 
+-     d="M 2 2 L 2 3 L 2 6 L 2 7 L 2 13 L 2 14 L 14 14 L 14 13 L 14 6 L 14 5 L 14 4 L 9.0078125 4 L 7.0078125 2 L 7 2.0078125 L 7 2 L 3 2 L 2 2 z M 3 3 L 6.5917969 3 L 7.59375 4 L 7 4 L 7 4.0078125 L 6.9921875 4 L 4.9921875 6 L 3 6 L 3 3 z M 3 7 L 13 7 L 13 13 L 3 13 L 3 7 z "
++ <path d="M 2 2 L 2 3 L 2 6 L 2 7 L 2 13 L 2 14 L 14 14 L 14 13 L 14 6 L 14 5 L 14 4 L 9.0078125 4 L 7.0078125 2 L 7 2.0078125 L 7 2 L 3 2 L 2 2 z M 3 3 L 6.5917969 3 L 7.59375 4 L 7 4 L 7 4.0078125 L 6.9921875 4 L 4.9921875 6 L 3 6 L 3 3 z M 3 7 L 13 7 L 13 13 L 3 13 L 3 7 z "
+      />
+ </svg>
+diff --git a/src/ui/icons/notepadqq/scalable/document-print.svg b/src/ui/icons/notepadqq/scalable/document-print.svg
+new file mode 100755
+index 000000000..6293caeaf
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/document-print.svg
+@@ -0,0 +1,4 @@
++<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
++ <path d="M 4 2 L 4 3 L 4 5 L 3 5 L 2 5 L 2 6 L 2 11 L 2 12 L 3 12 L 5 12 L 5 13 L 5 14 L 10 14 L 11 14 L 11 13 L 11 12 L 13 12 L 14 12 L 14 11 L 14 6 L 14 5 L 12 5 L 12 3 L 12 2 L 4 2 z M 5 3 L 11 3 L 11 5 L 5 5 L 5 3 z M 3 6 L 13 6 L 13 11 L 12 11 L 12 10 L 4 10 L 4 11 L 3 11 L 3 6 z M 10 7 L 10 8 L 12 8 L 12 7 L 10 7 z M 6 12 L 10 12 L 10 13 L 6 13 L 6 12 z "
++     />
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/document-save-all.svg b/src/ui/icons/notepadqq/scalable/document-save-all.svg
+index 4b443bed6..b3550f336 100755
+--- a/src/ui/icons/notepadqq/scalable/document-save-all.svg
++++ b/src/ui/icons/notepadqq/scalable/document-save-all.svg
+@@ -1,5 +1,4 @@
+ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+- <path style="fill:currentColor;fill-opacity:1;stroke:none" 
+-     d="M 5 2 L 5 4 L 2 4 L 2 14 L 12 14 L 12 12 L 14 12 L 14 4.28125 L 11.71875 2 L 11.6875 2 L 11 2 C 10.99995 1.99997 5 2 5 2 z M 6 3 L 11.28125 3 L 13 4.71875 L 13 5 L 13 11 L 12 11 L 12 6.28125 L 9.71875 4 L 9.6875 4 L 9 4 L 6 4 L 6 3 z M 3 5 L 4 5 L 4 8 L 9 8 L 9 7 L 9 5 L 9.28125 5 L 11 6.71875 L 11 7 L 11 13 L 10 13 L 10 11 L 4 11 L 4 13 L 3 13 L 3 5 z M 5 5 L 7 5 L 7 7 L 5 7 L 5 5 z M 5 12 L 9 12 L 9 13 L 5 13 L 5 12 z "
++ <path d="M 5 2 L 5 4 L 2 4 L 2 14 L 12 14 L 12 12 L 14 12 L 14 4.28125 L 11.71875 2 L 11.6875 2 L 11 2 C 10.99995 1.99997 5 2 5 2 z M 6 3 L 11.28125 3 L 13 4.71875 L 13 5 L 13 11 L 12 11 L 12 6.28125 L 9.71875 4 L 9.6875 4 L 9 4 L 6 4 L 6 3 z M 3 5 L 4 5 L 4 8 L 9 8 L 9 7 L 9 5 L 9.28125 5 L 11 6.71875 L 11 7 L 11 13 L 10 13 L 10 11 L 4 11 L 4 13 L 3 13 L 3 5 z M 5 5 L 7 5 L 7 7 L 5 7 L 5 5 z M 5 12 L 9 12 L 9 13 L 5 13 L 5 12 z "
+      />
+ </svg>
+diff --git a/src/ui/icons/notepadqq/scalable/document-save-as.svg b/src/ui/icons/notepadqq/scalable/document-save-as.svg
+new file mode 100755
+index 000000000..fd40be4e7
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/document-save-as.svg
+@@ -0,0 +1,4 @@
++<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
++ <path d="M 2 2 L 2 14 L 3 14 L 4 14 L 7 14 L 7 13 L 6 13 L 5 13 L 5 10 L 6 10 L 7 10 L 8 10 L 8 9 L 7 9 L 5 9 L 3.96875 9 L 3.96875 13 L 3 13 L 3 3 L 4 3 L 5 3 L 5 6 L 5 7 L 7 7 L 11 7 L 11 6 L 11 3 L 11.28125 3 L 13 4.71875 L 13 5 L 13 7 L 14 7 L 14 4.28125 L 11.71875 2 L 11.6875 2 L 11 2 L 4 2 L 3 2 L 2 2 z M 6 3 L 7.90625 3 L 7.90625 6 L 6 6 L 6 3 z M 12 8 L 11 9 L 10 10 L 8 12 L 8 13 L 8 14 L 10 14 L 11 13 L 12 12 L 13 11 L 14 10 L 12 8 z M 11.689453 9.6894531 L 12.28125 10.28125 L 10.59375 11.96875 L 10.59375 11.984375 L 9.3125 13.28125 L 8.71875 12.6875 L 11.689453 9.6894531 z "
++     />
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/document-save.svg b/src/ui/icons/notepadqq/scalable/document-save.svg
+index 8ae72fb01..bc31e9221 100755
+--- a/src/ui/icons/notepadqq/scalable/document-save.svg
++++ b/src/ui/icons/notepadqq/scalable/document-save.svg
+@@ -1,5 +1,4 @@
+ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+- <path style="fill:currentColor;fill-opacity:1;stroke:none" 
+-     d="M 2 2 L 2 14 L 3 14 L 4 14 L 10 14 L 11 14 L 12 14 L 14 14 L 14 4.28125 L 11.71875 2 L 11.6875 2 L 11 2 L 4 2 L 3 2 L 2 2 z M 3 3 L 4 3 L 5 3 L 5 6 L 5 7 L 11 7 L 11 6 L 11 3 L 11.28125 3 L 13 4.71875 L 13 5 L 13 13 L 12 13 L 12 9 L 11 9 L 5 9 L 3.96875 9 L 3.96875 13 L 3 13 L 3 3 z M 6 3 L 7.90625 3 L 7.90625 6 L 6 6 L 6 3 z M 5 10 L 6 10 L 10 10 L 11 10 L 11 13 L 10 13 L 6 13 L 5 13 L 5 10 z "
++ <path d="M 2 2 L 2 14 L 3 14 L 4 14 L 10 14 L 11 14 L 12 14 L 14 14 L 14 4.28125 L 11.71875 2 L 11.6875 2 L 11 2 L 4 2 L 3 2 L 2 2 z M 3 3 L 4 3 L 5 3 L 5 6 L 5 7 L 11 7 L 11 6 L 11 3 L 11.28125 3 L 13 4.71875 L 13 5 L 13 13 L 12 13 L 12 9 L 11 9 L 5 9 L 3.96875 9 L 3.96875 13 L 3 13 L 3 3 z M 6 3 L 7.90625 3 L 7.90625 6 L 6 6 L 6 3 z M 5 10 L 6 10 L 10 10 L 11 10 L 11 13 L 10 13 L 6 13 L 5 13 L 5 10 z "
+      />
+ </svg>
+diff --git a/src/ui/icons/notepadqq/scalable/edit-copy.svg b/src/ui/icons/notepadqq/scalable/edit-copy.svg
+index f97d97cf4..eee02282b 100755
+--- a/src/ui/icons/notepadqq/scalable/edit-copy.svg
++++ b/src/ui/icons/notepadqq/scalable/edit-copy.svg
+@@ -1,5 +1,4 @@
+ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+- <path style="fill:currentColor;fill-opacity:1;stroke:none" 
+-     d="M 3 2 L 3 13 L 6 13 L 6 14 L 11 14 L 14 11 L 14 4 L 13 4 L 13 2 L 3.7851562 2 L 3 2 z M 4 3 L 12 3 L 12 4 L 6 4 L 6 12 L 4 12 L 4 3 z M 7 5 L 13 5 L 13 10 L 10 10 L 10 13 L 7 13 L 7 5 z "
++ <path d="M 3 2 L 3 13 L 6 13 L 6 14 L 11 14 L 14 11 L 14 4 L 13 4 L 13 2 L 3.7851562 2 L 3 2 z M 4 3 L 12 3 L 12 4 L 6 4 L 6 12 L 4 12 L 4 3 z M 7 5 L 13 5 L 13 10 L 10 10 L 10 13 L 7 13 L 7 5 z "
+      />
+ </svg>
+diff --git a/src/ui/icons/notepadqq/scalable/edit-cut.svg b/src/ui/icons/notepadqq/scalable/edit-cut.svg
+index c40ba21cf..283d9feed 100755
+--- a/src/ui/icons/notepadqq/scalable/edit-cut.svg
++++ b/src/ui/icons/notepadqq/scalable/edit-cut.svg
+@@ -1,5 +1,4 @@
+ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+- <path style="fill:currentColor;fill-opacity:1;stroke:none" 
+-     d="M 5 2 C 4.567 2.75 4.34825 2.75 4.78125 3.5 L 7.40625 8 L 5.90625 10.21875 C 5.63425 10.08075 5.325 10 5 10 C 3.895 10 3 10.895 3 12 C 3 13.105 3.895 14 5 14 C 6.105 14 7 13.105 7 12 C 7 11.595 6.86325 11.22125 6.65625 10.90625 C 6.65125 10.89825 6.66125 10.882 6.65625 10.875 L 7.09375 10.25 C 7.89575 10.225 8.008 9.65725 8.5 9.65625 C 8.511 9.65625 8.52025 9.65525 8.53125 9.65625 L 8.5625 9.71875 L 9.34375 10.875 L 9.34375 10.90625 C 9.13775 11.22125 8.9980469 11.595 8.9980469 12 C 8.9980469 13.105 9.8930469 14 10.998047 14 C 12.103047 14 12.998047 13.105 12.998047 12 C 12.998047 10.895 12.103047 10 10.998047 10 C 10.673047 10 10.36475 10.08075 10.09375 10.21875 L 8.59375 8 C 8.59375 8 11.22875 3.492 11.21875 3.5 C 11.65175 2.75 11.431047 2.75 10.998047 2 L 7.9980469 7.125 L 5 2 z M 7.9980469 8 L 8 8 C 8.276 8 8.5 8.224 8.5 8.5 C 8.5 8.754 8.3075 8.968 8.0625 9 L 7.9375 9 C 7.6925 8.968 7.4980469 8.754 7.4980469 8.5 C 7.4980469 8.224 7.7220469 8 7.9980469 8 z M 4.9980469 11 C 5.5500469 11 5.9980469 11.448 5.9980469 12 C 5.9980469 12.552 5.5500469 13 4.9980469 13 C 4.4460469 13 3.9980469 12.552 3.9980469 12 C 3.9980469 11.448 4.4460469 11 4.9980469 11 z M 10.998047 11 C 11.550047 11 11.998047 11.448 11.998047 12 C 11.998047 12.552 11.550047 13 10.998047 13 C 10.446047 13 9.9980469 12.552 9.9980469 12 C 9.9980469 11.448 10.446047 11 10.998047 11 z "
++ <path d="M 5 2 C 4.567 2.75 4.34825 2.75 4.78125 3.5 L 7.40625 8 L 5.90625 10.21875 C 5.63425 10.08075 5.325 10 5 10 C 3.895 10 3 10.895 3 12 C 3 13.105 3.895 14 5 14 C 6.105 14 7 13.105 7 12 C 7 11.595 6.86325 11.22125 6.65625 10.90625 C 6.65125 10.89825 6.66125 10.882 6.65625 10.875 L 7.09375 10.25 C 7.89575 10.225 8.008 9.65725 8.5 9.65625 C 8.511 9.65625 8.52025 9.65525 8.53125 9.65625 L 8.5625 9.71875 L 9.34375 10.875 L 9.34375 10.90625 C 9.13775 11.22125 8.9980469 11.595 8.9980469 12 C 8.9980469 13.105 9.8930469 14 10.998047 14 C 12.103047 14 12.998047 13.105 12.998047 12 C 12.998047 10.895 12.103047 10 10.998047 10 C 10.673047 10 10.36475 10.08075 10.09375 10.21875 L 8.59375 8 C 8.59375 8 11.22875 3.492 11.21875 3.5 C 11.65175 2.75 11.431047 2.75 10.998047 2 L 7.9980469 7.125 L 5 2 z M 7.9980469 8 L 8 8 C 8.276 8 8.5 8.224 8.5 8.5 C 8.5 8.754 8.3075 8.968 8.0625 9 L 7.9375 9 C 7.6925 8.968 7.4980469 8.754 7.4980469 8.5 C 7.4980469 8.224 7.7220469 8 7.9980469 8 z M 4.9980469 11 C 5.5500469 11 5.9980469 11.448 5.9980469 12 C 5.9980469 12.552 5.5500469 13 4.9980469 13 C 4.4460469 13 3.9980469 12.552 3.9980469 12 C 3.9980469 11.448 4.4460469 11 4.9980469 11 z M 10.998047 11 C 11.550047 11 11.998047 11.448 11.998047 12 C 11.998047 12.552 11.550047 13 10.998047 13 C 10.446047 13 9.9980469 12.552 9.9980469 12 C 9.9980469 11.448 10.446047 11 10.998047 11 z "
+      />
+ </svg>
+diff --git a/src/ui/icons/notepadqq/scalable/edit-paste.svg b/src/ui/icons/notepadqq/scalable/edit-paste.svg
+index ee224370b..e45cd8864 100755
+--- a/src/ui/icons/notepadqq/scalable/edit-paste.svg
++++ b/src/ui/icons/notepadqq/scalable/edit-paste.svg
+@@ -1,5 +1,4 @@
+ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+- <path style="fill:currentColor;fill-opacity:1;stroke:none" 
+-       d="M 5 2 L 5 3 L 3 3 L 3 14 L 7 14 L 8 14 L 12 14 L 13 14 L 13 13 L 13 9 L 13 3 L 11 3 L 11 2 L 5 2 z M 4 4 L 5 4 L 5 5 L 11 5 L 11 4 L 12 4 L 12 6 L 12 12 L 12 13 L 8 13 L 7 13 L 4 13 L 4 12 L 4 6 L 4 4 z M 5 7 L 5 8 L 10 8 L 10 7 L 5 7 z M 5 10 L 5 11 L 8 11 L 8 10 L 5 10 z "
++ <path d="M 5 2 L 5 3 L 3 3 L 3 14 L 7 14 L 8 14 L 12 14 L 13 14 L 13 13 L 13 9 L 13 3 L 11 3 L 11 2 L 5 2 z M 4 4 L 5 4 L 5 5 L 11 5 L 11 4 L 12 4 L 12 6 L 12 12 L 12 13 L 8 13 L 7 13 L 4 13 L 4 12 L 4 6 L 4 4 z M 5 7 L 5 8 L 10 8 L 10 7 L 5 7 z M 5 10 L 5 11 L 8 11 L 8 10 L 5 10 z "
+      />
+ </svg>
+diff --git a/src/ui/include/svgiconengine.h b/src/ui/include/svgiconengine.h
+index 8bbfa0da8..397f97d73 100644
+--- a/src/ui/include/svgiconengine.h
++++ b/src/ui/include/svgiconengine.h
+@@ -6,7 +6,8 @@
+ 
+ class SVGIconEngine : public QIconEngine {
+ 
+-  QByteArray data;
++  QByteArray m_lightIcon;
++  QByteArray m_darkIcon;
+ 
+ public:
+   explicit SVGIconEngine(const std::string &iconBuffer);
+@@ -21,6 +22,17 @@ class SVGIconEngine : public QIconEngine {
+ 
+ public slots:
+ 
++private:
++  /**
++   * @brief Tries to set a custom default fill color for the provided SVG.
++   *        The color is applied to all those paths and shapes without a
++   *        specified color, so the icon file must be compatible.
++   * @param svg
++   * @param color
++   * @return
++   */
++  QString replaceSvgMainFillColor(const QString& svg, const QColor& color) const;
++
+ };
+ 
+ #endif // SVGICONENGINE_H
+diff --git a/src/ui/resources.qrc b/src/ui/resources.qrc
+index 787ad0867..2d00d975a 100644
+--- a/src/ui/resources.qrc
++++ b/src/ui/resources.qrc
+@@ -6,12 +6,12 @@
+ 		<file alias="scalable/document-close-all.svg">icons/notepadqq/scalable/document-close-all.svg</file>
+ 		<file alias="scalable/document-new.svg">icons/notepadqq/scalable/document-new.svg</file>
+ 		<file alias="scalable/document-open.svg">icons/notepadqq/scalable/document-open.svg</file>
+-		<file alias="16x16/document-print.png">icons/notepadqq/16x16/document-print.png</file>
++		<file alias="scalable/document-print.svg">icons/notepadqq/scalable/document-print.svg</file>
+ 
+ 		<file alias="scalable/document-save.svg">icons/notepadqq/scalable/document-save.svg</file>
+ 
+ 		<file alias="scalable/document-save-all.svg">icons/notepadqq/scalable/document-save-all.svg</file>
+-		<file alias="16x16/document-save-as.png">icons/notepadqq/16x16/document-save-as.png</file>
++		<file alias="scalable/document-save-as.svg">icons/notepadqq/scalable/document-save-as.svg</file>
+ 		<file alias="scalable/edit-copy.svg">icons/notepadqq/scalable/edit-copy.svg</file>
+ 		<file alias="scalable/edit-cut.svg">icons/notepadqq/scalable/edit-cut.svg</file>
+ 		<file alias="scalable/edit-find.svg">icons/notepadqq/scalable/edit-find.svg</file>
+diff --git a/src/ui/svgiconengine.cpp b/src/ui/svgiconengine.cpp
+index ac3784085..5602a8eaa 100644
+--- a/src/ui/svgiconengine.cpp
++++ b/src/ui/svgiconengine.cpp
+@@ -4,32 +4,42 @@
+ #include <QGraphicsColorizeEffect>
+ #include <QApplication>
+ #include <QPalette>
+-
++#include <QRegularExpression>
+ 
+ SVGIconEngine::SVGIconEngine(const std::string &iconBuffer) {
+-    //std::string new_str = QString::fromStdString(iconBuffer).replace("fill=\"none\"", "fill=\"#ff5544\"").toStdString();
+-    data = QByteArray::fromStdString(iconBuffer);
++    auto data = QByteArray::fromStdString(iconBuffer);
++
++    m_darkIcon = replaceSvgMainFillColor(QString(data), QColor(50,50,50)).toUtf8();
++    m_lightIcon = replaceSvgMainFillColor(QString(data), QColor(205,205,205)).toUtf8();
+ }
+ 
+ SVGIconEngine* SVGIconEngine::fromFile(const QString &fileName) {
+     QFile file(fileName);
+-    if (!file.open(QIODevice::ReadOnly)) return new SVGIconEngine("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\"></svg>");
++    if (!file.open(QIODevice::ReadOnly)) {
++        return new SVGIconEngine("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\"></svg>");
++    }
+     return new SVGIconEngine(file.readAll().toStdString());
+ }
+ 
+ void SVGIconEngine::paint(QPainter *painter, const QRect &rect,
+                           QIcon::Mode mode, QIcon::State) {
+ 
+-    QSvgRenderer renderer(data);
++    auto bgColor = QApplication::palette().color(QPalette::Window);
++    bool darkUI = bgColor.lightnessF() < 0.5;
+ 
++    QSvgRenderer renderer(darkUI ? m_lightIcon : m_darkIcon);
++    renderer.render(painter, rect);
++
++    /*
+     // First we render the SVG onto a temporary QImage
+     QImage img(rect.size(), QImage::Format_ARGB32);
+     img.fill(qRgba(0, 0, 0, 0));
+     QPainter painter_i(&img);
++    painter->setPen(Qt::red);
++    painter->setBrush(Qt::red);
+     renderer.render(&painter_i, rect);
+ 
+-    auto bgColor = QApplication::palette().color(QPalette::Window);
+-    bool darkUI = bgColor.lightnessF() < 0.5;
++
+     if (darkUI) {
+         img.invertPixels();
+     }
+@@ -37,11 +47,14 @@ void SVGIconEngine::paint(QPainter *painter, const QRect &rect,
+     // Finally we paint our image onto the correct painter.
+     painter->setOpacity(0.8);
+     painter->drawImage(rect, img);
++    */
+ 
+     // FIXME Handle different modes and states
+ }
+ 
+-QIconEngine *SVGIconEngine::clone() const { return new SVGIconEngine(*this); }
++QIconEngine *SVGIconEngine::clone() const {
++    return new SVGIconEngine(*this);
++}
+ 
+ QPixmap SVGIconEngine::pixmap(const QSize &size, QIcon::Mode mode,
+                               QIcon::State state) {
+@@ -58,3 +71,27 @@ QPixmap SVGIconEngine::pixmap(const QSize &size, QIcon::Mode mode,
+   }
+   return pix;
+ }
++
++QString SVGIconEngine::replaceSvgMainFillColor(const QString& svg, const QColor& color) const
++{
++    static const QRegularExpression reFillTag(R"PRE(<svg(.|\n|\r)*?fill="([^"]*?)">)PRE");
++    static const QRegularExpression reNoFillTag(R"PRE(<svg(.|\n|\r)*?>)PRE");
++
++    // Try replacing the color within the already existing "fill" attribute, if it exists
++    auto match = reFillTag.match(svg);
++    if (match.hasMatch()) {
++        auto a = match.capturedStart(1); // start of the attribute value
++        auto b = match.capturedEnd(1); // end of the attribute value
++        QString new_svg = svg.mid(0, a) + color.name(QColor::HexRgb) + svg.mid(b);
++        return new_svg;
++    }
++
++    match = reNoFillTag.match(svg);
++    if (match.hasMatch()) {
++        auto b = match.capturedEnd(0) - 1; // end of the opening <svg> tag
++        QString new_svg = svg.mid(0, b) + " fill=\"" + color.name(QColor::HexRgb) + "\"" + svg.mid(b);
++        return new_svg;
++    }
++
++    return svg;
++}
+
+From d43e0b72ab71cd291afe0d53835df097d93368e2 Mon Sep 17 00:00:00 2001
+From: Daniele Di Sarli <danieleds0@gmail.com>
+Date: Sun, 1 Sep 2019 21:01:13 +0200
+Subject: [PATCH 09/13] Add more icons
+
+---
+ src/ui/128x128/.gitignore                        |   0
+ .../icons/notepadqq/128x128/math-rendering.png   | Bin 1806 -> 0 bytes
+ .../icons/notepadqq/scalable/document-close.svg  |   0
+ src/ui/icons/notepadqq/scalable/document-new.svg |   0
+ .../icons/notepadqq/scalable/document-open.svg   |   0
+ .../icons/notepadqq/scalable/document-print.svg  |   0
+ .../notepadqq/scalable/document-save-all.svg     |   0
+ .../notepadqq/scalable/document-save-as.svg      |   0
+ .../icons/notepadqq/scalable/document-save.svg   |   0
+ src/ui/icons/notepadqq/scalable/edit-clear.svg   |   4 ++++
+ src/ui/icons/notepadqq/scalable/edit-copy.svg    |   0
+ src/ui/icons/notepadqq/scalable/edit-cut.svg     |   0
+ src/ui/icons/notepadqq/scalable/edit-paste.svg   |   0
+ src/ui/icons/notepadqq/scalable/go-bottom.svg    |   7 +++++++
+ src/ui/icons/notepadqq/scalable/go-next.svg      |   3 +++
+ src/ui/icons/notepadqq/scalable/go-previous.svg  |   3 +++
+ .../notepadqq/scalable/preferences-other.svg     |   4 ++++
+ src/ui/resources.qrc                             |   7 +++++--
+ 18 files changed, 26 insertions(+), 2 deletions(-)
+ create mode 100644 src/ui/128x128/.gitignore
+ delete mode 100644 src/ui/icons/notepadqq/128x128/math-rendering.png
+ mode change 100755 => 100644 src/ui/icons/notepadqq/scalable/document-close.svg
+ mode change 100755 => 100644 src/ui/icons/notepadqq/scalable/document-new.svg
+ mode change 100755 => 100644 src/ui/icons/notepadqq/scalable/document-open.svg
+ mode change 100755 => 100644 src/ui/icons/notepadqq/scalable/document-print.svg
+ mode change 100755 => 100644 src/ui/icons/notepadqq/scalable/document-save-all.svg
+ mode change 100755 => 100644 src/ui/icons/notepadqq/scalable/document-save-as.svg
+ mode change 100755 => 100644 src/ui/icons/notepadqq/scalable/document-save.svg
+ create mode 100644 src/ui/icons/notepadqq/scalable/edit-clear.svg
+ mode change 100755 => 100644 src/ui/icons/notepadqq/scalable/edit-copy.svg
+ mode change 100755 => 100644 src/ui/icons/notepadqq/scalable/edit-cut.svg
+ mode change 100755 => 100644 src/ui/icons/notepadqq/scalable/edit-paste.svg
+ create mode 100644 src/ui/icons/notepadqq/scalable/go-bottom.svg
+ create mode 100644 src/ui/icons/notepadqq/scalable/go-next.svg
+ create mode 100644 src/ui/icons/notepadqq/scalable/go-previous.svg
+ create mode 100644 src/ui/icons/notepadqq/scalable/preferences-other.svg
+
+diff --git a/src/ui/128x128/.gitignore b/src/ui/128x128/.gitignore
+new file mode 100644
+index 000000000..e69de29bb
+diff --git a/src/ui/icons/notepadqq/128x128/math-rendering.png b/src/ui/icons/notepadqq/128x128/math-rendering.png
+deleted file mode 100644
+index 2f8c1c47beaba6176f8bd4ab56361821a52b1c45..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 1806
+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
+
+diff --git a/src/ui/icons/notepadqq/scalable/document-close.svg b/src/ui/icons/notepadqq/scalable/document-close.svg
+old mode 100755
+new mode 100644
+diff --git a/src/ui/icons/notepadqq/scalable/document-new.svg b/src/ui/icons/notepadqq/scalable/document-new.svg
+old mode 100755
+new mode 100644
+diff --git a/src/ui/icons/notepadqq/scalable/document-open.svg b/src/ui/icons/notepadqq/scalable/document-open.svg
+old mode 100755
+new mode 100644
+diff --git a/src/ui/icons/notepadqq/scalable/document-print.svg b/src/ui/icons/notepadqq/scalable/document-print.svg
+old mode 100755
+new mode 100644
+diff --git a/src/ui/icons/notepadqq/scalable/document-save-all.svg b/src/ui/icons/notepadqq/scalable/document-save-all.svg
+old mode 100755
+new mode 100644
+diff --git a/src/ui/icons/notepadqq/scalable/document-save-as.svg b/src/ui/icons/notepadqq/scalable/document-save-as.svg
+old mode 100755
+new mode 100644
+diff --git a/src/ui/icons/notepadqq/scalable/document-save.svg b/src/ui/icons/notepadqq/scalable/document-save.svg
+old mode 100755
+new mode 100644
+diff --git a/src/ui/icons/notepadqq/scalable/edit-clear.svg b/src/ui/icons/notepadqq/scalable/edit-clear.svg
+new file mode 100644
+index 000000000..cec85c40d
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/edit-clear.svg
+@@ -0,0 +1,4 @@
++<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
++ <path d="M 6 2 L 0.70703125 7.2929688 L 0 8 L 0.70703125 8.7070312 L 6 14 L 15 14 L 16 14 L 16 2 L 15 2 L 6 2 z M 8.0019531 5 L 10.011719 7.0097656 L 12.021484 5 L 13.011719 5.9902344 L 11.001953 8 L 13.011719 10.009766 L 12.021484 11 L 10.011719 8.9902344 L 8.0019531 11 L 7.0117188 10.009766 L 9.0214844 8 L 7.0117188 5.9902344 L 8.0019531 5 z "
++     />
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/edit-copy.svg b/src/ui/icons/notepadqq/scalable/edit-copy.svg
+old mode 100755
+new mode 100644
+diff --git a/src/ui/icons/notepadqq/scalable/edit-cut.svg b/src/ui/icons/notepadqq/scalable/edit-cut.svg
+old mode 100755
+new mode 100644
+diff --git a/src/ui/icons/notepadqq/scalable/edit-paste.svg b/src/ui/icons/notepadqq/scalable/edit-paste.svg
+old mode 100755
+new mode 100644
+diff --git a/src/ui/icons/notepadqq/scalable/go-bottom.svg b/src/ui/icons/notepadqq/scalable/go-bottom.svg
+new file mode 100644
+index 000000000..7c799bfc9
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/go-bottom.svg
+@@ -0,0 +1,7 @@
++<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
++    <g>
++        <path d="M8 8.707l-6-6L2.707 2 8 7.293 13.293 2l.707.707z"/>
++        <path d="M8 12.707l-6-6L2.707 6 8 11.293 13.293 6l.707.707z"/>
++        <path d="M2 13h12v1H2z"/>
++    </g>
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/go-next.svg b/src/ui/icons/notepadqq/scalable/go-next.svg
+new file mode 100644
+index 000000000..887fe9abf
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/go-next.svg
+@@ -0,0 +1,3 @@
++<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
++    <path d="M11.707 8l-6 6L5 13.293 10.293 8 5 2.707 5.707 2l6 6z" />
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/go-previous.svg b/src/ui/icons/notepadqq/scalable/go-previous.svg
+new file mode 100644
+index 000000000..e63006cc8
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/go-previous.svg
+@@ -0,0 +1,3 @@
++<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
++    <path d="M4.293 8l6 6 .707-.707L5.707 8 11 2.707 10.293 2l-6 6z" />
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/preferences-other.svg b/src/ui/icons/notepadqq/scalable/preferences-other.svg
+new file mode 100644
+index 000000000..8becedf45
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/preferences-other.svg
+@@ -0,0 +1,4 @@
++<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
++ <path d="M 3.5 6 A 1.5 1.5 0 0 0 2 7.5 A 1.5 1.5 0 0 0 3.5 9 A 1.5 1.5 0 0 0 5 7.5 A 1.5 1.5 0 0 0 3.5 6 z M 7.5039062 6 A 1.5 1.5 0 0 0 6.0039062 7.5 A 1.5 1.5 0 0 0 7.5039062 9 A 1.5 1.5 0 0 0 9.0039062 7.5 A 1.5 1.5 0 0 0 7.5039062 6 z M 11.503906 6 A 1.5 1.5 0 0 0 10.003906 7.5 A 1.5 1.5 0 0 0 11.503906 9 A 1.5 1.5 0 0 0 13.003906 7.5 A 1.5 1.5 0 0 0 11.503906 6 z M 3.5 7 A 0.5 0.5 0 0 1 4 7.5 A 0.5 0.5 0 0 1 3.5 8 A 0.5 0.5 0 0 1 3 7.5 A 0.5 0.5 0 0 1 3.5 7 z M 7.5039062 7 A 0.5 0.5 0 0 1 8.0039062 7.5 A 0.5 0.5 0 0 1 7.5039062 8 A 0.5 0.5 0 0 1 7.0039062 7.5 A 0.5 0.5 0 0 1 7.5039062 7 z M 11.503906 7 A 0.5 0.5 0 0 1 12.003906 7.5 A 0.5 0.5 0 0 1 11.503906 8 A 0.5 0.5 0 0 1 11.003906 7.5 A 0.5 0.5 0 0 1 11.503906 7 z "
++     />
++</svg>
+diff --git a/src/ui/resources.qrc b/src/ui/resources.qrc
+index 2d00d975a..c01e18c25 100644
+--- a/src/ui/resources.qrc
++++ b/src/ui/resources.qrc
+@@ -14,13 +14,13 @@
+ 		<file alias="scalable/document-save-as.svg">icons/notepadqq/scalable/document-save-as.svg</file>
+ 		<file alias="scalable/edit-copy.svg">icons/notepadqq/scalable/edit-copy.svg</file>
+ 		<file alias="scalable/edit-cut.svg">icons/notepadqq/scalable/edit-cut.svg</file>
++		<file alias="scalable/edit-clear.svg">icons/notepadqq/scalable/edit-clear.svg</file>
+ 		<file alias="scalable/edit-find.svg">icons/notepadqq/scalable/edit-find.svg</file>
+ 		<file alias="scalable/edit-find-replace.svg">icons/notepadqq/scalable/edit-find-replace.svg</file>
+ 		<file alias="scalable/edit-paste.svg">icons/notepadqq/scalable/edit-paste.svg</file>
+ 		<file alias="scalable/edit-redo.svg">icons/notepadqq/scalable/edit-redo.svg</file>
+ 		<file alias="scalable/edit-undo.svg">icons/notepadqq/scalable/edit-undo.svg</file>
+ 		<file alias="scalable/math-rendering.svg">icons/notepadqq/scalable/math-rendering.svg</file>
+-		<file alias="128x128/math-rendering.png">icons/notepadqq/128x128/math-rendering.png</file>
+ 		<file alias="16x16/media-playback-start.png">icons/notepadqq/16x16/media-playback-start.png</file>
+ 		<file alias="16x16/media-playback-stop.png">icons/notepadqq/16x16/media-playback-stop.png</file>
+ 		<file alias="16x16/media-record.png">icons/notepadqq/16x16/media-record.png</file>
+@@ -28,12 +28,15 @@
+ 		<file alias="scalable/notepadqq.svg">icons/notepadqq/scalable/notepadqq.svg</file>
+ 		<file alias="16x16/document-saved.png">icons/notepadqq/16x16/document-saved.png</file>
+ 		<file alias="16x16/document-unsaved.png">icons/notepadqq/16x16/document-unsaved.png</file>
+-		<file alias="16x16/preferences-other.png">icons/notepadqq/16x16/preferences-other.png</file>
++		<file alias="scalable/preferences-other.svg">icons/notepadqq/scalable/preferences-other.svg</file>
+ 		<file alias="scalable/show-special-chars.svg">icons/notepadqq/scalable/show-special-chars.svg</file>
+ 		<file alias="scalable/word-wrap.svg">icons/notepadqq/scalable/word-wrap.svg</file>
+ 		<file alias="scalable/zoom-in.svg">icons/notepadqq/scalable/zoom-in.svg</file>
+ 		<file alias="16x16/zoom-original.png">icons/notepadqq/16x16/zoom-original.png</file>
+ 		<file alias="scalable/zoom-out.svg">icons/notepadqq/scalable/zoom-out.svg</file>
++		<file alias="scalable/go-bottom.svg">icons/notepadqq/scalable/go-bottom.svg</file>
++		<file alias="scalable/go-next.svg">icons/notepadqq/scalable/go-next.svg</file>
++		<file alias="scalable/go-previous.svg">icons/notepadqq/scalable/go-previous.svg</file>
+     </qresource>
+     <qresource prefix="/translations">
+         <file alias="notepadqq_de.qm">../translations/notepadqq_de.qm</file>
+
+From 09d0d3feaaf838c37521087517b27bcc8c78ae30 Mon Sep 17 00:00:00 2001
+From: Daniele Di Sarli <danieleds0@gmail.com>
+Date: Sun, 1 Sep 2019 21:33:31 +0200
+Subject: [PATCH 10/13] Finish adding icons
+
+---
+ src/ui/icons/notepadqq/16x16/go-next.png       | Bin 234 -> 0 bytes
+ src/ui/icons/notepadqq/16x16/go-previous.png   | Bin 250 -> 0 bytes
+ .../notepadqq/16x16/preferences-other.png      | Bin 919 -> 0 bytes
+ src/ui/icons/notepadqq/16x16/zoom-original.png | Bin 763 -> 0 bytes
+ .../notepadqq/scalable/application-exit.svg    |  17 +++++++++++++++++
+ .../scalable/document-open-recent.svg          |   4 ++++
+ .../icons/notepadqq/scalable/edit-delete.svg   |  14 ++++++++++++++
+ .../notepadqq/scalable/edit-select-all.svg     |   4 ++++
+ src/ui/icons/notepadqq/scalable/go-jump.svg    |   3 +++
+ src/ui/icons/notepadqq/scalable/help-about.svg |   4 ++++
+ src/ui/icons/notepadqq/scalable/system-run.svg |   4 ++++
+ .../notepadqq/scalable/view-fullscreen.svg     |   4 ++++
+ .../icons/notepadqq/scalable/view-refresh.svg  |   3 +++
+ src/ui/icons/notepadqq/scalable/window-new.svg |   5 +++++
+ .../icons/notepadqq/scalable/zoom-original.svg |  11 +++++++++++
+ src/ui/resources.qrc                           |  12 +++++++++++-
+ 16 files changed, 84 insertions(+), 1 deletion(-)
+ delete mode 100644 src/ui/icons/notepadqq/16x16/go-next.png
+ delete mode 100644 src/ui/icons/notepadqq/16x16/go-previous.png
+ delete mode 100644 src/ui/icons/notepadqq/16x16/preferences-other.png
+ delete mode 100644 src/ui/icons/notepadqq/16x16/zoom-original.png
+ create mode 100644 src/ui/icons/notepadqq/scalable/application-exit.svg
+ create mode 100644 src/ui/icons/notepadqq/scalable/document-open-recent.svg
+ create mode 100644 src/ui/icons/notepadqq/scalable/edit-delete.svg
+ create mode 100644 src/ui/icons/notepadqq/scalable/edit-select-all.svg
+ create mode 100644 src/ui/icons/notepadqq/scalable/go-jump.svg
+ create mode 100644 src/ui/icons/notepadqq/scalable/help-about.svg
+ create mode 100644 src/ui/icons/notepadqq/scalable/system-run.svg
+ create mode 100644 src/ui/icons/notepadqq/scalable/view-fullscreen.svg
+ create mode 100644 src/ui/icons/notepadqq/scalable/view-refresh.svg
+ create mode 100644 src/ui/icons/notepadqq/scalable/window-new.svg
+ create mode 100644 src/ui/icons/notepadqq/scalable/zoom-original.svg
+
+diff --git a/src/ui/icons/notepadqq/16x16/go-next.png b/src/ui/icons/notepadqq/16x16/go-next.png
+deleted file mode 100644
+index c6f5399cf7afb45a4d83ea6c8528353f64760d80..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 234
+zcmV<G02Tj<P)<h;3K|Lk000e1NJLTq000mG000mO1^@s6AM^iV00027Nkl<ZILpP6
+zAr6B;00b9afCYo&Z+H?6K@c8sf<F}3g2RIaL4qsan5s*gD(=#x>u0i?m3|$d=bf96
+zfOTEj_uWqdkmosJ7}9l}y98ia7NRI32m*{TZW7>OXT))gB-*z1lWf~Yk|ao?X&PtA
+z6JQtyBq51$909lj_W;Lnkfte;sH(~~xI4pjU0;Lk3+H)~Wf_tv%knyG1w~P~)&3UD
+k^UO3&?(pY@UhrS?0xsPGJITLI1ONa407*qoM6N<$f-0_D?*IS*
+
+diff --git a/src/ui/icons/notepadqq/16x16/go-previous.png b/src/ui/icons/notepadqq/16x16/go-previous.png
+deleted file mode 100644
+index 9a19dcdb4b389cad684c2afba0c94f85336df41d..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 250
+zcmV<W00sYvP)<h;3K|Lk000e1NJLTq000mG000mO1^@s6AM^iV0002NNkl<ZILp0~
+zA&!JV6hy1x02mAg!_n}ZfDi-%#|04FU{;XqI0O!Z0tJe>$6K?V88b=uZg$JRm;7HP
+z{dIs3p1J)9K8}NJ+W_!}hhZQLL-IU#7g)IOdx9V!iXxU}aT8d$>pF}v#Bt2JuJ#9?
+zPH@vSNFqrR_I-DQzXeRwgfRw5jN@qGhwJTkfU2sHM4G0Y=jm6Wm9%a9dr4WANFvKJ
+zuIuvN!5yHkYa~$=g`eP6GS9R74&F(etNizT0apbAQYWg-1poj507*qoM6N<$f&qkR
+AjsO4v
+
+diff --git a/src/ui/icons/notepadqq/16x16/preferences-other.png b/src/ui/icons/notepadqq/16x16/preferences-other.png
+deleted file mode 100644
+index 9e58fe8bafa8c788973897932d32e8ad79d9009a..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 919
+zcmV;I18Dq-P)<h;3K|Lk000e1NJLTq000mG000mO1^@s6AM^iV000ACNkl<ZILmF1
+zZA{d40LMSS|2@KyrvwNG$3wLFu!gl_b*(5ws1PJ;t*jTd39(UAhmvzdZ`j;GNUN>k
+zTyDD7g9n95@z8ch%kiYJR-2Is-3bSGf~R-h9S0o$UvJD8;rI1--_Q3WI_&K~Yqgq^
+ziru@7K#Y6&{KRKSsUlU$frGXB!*zA`(w$|yqDxW2k?>L1<W#)?L{4Vr(Lb+VJ<?%6
+z=Y2Z=skFst6sf9Q8W=`OiK?pTjfR1mni`wO<Ke@a4=z0Mc-|YKNMz%&mezTZzik`7
+zh53(aYY#TPT(aZa#igaUrK*CAp^Z0Fxp!}2Z*Q-|Xf)E+)`o&+GTmayo%hdQb~qeo
+z6oDi)aYOT|)?*p%cKaRyUx<4e`x-taDJdxnAQ%i{vptI?Gc$MA=cB5sDnAeiENc~1
+zBq{>cbMEx1I4RY|vhwmfKm!8C|GqZi_xl+f9HgkIh>VPMOr{qY8yky`jEoE`zS}|O
+z`~f5iKok%c&!7Kz)7{AaKGjck-i}MzSy=!$91aWy10Iiu#>U2zz#m#391$M<T`nU}
+zY#P3Rx_q1td;i60&y1_5rzdS_XsB;uV&W`-HdN6`uEogW$`VF{Lbm`{Sj+2QmSR2L
+z!t%&vzOrTxIj!{(TbgIz|4GV&@ONBNHs8F3`%o>foH~g`r+enKx7m24yPN%vPJT26
+z?swNHc-&H2vJyFCb7C%zi|(u}HWsur5o-UTqHAD4rs_1BM_E-T3$1G(%(|u2J)F$s
+zke96`*?jkP`{;t?P=DQFl3QCSFWk=caBOu(iGOm9g4ZQw+{RQU2YhUP(aKcUFW+b7
+z7@o8G=2`<%e$xGX0ZC0wytC_7#;3zqJQ%F^2WH(ewBeC-uJuo|rO3)ZJ<fh}ws`Bm
+z@f@$WF{G-DmK2lNP|us?6}bNj-B=e+LK}2RXR<BDH152?*5Yig_YGcIpDhY+f3t^q
+z1q$>66a&9{y}~Voj4v%^OV>|qkA(62W;)TPl)RTxIVJO27Np^^hFcE-CJpGdpy&a;
+z0HYC%37|7`z-$gomzBx6>T3CJLPD}IZGMTB3FrIh)>}pNW(TlNt08Vhuo6><sR&RE
+t8qn%l)!fy^f^&&Nyylnkw?;*b{0oT9d0}`TC1(Ht002ovPDHLkV1n#Iy}<wg
+
+diff --git a/src/ui/icons/notepadqq/16x16/zoom-original.png b/src/ui/icons/notepadqq/16x16/zoom-original.png
+deleted file mode 100644
+index 84242c315b647fac1d252b7d795e139dafa56e1e..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 763
+zcmV<X0tEeuP)<h;3K|Lk000e1NJLTq000mG000mO1^@s6AM^iV0008QNkl<ZILm#L
+zU2KyD6o#Mg`&uXy23w_cblvO#w;1_xxESKig5u3U2MHOD3oq0ukZ1y2z%B8DMM(e=
+z2eHH~F^e&n5Cjv5a|SXXqfulFBl`imtSv%U)2^)RxAyg7{7E`aa&nS$@#LKMyvLBl
+zqu93XGi&J9z}$2y?Qywg#g{Cp9zTBkn=H=>;}PJamL1;l<k<Gk&Mv3N>s8Lq;aybf
+zu3B32eek=sOEVHA(YUE;-rD-L-%7eC>As|(q+cYRu3i1+iKZ>hb&@EQrePRnbo9>7
+zw%`vgU=(Nv1f+mS=;}rHWXArYVSS@nXaEzKQ(WS!URLFO1?bFA_W=ArIS|RHC=-j0
+zxMu<^T)t|}JirEuO_*y#5zr4rftMEh0+wYtJu?CB8Q316A_vQ2u)qlq@~{r*20T8W
+zcd2bpCT0RmoIBHTJ(i`^f>kEe=BH~Z@YRLeEJ}@qlcs6jEd+2#%3HpTXV<^Gx9NU-
+zs@R0$b#JW*G&jCM<?@&5K6$hx{?DCYC=|*SJfju(q~76g`Fr=ltLlkJJ)_d@13fBR
+z`MH`t*wYXE+`M&besJj4@9Bw&1<#%ltFk4yd2dLPbmUiQ-%pYxZQON54*$pPl5jem
+z=Qh08sNTLC!;&ih=L47F+%OQG)+ao89Xs9!z|h?!F30Q!fNVDV&V@g^F1POA9~c_G
+z9r`z!EP5=W98P24;xPbv{|a&F*hv8TyMyE%PgYGN5^K)?cK+I-!w21942HuaE&wx|
+z%ba#szYV~6%BHr)55WA2*U9E}_G!Ihk;rR5c69vtWov6$MTNgF5{Z>LgxaG6y>;cy
+zr(RtdsN;nq7v=AtA`uPuDL)l_=5GYlzUc9UQt9-_(Ia1v8Io{ReOhnKp7mi#O?87|
+t7{vQ;o*^?CoEmQHD)_>NVLkLv?mxR~Uiz+@*3AF_002ovPDHLkV1gWecT@lX
+
+diff --git a/src/ui/icons/notepadqq/scalable/application-exit.svg b/src/ui/icons/notepadqq/scalable/application-exit.svg
+new file mode 100644
+index 000000000..da944e4e5
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/application-exit.svg
+@@ -0,0 +1,17 @@
++<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
++  <defs id="defs3051">
++    <style type="text/css" id="current-color-scheme">
++      .ColorScheme-Text {
++        color:#232629;
++      }
++      .ColorScheme-NegativeText {
++        color:#da4453;
++      }
++      </style>
++  </defs>
++  <path
++     style="fill:currentColor;fill-opacity:1;stroke:none" 
++     class="ColorScheme-NegativeText"
++     d="m2 2v12h12v-12zm1 3h10v8h-10zm3 3v2h4v-2z"
++      />
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/document-open-recent.svg b/src/ui/icons/notepadqq/scalable/document-open-recent.svg
+new file mode 100644
+index 000000000..79a9e3f8d
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/document-open-recent.svg
+@@ -0,0 +1,4 @@
++<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
++ <path d="M 3 2 L 3 3 L 3 13 L 3 14 L 6 14 L 6 13 L 4 13 L 4 3 L 6 3 L 7 3 L 9 3 L 11 3 L 12 3 L 12 5 L 13 5 L 13 2 L 12 2 L 9 2 L 7 2 L 6 2 L 3 2 z M 10 6 C 7.784 6 6 7.784 6 10 C 6 12.216 7.784 14 10 14 C 12.216 14 14 12.216 14 10 C 14 7.784 12.216 6 10 6 z M 10 7 C 11.66199 7 13 8.338 13 10 C 13 11.662 11.66199 13 10 13 C 8.33801 13 7 11.662 7 10 C 7 8.338 8.33801 7 10 7 z M 9 8 L 9 10 L 9 11 L 10 11 L 11 11 L 11 10 L 10 10 L 10 8 L 9 8 z "
++     />
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/edit-delete.svg b/src/ui/icons/notepadqq/scalable/edit-delete.svg
+new file mode 100644
+index 000000000..9dfb2e07a
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/edit-delete.svg
+@@ -0,0 +1,14 @@
++<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
++  <defs id="defs3051">
++    <style type="text/css" id="current-color-scheme">
++      .ColorScheme-NegativeText {
++        color:#da4453;
++      }
++      </style>
++  </defs>
++  <path
++     style="fill:currentColor;fill-opacity:1;stroke:none" 
++     class="ColorScheme-NegativeText"
++     d="m5 2v2h1v-1h4v1h1v-2h-5zm-3 3v1h2v8h8v-8h2v-1zm3 1h6v7h-6z" 
++     />
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/edit-select-all.svg b/src/ui/icons/notepadqq/scalable/edit-select-all.svg
+new file mode 100644
+index 000000000..a1a42229f
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/edit-select-all.svg
+@@ -0,0 +1,4 @@
++<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
++ <path d="M 2 2 L 2 5 L 3 5 L 3 3 L 5 3 L 5 2 L 3 2 L 2 2 z M 11 2 L 11 3 L 13 3 L 13 4 L 13 5 L 14 5 L 14 3 L 14 2 L 11 2 z M 4 4 L 4 7 L 7 7 L 7 4 L 4 4 z M 9 4 L 9 7 L 12 7 L 12 4 L 9 4 z M 4 9 L 4 12 L 7 12 L 7 9 L 4 9 z M 9 9 L 9 12 L 12 12 L 12 9 L 9 9 z M 2 11 L 2 12 L 2 13 L 2 14 L 5 14 L 5 13 L 3 13 L 3 12 L 3 11 L 2 11 z M 13 11 L 13 12 L 13 13 L 12 13 L 11 13 L 11 14 L 12 14 L 13 14 L 14 14 L 14 12 L 14 11 L 13 11 z "
++     />
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/go-jump.svg b/src/ui/icons/notepadqq/scalable/go-jump.svg
+new file mode 100644
+index 000000000..2a2421945
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/go-jump.svg
+@@ -0,0 +1,3 @@
++<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
++    <path d="M12 7a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1zM9.707 8l-6 6L3 13.293 8.293 8 3 2.707 3.707 2l6 6z" />
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/help-about.svg b/src/ui/icons/notepadqq/scalable/help-about.svg
+new file mode 100644
+index 000000000..e963ed30f
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/help-about.svg
+@@ -0,0 +1,4 @@
++<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
++ <path d="m7.5 3c-3.038 0-5.5 2.462-5.5 5.5 0 3.038 2.462 5.5 5.5 5.5 3.038 0 5.5-2.462 5.5-5.5 0-3.038-2.462-5.5-5.5-5.5m0 1c2.485 0 4.5 2.01 4.5 4.5 0 2.485-2.01 4.5-4.5 4.5-2.485 0-4.5-2.01-4.5-4.5 0-2.485 2.01-4.5 4.5-4.5m-.5 1v1h1v-1zm0 2v5h1v-5z"
++     />
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/system-run.svg b/src/ui/icons/notepadqq/scalable/system-run.svg
+new file mode 100644
+index 000000000..09de8ee23
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/system-run.svg
+@@ -0,0 +1,4 @@
++<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
++ <path d="m 2,2 0,12 11,0 0,-1 -10,0 0,-8 10,0 0,8 0,1 1,0 L 14,2 3,2 Z m 4,4 0,6 4,-3 z"
++     />
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/view-fullscreen.svg b/src/ui/icons/notepadqq/scalable/view-fullscreen.svg
+new file mode 100644
+index 000000000..56713f6fd
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/view-fullscreen.svg
+@@ -0,0 +1,4 @@
++<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
++ <path d="M 2 2 L 2 5 L 5 2 L 2 2 z M 11 2 L 14 5 L 14 2 L 11 2 z M 4 4 L 4 6.40625 L 4 11.1875 L 4 12 L 12 12 L 12 11.1875 L 12 4 L 4.8125 4 L 4 4 z M 5 6 L 11 6 L 11 11 L 5 11 L 5 6 z M 2 11 L 2 14 L 5 14 L 2 11 z M 14 11 L 11 14 L 14 14 L 14 11 z "
++     />
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/view-refresh.svg b/src/ui/icons/notepadqq/scalable/view-refresh.svg
+new file mode 100644
+index 000000000..033984798
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/view-refresh.svg
+@@ -0,0 +1,3 @@
++<svg version="1.1" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
++    <path d="m14 8c0 1.1088173-0.319333 2.140071-0.84375 3.03125l-2.6875-2.6875 0.71875-0.71875 1.625 1.625c0.05109-0.19534 0.097716-0.3898623 0.125-0.59375 0.007789-0.0524063 0.025184-0.1032787 0.03125-0.15625 0.01707-0.1680854 0.03125-0.327411 0.03125-0.5 0-2.761424-2.238576-5-5-5-0.243024 0-0.4855082 0.02845-0.71875 0.0625-0.1362493 0.019955-0.2738032 0.031786-0.40625 0.0625-0.2865815 0.06695-0.547624 0.166647-0.8125 0.28125-0.030675 0.013272-0.063399 0.017376-0.09375 0.03125-0.09166 0.040961-0.163333 0.108255-0.25 0.15625-8e-3 0.00445-0.02305-0.00433-0.03125 0l-0.71875-0.75c0.891179-0.524417 1.922432-0.84375 3.03125-0.84375 3.313709 0 6 2.686293 6 6zm-2.96875 5.15625c-0.891179 0.524417-1.922432 0.84375-3.03125 0.84375-3.313709 0-6-2.686293-6-6 0-1.1088173 0.319333-2.140071 0.84375-3.03125l0.75 0.75 1.90625 1.9375-0.6875 0.6875-1.625-1.59375c-0.05109 0.19534-0.09772 0.3898623-0.125 0.59375-0.0078 0.052406-0.02518 0.1032787-0.03125 0.15625-0.01707 0.1680854-0.03125 0.327411-0.03125 0.5s0.01418 0.3319146 0.03125 0.5c0.01707 0.1680853 0.029198 0.337256 0.0625 0.5 0.466231 2.278415 2.490004 4 4.90625 4 0.2482626 0 0.4801862-0.02756 0.71875-0.0625 0.1362493-0.01995 0.2738032-0.03179 0.40625-0.0625 0.2865815-0.06695 0.547624-0.166647 0.8125-0.28125 0.030718-0.01299 0.063349-0.01766 0.09375-0.03125 0.08886-0.04062 0.164735-0.108612 0.25-0.15625h0.03125z"/>
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/window-new.svg b/src/ui/icons/notepadqq/scalable/window-new.svg
+new file mode 100644
+index 000000000..b98cd3e37
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/window-new.svg
+@@ -0,0 +1,5 @@
++<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
++    <path
++       d="M 2 2 L 2 14 L 9 14 L 9 13 L 3 13 L 3 4 L 13 4 L 13 9 L 14 9 L 14 2 L 2 2 z M 11 9 L 11 11 L 9 11 L 9 12 L 11 12 L 11 14 L 12 14 L 12 12 L 14 12 L 14 11 L 12 11 L 12 9 L 11 9 z "
++       id="rect4498" />
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/zoom-original.svg b/src/ui/icons/notepadqq/scalable/zoom-original.svg
+new file mode 100644
+index 000000000..5527b69cd
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/zoom-original.svg
+@@ -0,0 +1,11 @@
++<?xml version="1.0" encoding="utf-8"?>
++<svg version="1.2" baseProfile="tiny" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
++	 width="24" height="24" viewBox="0 0 24 24" xml:space="preserve">
++<path fill="none" d="M0,0h24v24H0V0z"/>
++<path d="M15.5,14h-0.8l-0.3-0.3c1-1.1,1.6-2.6,1.6-4.2C16,5.9,13.1,3,9.5,3S3,5.9,3,9.5S5.9,16,9.5,16c1.6,0,3.1-0.6,4.2-1.6
++	l0.3,0.3v0.8l5,5l1.5-1.5L15.5,14z M9.5,14C7,14,5,12,5,9.5S7,5,9.5,5S14,7,14,9.5S12,14,9.5,14z"/>
++<g>
++	<path d="M11.8,12.8H7.3v-1.2h1.4V8H7.3V6.9c0.2,0,0.4,0,0.6,0c0.2,0,0.4-0.1,0.5-0.1c0.1-0.1,0.3-0.2,0.3-0.3
++		C8.9,6.3,8.9,6.2,8.9,6h1.5v5.6h1.4V12.8z"/>
++</g>
++</svg>
+diff --git a/src/ui/resources.qrc b/src/ui/resources.qrc
+index c01e18c25..7c23af741 100644
+--- a/src/ui/resources.qrc
++++ b/src/ui/resources.qrc
+@@ -32,11 +32,21 @@
+ 		<file alias="scalable/show-special-chars.svg">icons/notepadqq/scalable/show-special-chars.svg</file>
+ 		<file alias="scalable/word-wrap.svg">icons/notepadqq/scalable/word-wrap.svg</file>
+ 		<file alias="scalable/zoom-in.svg">icons/notepadqq/scalable/zoom-in.svg</file>
+-		<file alias="16x16/zoom-original.png">icons/notepadqq/16x16/zoom-original.png</file>
++		<file alias="scalable/zoom-original.svg">icons/notepadqq/scalable/zoom-original.svg</file>
+ 		<file alias="scalable/zoom-out.svg">icons/notepadqq/scalable/zoom-out.svg</file>
+ 		<file alias="scalable/go-bottom.svg">icons/notepadqq/scalable/go-bottom.svg</file>
+ 		<file alias="scalable/go-next.svg">icons/notepadqq/scalable/go-next.svg</file>
+ 		<file alias="scalable/go-previous.svg">icons/notepadqq/scalable/go-previous.svg</file>
++		<file alias="scalable/window-new.svg">icons/notepadqq/scalable/window-new.svg</file>
++		<file alias="scalable/application-exit.svg">icons/notepadqq/scalable/application-exit.svg</file>
++		<file alias="scalable/document-open-recent.svg">icons/notepadqq/scalable/document-open-recent.svg</file>
++		<file alias="scalable/edit-delete.svg">icons/notepadqq/scalable/edit-delete.svg</file>
++		<file alias="scalable/edit-select-all.svg">icons/notepadqq/scalable/edit-select-all.svg</file>
++		<file alias="scalable/go-jump.svg">icons/notepadqq/scalable/go-jump.svg</file>
++		<file alias="scalable/help-about.svg">icons/notepadqq/scalable/help-about.svg</file>
++		<file alias="scalable/system-run.svg">icons/notepadqq/scalable/system-run.svg</file>
++		<file alias="scalable/view-fullscreen.svg">icons/notepadqq/scalable/view-fullscreen.svg</file>
++		<file alias="scalable/view-refresh.svg">icons/notepadqq/scalable/view-refresh.svg</file>
+     </qresource>
+     <qresource prefix="/translations">
+         <file alias="notepadqq_de.qm">../translations/notepadqq_de.qm</file>
+
+From 10dcef986243aa93f9de4896e12025c37522ef0d Mon Sep 17 00:00:00 2001
+From: Daniele Di Sarli <danieleds0@gmail.com>
+Date: Fri, 13 Sep 2019 22:07:08 +0200
+Subject: [PATCH 11/13] document status icons
+
+---
+ src/ui/{ => icons/notepadqq}/128x128/.gitignore |   0
+ src/ui/icons/notepadqq/16x16/document-saved.png | Bin 344 -> 0 bytes
+ .../icons/notepadqq/16x16/document-unsaved.png  | Bin 377 -> 0 bytes
+ .../icons/notepadqq/scalable/document-saved.svg |  16 ++++++++++++++++
+ .../notepadqq/scalable/document-unsaved.svg     |  16 ++++++++++++++++
+ src/ui/resources.qrc                            |   4 ++--
+ src/ui/svgiconengine.cpp                        |   2 +-
+ 7 files changed, 35 insertions(+), 3 deletions(-)
+ rename src/ui/{ => icons/notepadqq}/128x128/.gitignore (100%)
+ delete mode 100644 src/ui/icons/notepadqq/16x16/document-saved.png
+ delete mode 100644 src/ui/icons/notepadqq/16x16/document-unsaved.png
+ create mode 100644 src/ui/icons/notepadqq/scalable/document-saved.svg
+ create mode 100644 src/ui/icons/notepadqq/scalable/document-unsaved.svg
+
+diff --git a/src/ui/128x128/.gitignore b/src/ui/icons/notepadqq/128x128/.gitignore
+similarity index 100%
+rename from src/ui/128x128/.gitignore
+rename to src/ui/icons/notepadqq/128x128/.gitignore
+diff --git a/src/ui/icons/notepadqq/16x16/document-saved.png b/src/ui/icons/notepadqq/16x16/document-saved.png
+deleted file mode 100644
+index 9e4224a8608ef31bf7dcb935185dc50044aff1d4..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 344
+zcmV-e0jK_nP)<h;3K|Lk000e1NJLTq000mG000mO1^@s6AM^iV0003WNkl<ZILnoi
+zAydOZ5QV>HA}+2S%w<rK$l!{sgntlhXE3-*ERwn+n5m@>enMrCk&%_DySUrI6cHLi
+zNG|2c-F<uSy}i-XYkDvS^1@OISiy-vfu6w4MZo#l=Zjw$xV?@6h$F=**k&c0?T#4k
+zyu7dgyk%uQFkfbaOOjc{dus9IC|L$MKMHaoP+&yxhCKJ7C@Z4Z)m$%PCt0jTY^B-<
+zINE4>SB*TSrE)x0^|kzFLx*ASi+v$^|4xu5Ln;NXAjO*Q`nRuN79JDbG5WW5|D4yN
+z{kDPS$J{A>F<k>vbNu$el}=6z!S*aj_Zuf~8qE*^tE38XqN+eHqozbR^jJVZDaGhv
+ql^*t`WoN3tO*@p%6AKDOsNoBaNOGxGt@O<R0000<MNUMnLSTYUD3{0p
+
+diff --git a/src/ui/icons/notepadqq/16x16/document-unsaved.png b/src/ui/icons/notepadqq/16x16/document-unsaved.png
+deleted file mode 100644
+index e51534a0945731977d52c2563d53b0aa48e9e620..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 377
+zcmV-<0fzpGP)<h;3K|Lk000e1NJLTq000mG000mO1^@s6AM^iV0003%Nkl<ZILnoi
+zy=uZ>6owy9QVD_?oZJM(Yj9Sa#2auFR|i+Of;Zsk;4Qd1iK|OyOQ%|=5~NL)#8ji{
+z;1AlESReS{<8Xf7_k3UMwcYmPrimB^>SBSqToQ$+>-=Ogtm<{X^7&`pYc=1WOb+M2
+z3<mypvFN{aI=+Zu99sAL=PAoliF@eHCVH=jh~wN%4lo?DOD6G56S?O(jQwl|fZUWf
+z9!FPO7K&{HpaS5!0q^@n;(Y&WGoDJZTdyw~oF-?pp%dK@F#@pLZXe!(V%yk?a!{bG
+zR-uWmW!;V+ZC_cq{0k?v8^xPS<$S+dBEUzv94S3L8sUh9C;+6@dT1Ac2K#O|x}sV|
+z90%8RaYRrz=`>s0hC+d-qr`iB9-mv&G-7X!hVRYiB&Jh5(+niriV}!9B50b%I+x=Y
+XxgDi{!?wb800000NkvXXu0mjfHifFB
+
+diff --git a/src/ui/icons/notepadqq/scalable/document-saved.svg b/src/ui/icons/notepadqq/scalable/document-saved.svg
+new file mode 100644
+index 000000000..d907ceb45
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/document-saved.svg
+@@ -0,0 +1,16 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!-- Generator: Adobe Illustrator 21.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
++<svg version="1.1" baseProfile="tiny" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
++	 x="0px" y="0px" viewBox="0 0 1140.7 1140.6" xml:space="preserve">
++<rect x="183.7" y="20" fill="#FFFFFF" width="771.9" height="420.8"/>
++<rect x="117" y="673.5" fill="#FFFFFF" width="936.3" height="452.6"/>
++<path fill="#7EA3E2" stroke="#3F6AB8" stroke-width="30" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="
++	M20,570.3v490.3c0,33.1,26.9,60,60,60h490.3h490.3c33.1,0,60-26.9,60-60V673.5c0-178.7,0-357.5,0-536.2L1002.9,19.6h-66.3
++	c-0.4,134.4-0.8,268.9-1.2,403.3H205.6c0-134.4,0-268.9,0-403.3c-16,0.1-32.1,0.3-48.1,0.4H80c-33.1,0-60,26.9-60,60
++	C20,243.4,20,406.9,20,570.3z M935.8,1120.6c-243.4,0-486.8,0-730.2,0c0-134.9,0-269.8,0-404.7c243.4,0,486.8,0,730.2,0
++	C935.8,850.8,935.8,985.7,935.8,1120.6z"/>
++<path fill="#8CC663" d="M279.8,857.1v42.2h290.6H861v-42.2v-42.2H570.4H279.8V857.1z"/>
++<path fill="#3F6AB8" d="M349.9,221.2v122.1H396h46.1V221.2V99.1H396h-46.1V221.2z"/>
++<line fill="none" stroke="#3F6AB8" stroke-width="30" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="205.7" y1="19.6" x2="936.6" y2="19.6"/>
++<path fill="#8CC663" d="M279,993.4v42.2h290.6h290.6v-42.2v-42.2H569.6H279V993.4z"/>
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/document-unsaved.svg b/src/ui/icons/notepadqq/scalable/document-unsaved.svg
+new file mode 100644
+index 000000000..8a61b4047
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/document-unsaved.svg
+@@ -0,0 +1,16 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!-- Generator: Adobe Illustrator 21.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
++<svg version="1.1" baseProfile="tiny" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
++	 x="0px" y="0px" viewBox="0 0 1140.7 1140.6" xml:space="preserve">
++<rect x="183.7" y="20" fill="#FFFFFF" width="771.9" height="420.8"/>
++<rect x="117" y="673.5" fill="#FFFFFF" width="936.3" height="452.6"/>
++<path fill="#EA6A62" stroke="#D32F17" stroke-width="30" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="
++	M20,570.3v490.3c0,33.1,26.9,60,60,60h490.3h490.3c33.1,0,60-26.9,60-60V673.5c0-178.7,0-357.5,0-536.2L1002.9,19.6h-66.3
++	c-0.4,134.4-0.8,268.9-1.2,403.3H205.6c0-134.4,0-268.9,0-403.3c-16,0.1-32.1,0.3-48.1,0.4H80c-33.1,0-60,26.9-60,60
++	C20,243.4,20,406.9,20,570.3z M935.8,1120.6c-243.4,0-486.8,0-730.2,0c0-134.9,0-269.8,0-404.7c243.4,0,486.8,0,730.2,0
++	C935.8,850.8,935.8,985.7,935.8,1120.6z"/>
++<path fill="#D32F17" d="M279.8,857.1v42.2h290.6H861v-42.2v-42.2H570.4H279.8V857.1z"/>
++<path fill="#D32F17" d="M349.9,221.2v122.1H396h46.1V221.2V99.1H396h-46.1V221.2z"/>
++<line fill="none" stroke="#D32F17" stroke-width="30" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="205.7" y1="19.6" x2="936.6" y2="19.6"/>
++<path fill="#D32F17" d="M279,993.4v42.2h290.6h290.6v-42.2v-42.2H569.6H279V993.4z"/>
++</svg>
+diff --git a/src/ui/resources.qrc b/src/ui/resources.qrc
+index 7c23af741..5e8be87fd 100644
+--- a/src/ui/resources.qrc
++++ b/src/ui/resources.qrc
+@@ -26,8 +26,8 @@
+ 		<file alias="16x16/media-record.png">icons/notepadqq/16x16/media-record.png</file>
+ 		<file alias="16x16/media-seek-forward.png">icons/notepadqq/16x16/media-seek-forward.png</file>
+ 		<file alias="scalable/notepadqq.svg">icons/notepadqq/scalable/notepadqq.svg</file>
+-		<file alias="16x16/document-saved.png">icons/notepadqq/16x16/document-saved.png</file>
+-		<file alias="16x16/document-unsaved.png">icons/notepadqq/16x16/document-unsaved.png</file>
++		<file alias="scalable/document-saved.svg">icons/notepadqq/scalable/document-saved.svg</file>
++		<file alias="scalable/document-unsaved.svg">icons/notepadqq/scalable/document-unsaved.svg</file>
+ 		<file alias="scalable/preferences-other.svg">icons/notepadqq/scalable/preferences-other.svg</file>
+ 		<file alias="scalable/show-special-chars.svg">icons/notepadqq/scalable/show-special-chars.svg</file>
+ 		<file alias="scalable/word-wrap.svg">icons/notepadqq/scalable/word-wrap.svg</file>
+diff --git a/src/ui/svgiconengine.cpp b/src/ui/svgiconengine.cpp
+index 5602a8eaa..c44e19f1a 100644
+--- a/src/ui/svgiconengine.cpp
++++ b/src/ui/svgiconengine.cpp
+@@ -9,7 +9,7 @@
+ SVGIconEngine::SVGIconEngine(const std::string &iconBuffer) {
+     auto data = QByteArray::fromStdString(iconBuffer);
+ 
+-    m_darkIcon = replaceSvgMainFillColor(QString(data), QColor(50,50,50)).toUtf8();
++    m_darkIcon = replaceSvgMainFillColor(QString(data), QColor(65,65,65)).toUtf8();
+     m_lightIcon = replaceSvgMainFillColor(QString(data), QColor(205,205,205)).toUtf8();
+ }
+ 
+
+From e99cc04f7ae650edbcd1489f4fe72886116c693f Mon Sep 17 00:00:00 2001
+From: Daniele Di Sarli <danieleds0@gmail.com>
+Date: Fri, 13 Sep 2019 22:37:50 +0200
+Subject: [PATCH 12/13] add license
+
+---
+ src/ui/LICENSE-3RD-PARTY.txt | 434 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 434 insertions(+)
+ create mode 100644 src/ui/LICENSE-3RD-PARTY.txt
+
+diff --git a/src/ui/LICENSE-3RD-PARTY.txt b/src/ui/LICENSE-3RD-PARTY.txt
+new file mode 100644
+index 000000000..4eaa24838
+--- /dev/null
++++ b/src/ui/LICENSE-3RD-PARTY.txt
+@@ -0,0 +1,434 @@
++NOTE: Search the string "LICENSE-3RD-PARTY" to jump between licenses.
++
++
++
++=== LICENSE-3RD-PARTY: KDE breeze-icons === 
++
++URL: https://github.com/KDE/breeze-icons
++
++License:
++
++The Breeze Icon Theme in icons/
++
++    Copyright (C) 2014 Uri Herrera <uri_herrera@nitrux.in> and others
++
++    This library is free software; you can redistribute it and/or
++    modify it under the terms of the GNU Lesser General Public
++    License as published by the Free Software Foundation; either
++    version 3 of the License, or (at your option) any later version.
++
++    This library is distributed in the hope that it will be useful,
++    but WITHOUT ANY WARRANTY; without even the implied warranty of
++    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++    Lesser General Public License for more details.
++
++    You should have received a copy of the GNU Lesser General Public
++    License along with this library. If not, see <http://www.gnu.org/licenses/>.
++
++Clarification:
++
++  The GNU Lesser General Public License or LGPL is written for
++  software libraries in the first place. We expressly want the LGPL to
++  be valid for this artwork library too.
++
++  KDE Breeze theme icons is a special kind of software library, it is an
++  artwork library, it's elements can be used in a Graphical User Interface, or
++  GUI.
++
++  Source code, for this library means:
++   - where they exist, SVG;
++   - otherwise, if applicable, the multi-layered formats xcf or psd, or
++  otherwise png.
++
++  The LGPL in some sections obliges you to make the files carry
++  notices. With images this is in some cases impossible or hardly useful.
++
++  With this library a notice is placed at a prominent place in the directory
++  containing the elements. You may follow this practice.
++
++  The exception in section 5 of the GNU Lesser General Public License covers
++  the use of elements of this art library in a GUI.
++
++ https://vdesign.kde.org/
++
++-----
++		   GNU LESSER GENERAL PUBLIC LICENSE
++                       Version 3, 29 June 2007
++
++ Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>
++ Everyone is permitted to copy and distribute verbatim copies
++ of this license document, but changing it is not allowed.
++
++
++  This version of the GNU Lesser General Public License incorporates
++the terms and conditions of version 3 of the GNU General Public
++License, supplemented by the additional permissions listed below.
++
++  0. Additional Definitions. 
++
++  As used herein, "this License" refers to version 3 of the GNU Lesser
++General Public License, and the "GNU GPL" refers to version 3 of the GNU
++General Public License.
++
++  "The Library" refers to a covered work governed by this License,
++other than an Application or a Combined Work as defined below.
++
++  An "Application" is any work that makes use of an interface provided
++by the Library, but which is not otherwise based on the Library.
++Defining a subclass of a class defined by the Library is deemed a mode
++of using an interface provided by the Library.
++
++  A "Combined Work" is a work produced by combining or linking an
++Application with the Library.  The particular version of the Library
++with which the Combined Work was made is also called the "Linked
++Version".
++
++  The "Minimal Corresponding Source" for a Combined Work means the
++Corresponding Source for the Combined Work, excluding any source code
++for portions of the Combined Work that, considered in isolation, are
++based on the Application, and not on the Linked Version.
++
++  The "Corresponding Application Code" for a Combined Work means the
++object code and/or source code for the Application, including any data
++and utility programs needed for reproducing the Combined Work from the
++Application, but excluding the System Libraries of the Combined Work.
++
++  1. Exception to Section 3 of the GNU GPL.
++
++  You may convey a covered work under sections 3 and 4 of this License
++without being bound by section 3 of the GNU GPL.
++
++  2. Conveying Modified Versions.
++
++  If you modify a copy of the Library, and, in your modifications, a
++facility refers to a function or data to be supplied by an Application
++that uses the facility (other than as an argument passed when the
++facility is invoked), then you may convey a copy of the modified
++version:
++
++   a) under this License, provided that you make a good faith effort to
++   ensure that, in the event an Application does not supply the
++   function or data, the facility still operates, and performs
++   whatever part of its purpose remains meaningful, or
++
++   b) under the GNU GPL, with none of the additional permissions of
++   this License applicable to that copy.
++
++  3. Object Code Incorporating Material from Library Header Files.
++
++  The object code form of an Application may incorporate material from
++a header file that is part of the Library.  You may convey such object
++code under terms of your choice, provided that, if the incorporated
++material is not limited to numerical parameters, data structure
++layouts and accessors, or small macros, inline functions and templates
++(ten or fewer lines in length), you do both of the following:
++
++   a) Give prominent notice with each copy of the object code that the
++   Library is used in it and that the Library and its use are
++   covered by this License.
++
++   b) Accompany the object code with a copy of the GNU GPL and this license
++   document.
++
++  4. Combined Works.
++
++  You may convey a Combined Work under terms of your choice that,
++taken together, effectively do not restrict modification of the
++portions of the Library contained in the Combined Work and reverse
++engineering for debugging such modifications, if you also do each of
++the following:
++
++   a) Give prominent notice with each copy of the Combined Work that
++   the Library is used in it and that the Library and its use are
++   covered by this License.
++
++   b) Accompany the Combined Work with a copy of the GNU GPL and this license
++   document.
++
++   c) For a Combined Work that displays copyright notices during
++   execution, include the copyright notice for the Library among
++   these notices, as well as a reference directing the user to the
++   copies of the GNU GPL and this license document.
++
++   d) Do one of the following:
++
++       0) Convey the Minimal Corresponding Source under the terms of this
++       License, and the Corresponding Application Code in a form
++       suitable for, and under terms that permit, the user to
++       recombine or relink the Application with a modified version of
++       the Linked Version to produce a modified Combined Work, in the
++       manner specified by section 6 of the GNU GPL for conveying
++       Corresponding Source.
++
++       1) Use a suitable shared library mechanism for linking with the
++       Library.  A suitable mechanism is one that (a) uses at run time
++       a copy of the Library already present on the user's computer
++       system, and (b) will operate properly with a modified version
++       of the Library that is interface-compatible with the Linked
++       Version. 
++
++   e) Provide Installation Information, but only if you would otherwise
++   be required to provide such information under section 6 of the
++   GNU GPL, and only to the extent that such information is
++   necessary to install and execute a modified version of the
++   Combined Work produced by recombining or relinking the
++   Application with a modified version of the Linked Version. (If
++   you use option 4d0, the Installation Information must accompany
++   the Minimal Corresponding Source and Corresponding Application
++   Code. If you use option 4d1, you must provide the Installation
++   Information in the manner specified by section 6 of the GNU GPL
++   for conveying Corresponding Source.)
++
++  5. Combined Libraries.
++
++  You may place library facilities that are a work based on the
++Library side by side in a single library together with other library
++facilities that are not Applications and are not covered by this
++License, and convey such a combined library under terms of your
++choice, if you do both of the following:
++
++   a) Accompany the combined library with a copy of the same work based
++   on the Library, uncombined with any other library facilities,
++   conveyed under the terms of this License.
++
++   b) Give prominent notice with the combined library that part of it
++   is a work based on the Library, and explaining where to find the
++   accompanying uncombined form of the same work.
++
++  6. Revised Versions of the GNU Lesser General Public License.
++
++  The Free Software Foundation may publish revised and/or new versions
++of the GNU Lesser General Public License from time to time. Such new
++versions will be similar in spirit to the present version, but may
++differ in detail to address new problems or concerns.
++
++  Each version is given a distinguishing version number. If the
++Library as you received it specifies that a certain numbered version
++of the GNU Lesser General Public License "or any later version"
++applies to it, you have the option of following the terms and
++conditions either of that published version or of any later version
++published by the Free Software Foundation. If the Library as you
++received it does not specify a version number of the GNU Lesser
++General Public License, you may choose any version of the GNU Lesser
++General Public License ever published by the Free Software Foundation.
++
++  If the Library as you received it specifies that a proxy can decide
++whether future versions of the GNU Lesser General Public License shall
++apply, that proxy's public statement of acceptance of any version is
++permanent authorization for you to choose that version for the
++Library.
++
++
++
++
++
++
++
++=== LICENSE-3RD-PARTY: Google Material Design ===
++
++URL: https://material.io/resources/icons/
++
++License:
++
++
++                                 Apache License
++                           Version 2.0, January 2004
++                        http://www.apache.org/licenses/
++
++   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
++
++   1. Definitions.
++
++      "License" shall mean the terms and conditions for use, reproduction,
++      and distribution as defined by Sections 1 through 9 of this document.
++
++      "Licensor" shall mean the copyright owner or entity authorized by
++      the copyright owner that is granting the License.
++
++      "Legal Entity" shall mean the union of the acting entity and all
++      other entities that control, are controlled by, or are under common
++      control with that entity. For the purposes of this definition,
++      "control" means (i) the power, direct or indirect, to cause the
++      direction or management of such entity, whether by contract or
++      otherwise, or (ii) ownership of fifty percent (50%) or more of the
++      outstanding shares, or (iii) beneficial ownership of such entity.
++
++      "You" (or "Your") shall mean an individual or Legal Entity
++      exercising permissions granted by this License.
++
++      "Source" form shall mean the preferred form for making modifications,
++      including but not limited to software source code, documentation
++      source, and configuration files.
++
++      "Object" form shall mean any form resulting from mechanical
++      transformation or translation of a Source form, including but
++      not limited to compiled object code, generated documentation,
++      and conversions to other media types.
++
++      "Work" shall mean the work of authorship, whether in Source or
++      Object form, made available under the License, as indicated by a
++      copyright notice that is included in or attached to the work
++      (an example is provided in the Appendix below).
++
++      "Derivative Works" shall mean any work, whether in Source or Object
++      form, that is based on (or derived from) the Work and for which the
++      editorial revisions, annotations, elaborations, or other modifications
++      represent, as a whole, an original work of authorship. For the purposes
++      of this License, Derivative Works shall not include works that remain
++      separable from, or merely link (or bind by name) to the interfaces of,
++      the Work and Derivative Works thereof.
++
++      "Contribution" shall mean any work of authorship, including
++      the original version of the Work and any modifications or additions
++      to that Work or Derivative Works thereof, that is intentionally
++      submitted to Licensor for inclusion in the Work by the copyright owner
++      or by an individual or Legal Entity authorized to submit on behalf of
++      the copyright owner. For the purposes of this definition, "submitted"
++      means any form of electronic, verbal, or written communication sent
++      to the Licensor or its representatives, including but not limited to
++      communication on electronic mailing lists, source code control systems,
++      and issue tracking systems that are managed by, or on behalf of, the
++      Licensor for the purpose of discussing and improving the Work, but
++      excluding communication that is conspicuously marked or otherwise
++      designated in writing by the copyright owner as "Not a Contribution."
++
++      "Contributor" shall mean Licensor and any individual or Legal Entity
++      on behalf of whom a Contribution has been received by Licensor and
++      subsequently incorporated within the Work.
++
++   2. Grant of Copyright License. Subject to the terms and conditions of
++      this License, each Contributor hereby grants to You a perpetual,
++      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
++      copyright license to reproduce, prepare Derivative Works of,
++      publicly display, publicly perform, sublicense, and distribute the
++      Work and such Derivative Works in Source or Object form.
++
++   3. Grant of Patent License. Subject to the terms and conditions of
++      this License, each Contributor hereby grants to You a perpetual,
++      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
++      (except as stated in this section) patent license to make, have made,
++      use, offer to sell, sell, import, and otherwise transfer the Work,
++      where such license applies only to those patent claims licensable
++      by such Contributor that are necessarily infringed by their
++      Contribution(s) alone or by combination of their Contribution(s)
++      with the Work to which such Contribution(s) was submitted. If You
++      institute patent litigation against any entity (including a
++      cross-claim or counterclaim in a lawsuit) alleging that the Work
++      or a Contribution incorporated within the Work constitutes direct
++      or contributory patent infringement, then any patent licenses
++      granted to You under this License for that Work shall terminate
++      as of the date such litigation is filed.
++
++   4. Redistribution. You may reproduce and distribute copies of the
++      Work or Derivative Works thereof in any medium, with or without
++      modifications, and in Source or Object form, provided that You
++      meet the following conditions:
++
++      (a) You must give any other recipients of the Work or
++          Derivative Works a copy of this License; and
++
++      (b) You must cause any modified files to carry prominent notices
++          stating that You changed the files; and
++
++      (c) You must retain, in the Source form of any Derivative Works
++          that You distribute, all copyright, patent, trademark, and
++          attribution notices from the Source form of the Work,
++          excluding those notices that do not pertain to any part of
++          the Derivative Works; and
++
++      (d) If the Work includes a "NOTICE" text file as part of its
++          distribution, then any Derivative Works that You distribute must
++          include a readable copy of the attribution notices contained
++          within such NOTICE file, excluding those notices that do not
++          pertain to any part of the Derivative Works, in at least one
++          of the following places: within a NOTICE text file distributed
++          as part of the Derivative Works; within the Source form or
++          documentation, if provided along with the Derivative Works; or,
++          within a display generated by the Derivative Works, if and
++          wherever such third-party notices normally appear. The contents
++          of the NOTICE file are for informational purposes only and
++          do not modify the License. You may add Your own attribution
++          notices within Derivative Works that You distribute, alongside
++          or as an addendum to the NOTICE text from the Work, provided
++          that such additional attribution notices cannot be construed
++          as modifying the License.
++
++      You may add Your own copyright statement to Your modifications and
++      may provide additional or different license terms and conditions
++      for use, reproduction, or distribution of Your modifications, or
++      for any such Derivative Works as a whole, provided Your use,
++      reproduction, and distribution of the Work otherwise complies with
++      the conditions stated in this License.
++
++   5. Submission of Contributions. Unless You explicitly state otherwise,
++      any Contribution intentionally submitted for inclusion in the Work
++      by You to the Licensor shall be under the terms and conditions of
++      this License, without any additional terms or conditions.
++      Notwithstanding the above, nothing herein shall supersede or modify
++      the terms of any separate license agreement you may have executed
++      with Licensor regarding such Contributions.
++
++   6. Trademarks. This License does not grant permission to use the trade
++      names, trademarks, service marks, or product names of the Licensor,
++      except as required for reasonable and customary use in describing the
++      origin of the Work and reproducing the content of the NOTICE file.
++
++   7. Disclaimer of Warranty. Unless required by applicable law or
++      agreed to in writing, Licensor provides the Work (and each
++      Contributor provides its Contributions) on an "AS IS" BASIS,
++      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
++      implied, including, without limitation, any warranties or conditions
++      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
++      PARTICULAR PURPOSE. You are solely responsible for determining the
++      appropriateness of using or redistributing the Work and assume any
++      risks associated with Your exercise of permissions under this License.
++
++   8. Limitation of Liability. In no event and under no legal theory,
++      whether in tort (including negligence), contract, or otherwise,
++      unless required by applicable law (such as deliberate and grossly
++      negligent acts) or agreed to in writing, shall any Contributor be
++      liable to You for damages, including any direct, indirect, special,
++      incidental, or consequential damages of any character arising as a
++      result of this License or out of the use or inability to use the
++      Work (including but not limited to damages for loss of goodwill,
++      work stoppage, computer failure or malfunction, or any and all
++      other commercial damages or losses), even if such Contributor
++      has been advised of the possibility of such damages.
++
++   9. Accepting Warranty or Additional Liability. While redistributing
++      the Work or Derivative Works thereof, You may choose to offer,
++      and charge a fee for, acceptance of support, warranty, indemnity,
++      or other liability obligations and/or rights consistent with this
++      License. However, in accepting such obligations, You may act only
++      on Your own behalf and on Your sole responsibility, not on behalf
++      of any other Contributor, and only if You agree to indemnify,
++      defend, and hold each Contributor harmless for any liability
++      incurred by, or claims asserted against, such Contributor by reason
++      of your accepting any such warranty or additional liability.
++
++   END OF TERMS AND CONDITIONS
++
++   APPENDIX: How to apply the Apache License to your work.
++
++      To apply the Apache License to your work, attach the following
++      boilerplate notice, with the fields enclosed by brackets "[]"
++      replaced with your own identifying information. (Don't include
++      the brackets!)  The text should be enclosed in the appropriate
++      comment syntax for the file format. We also recommend that a
++      file or class name and description of purpose be included on the
++      same "printed page" as the copyright notice for easier
++      identification within third-party archives.
++
++   Copyright [yyyy] [name of copyright owner]
++
++   Licensed under the Apache License, Version 2.0 (the "License");
++   you may not use this file except in compliance with the License.
++   You may obtain a copy of the License at
++
++       http://www.apache.org/licenses/LICENSE-2.0
++
++   Unless required by applicable law or agreed to in writing, software
++   distributed under the License is distributed on an "AS IS" BASIS,
++   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++   See the License for the specific language governing permissions and
++   limitations under the License.
+\ No newline at end of file
+
+From ab8b5474a7b04e0d24372e0ab6c2adeca53f7cba Mon Sep 17 00:00:00 2001
+From: Daniele Di Sarli <danieleds0@gmail.com>
+Date: Fri, 13 Sep 2019 22:41:50 +0200
+Subject: [PATCH 13/13] clean code
+
+---
+ src/ui/svgiconengine.cpp | 21 ---------------------
+ 1 file changed, 21 deletions(-)
+
+diff --git a/src/ui/svgiconengine.cpp b/src/ui/svgiconengine.cpp
+index c44e19f1a..bee4ac215 100644
+--- a/src/ui/svgiconengine.cpp
++++ b/src/ui/svgiconengine.cpp
+@@ -29,27 +29,6 @@ void SVGIconEngine::paint(QPainter *painter, const QRect &rect,
+ 
+     QSvgRenderer renderer(darkUI ? m_lightIcon : m_darkIcon);
+     renderer.render(painter, rect);
+-
+-    /*
+-    // First we render the SVG onto a temporary QImage
+-    QImage img(rect.size(), QImage::Format_ARGB32);
+-    img.fill(qRgba(0, 0, 0, 0));
+-    QPainter painter_i(&img);
+-    painter->setPen(Qt::red);
+-    painter->setBrush(Qt::red);
+-    renderer.render(&painter_i, rect);
+-
+-
+-    if (darkUI) {
+-        img.invertPixels();
+-    }
+-
+-    // Finally we paint our image onto the correct painter.
+-    painter->setOpacity(0.8);
+-    painter->drawImage(rect, img);
+-    */
+-
+-    // FIXME Handle different modes and states
+ }
+ 
+ QIconEngine *SVGIconEngine::clone() const {
