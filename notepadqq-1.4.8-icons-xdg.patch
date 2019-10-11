@@ -1,7 +1,7 @@
 From f92195d045c626b021b44464980d99909cc480f1 Mon Sep 17 00:00:00 2001
 From: scx <scx.mail@gmail.com>
 Date: Sat, 5 Oct 2019 07:23:51 +0200
-Subject: [PATCH 1/6] Fix icon for actionRun
+Subject: [PATCH 1/7] Fix icon for actionRun
 
 ---
  src/ui/mainwindow.cpp | 2 ++
@@ -31,7 +31,7 @@ index ca5a9cbaa..eb9197f2a 100644
 From b8a788012246dd8de723ad41bf2d01df842d3eb6 Mon Sep 17 00:00:00 2001
 From: scx <scx.mail@gmail.com>
 Date: Tue, 8 Oct 2019 22:32:29 +0200
-Subject: [PATCH 2/6] Bundle icon themes
+Subject: [PATCH 2/7] Bundle icon themes
 
  - Adwaita
  - breeze
@@ -53129,7 +53129,7 @@ index 000000000..f56a0de32
 From a9c5fb4fe4aeb922d6937f9408d1b324decd2820 Mon Sep 17 00:00:00 2001
 From: scx <scx.mail@gmail.com>
 Date: Thu, 10 Oct 2019 21:42:26 +0200
-Subject: [PATCH 3/6] Rewrite IconProvider
+Subject: [PATCH 3/7] Rewrite IconProvider
 
  - Add dynamic fallback mechanism for icons
 ---
@@ -53596,7 +53596,7 @@ index 8b95187c3..4b93c68cd 100644
 From 86deead0ed877eef1501da486297c9ca136befaf Mon Sep 17 00:00:00 2001
 From: scx <scx.mail@gmail.com>
 Date: Thu, 10 Oct 2019 22:29:24 +0200
-Subject: [PATCH 4/6] Fix icon alignment
+Subject: [PATCH 4/7] Fix icon alignment
 
 ---
  src/ui/frmpreferences.ui | 12 ++++++++++++
@@ -53650,7 +53650,7 @@ index c9de65fbb..341410e91 100644
 From 5729ea5f2246a363f5b8bb4e2459f5485a46c5fd Mon Sep 17 00:00:00 2001
 From: scx <scx.mail@gmail.com>
 Date: Fri, 11 Oct 2019 08:44:20 +0200
-Subject: [PATCH 5/6] Format code using clang-format-6.0
+Subject: [PATCH 5/7] Format code using clang-format-6.0
 
 ---
  src/ui/iconprovider.cpp              |  23 +++---
@@ -54167,7 +54167,7 @@ index 1d9039a6c..668dcf002 100644
 From c0e82280af2ad272bbb9a7adb11312ff524e8a53 Mon Sep 17 00:00:00 2001
 From: scx <scx.mail@gmail.com>
 Date: Fri, 11 Oct 2019 12:25:38 +0200
-Subject: [PATCH 6/6] Update document-close-all icon
+Subject: [PATCH 6/7] Update document-close-all icon
 
  - Make this icon grid-aligned
 ---
@@ -54198,3 +54198,104 @@ index 8dd923578..fbff4b792 100644
 +  <path
 +     d="m 1,1 v 12 h 3 v 2 H 9 V 14 H 5 V 4 h 8 v 5 h 1 V 3 H 11 V 1 H 2 Z m 1,1 h 8 V 3 H 5 4 v 9 H 2 Z M 10.707031,10.029297 10,10.736328 11.792969,12.529297 10,14.322266 10.707031,15.029297 12.5,13.236328 14.292969,15.029297 15,14.322266 13.207031,12.529297 15,10.736328 14.292969,10.029297 12.5,11.822266 Z"/>
  </svg>
+
+From a701775f47303da4cb8b5d817b4c6d1093477385 Mon Sep 17 00:00:00 2001
+From: scx <scx.mail@gmail.com>
+Date: Fri, 11 Oct 2019 21:09:10 +0200
+Subject: [PATCH 7/7] Fix icons in Toolbar Preferences
+
+---
+ src/ui/frmpreferences.cpp                   | 19 +++++++++++++++++++
+ src/ui/icons/notepadqq/scalable/go-down.svg |  3 +++
+ src/ui/icons/notepadqq/scalable/go-up.svg   |  3 +++
+ src/ui/include/frmpreferences.h             |  2 ++
+ src/ui/resources.qrc                        |  2 ++
+ 5 files changed, 29 insertions(+)
+ create mode 100644 src/ui/icons/notepadqq/scalable/go-down.svg
+ create mode 100644 src/ui/icons/notepadqq/scalable/go-up.svg
+
+diff --git a/src/ui/frmpreferences.cpp b/src/ui/frmpreferences.cpp
+index f809c2bfe..7f8eaad54 100644
+--- a/src/ui/frmpreferences.cpp
++++ b/src/ui/frmpreferences.cpp
+@@ -3,6 +3,7 @@
+ #include "include/EditorNS/editor.h"
+ #include "include/Extensions/extensionsloader.h"
+ #include "include/Sessions/backupservice.h"
++#include "include/iconprovider.h"
+ 
+ #include <QDialogButtonBox>
+ #include <QFileDialog>
+@@ -68,6 +69,8 @@ frmPreferences::frmPreferences(TopEditorContainer *topEditorContainer, QWidget *
+ 
+     ui->txtNodejs->setText(m_settings.Extensions.getRuntimeNodeJS());
+     ui->txtNpm->setText(m_settings.Extensions.getRuntimeNpm());
++
++    loadIcons();
+ }
+ 
+ frmPreferences::~frmPreferences()
+@@ -708,3 +711,19 @@ void frmPreferences::on_chkAutosave_toggled(bool checked)
+ {
+     ui->sbAutosaveInterval->setEnabled(checked);
+ }
++
++void frmPreferences::loadIcons()
++{
++    // To test fallback icons:
++    // QIcon::setThemeSearchPaths(QStringList(""));
++
++    // Assign (where possible) system theme icons to our actions.
++    // If a system icon doesn't exist, fallback on the already assigned icon.
++
++    // Toolbar menu
++    ui->btnToolbarAdd->setIcon(IconProvider::fromTheme("go-next"));
++    ui->btnToolbarRemove->setIcon(IconProvider::fromTheme("go-previous"));
++    ui->btnToolbarUp->setIcon(IconProvider::fromTheme("go-up"));
++    ui->btnToolbarDown->setIcon(IconProvider::fromTheme("go-down"));
++    ui->btnToolbarReset->setIcon(IconProvider::fromTheme("edit-undo"));
++}
+diff --git a/src/ui/icons/notepadqq/scalable/go-down.svg b/src/ui/icons/notepadqq/scalable/go-down.svg
+new file mode 100644
+index 000000000..9a327b05a
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/go-down.svg
+@@ -0,0 +1,3 @@
++<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
++    <path d="M8 11.707l-6-6L2.707 5 8 10.293 13.293 5l.707.707-6 6z" />
++</svg>
+diff --git a/src/ui/icons/notepadqq/scalable/go-up.svg b/src/ui/icons/notepadqq/scalable/go-up.svg
+new file mode 100644
+index 000000000..319ed597a
+--- /dev/null
++++ b/src/ui/icons/notepadqq/scalable/go-up.svg
+@@ -0,0 +1,3 @@
++<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
++    <path d="M8 4.293l-6 6 .707.707L8 5.707 13.293 11l.707-.707-6-6z" />
++</svg>
+diff --git a/src/ui/include/frmpreferences.h b/src/ui/include/frmpreferences.h
+index b778ceb90..2a054a5a5 100644
+--- a/src/ui/include/frmpreferences.h
++++ b/src/ui/include/frmpreferences.h
+@@ -103,6 +103,8 @@ private slots:
+     bool extensionBrowseRuntime(QLineEdit *lineEdit);
+     void checkExecutableExists(QLineEdit *path);
+     void updatePreviewEditorFont();
++
++    void loadIcons();
+ };
+ 
+ #endif // FRMPREFERENCES_H
+diff --git a/src/ui/resources.qrc b/src/ui/resources.qrc
+index 5e8be87fd..971bdba0b 100644
+--- a/src/ui/resources.qrc
++++ b/src/ui/resources.qrc
+@@ -47,6 +47,8 @@
+ 		<file alias="scalable/system-run.svg">icons/notepadqq/scalable/system-run.svg</file>
+ 		<file alias="scalable/view-fullscreen.svg">icons/notepadqq/scalable/view-fullscreen.svg</file>
+ 		<file alias="scalable/view-refresh.svg">icons/notepadqq/scalable/view-refresh.svg</file>
++		<file alias="scalable/go-down.svg">icons/notepadqq/scalable/go-down.svg</file>
++		<file alias="scalable/go-up.svg">icons/notepadqq/scalable/go-up.svg</file>
+     </qresource>
+     <qresource prefix="/translations">
+         <file alias="notepadqq_de.qm">../translations/notepadqq_de.qm</file>
