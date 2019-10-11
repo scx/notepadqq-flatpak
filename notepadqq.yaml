@@ -13,14 +13,29 @@ sources:
     url: https://github.com/notepadqq/notepadqq.git
     commit: e6e1ac37913cb3014f7b5c5adae4c6380114d6ad
   # Patch0
+  # Fix XDG files
   - type: patch
     path: notepadqq-qtwebengine-xdg.patch
   # Patch1
+  # Auto-fill paths for node & npm
   - type: patch
     path: notepadqq-1.9.99-paths.patch
   # Patch2
+  # Disable editing nodejs options in Preferences
   - type: patch
     path: notepadqq-1.4.8-preferences.patch
+  # Patch3
+  # New icon theme
+  # https://github.com/notepadqq/notepadqq/pull/774
+  - type: patch
+    path: notepadqq-qtwebengine-icons-svg.patch
+    use-git-am: true
+  # Patch4
+  # Improve icon handling
+  # https://github.com/notepadqq/notepadqq/pull/908
+  - type: patch
+    path: notepadqq-1.9.99-icons-xdg.patch
+    use-git: true
 post-install:
   # create symlink
   - echo 'create symlink';
