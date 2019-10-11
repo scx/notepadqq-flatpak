@@ -37,9 +37,6 @@ sources:
     path: notepadqq-1.9.99-icons-xdg.patch
     use-git: true
 post-install:
-  # create symlink
-  - echo 'create symlink';
-    ln -sf "${FLATPAK_DEST}/lib/notepadqq/notepadqq-bin" "${FLATPAK_DEST}/bin/notepadqq";
   # install docs
   - echo 'install docs';
     install -p -D -m 0644 *.md -t "${FLATPAK_DEST}/share/doc/notepadqq/";
