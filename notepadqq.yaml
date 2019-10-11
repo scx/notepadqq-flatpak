@@ -11,7 +11,12 @@ sources:
   # Source0
   - type: git
     url: https://github.com/notepadqq/notepadqq.git
-    commit: 2d34384376b86a09787298a2192627fbcf91e09c
+    commit: 8193833895946464b217a8aaf32062e4eec8574d
+  # Patch0
+  # Update XDG files
+  # https://github.com/notepadqq/notepadqq/pull/909
+  - type: patch
+    path: notepadqq-2.0.0~beta-xdg.patch
   # Patch1
   # Auto-fill paths for node & npm
   - type: patch
