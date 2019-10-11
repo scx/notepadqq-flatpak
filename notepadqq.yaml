@@ -13,24 +13,19 @@ sources:
     url: https://github.com/notepadqq/notepadqq.git
     commit: 2d34384376b86a09787298a2192627fbcf91e09c
   # Patch1
+  # Auto-fill paths for node & npm
   - type: patch
     path: notepadqq-1.9.99-paths.patch
   # Patch2
+  # Disable editing nodejs options in Preferences
   - type: patch
     path: notepadqq-1.4.8-preferences.patch
   # Patch4
+  # Improve icon handling
+  # https://github.com/notepadqq/notepadqq/pull/908
   - type: patch
-    path: notepadqq-1.9.99-run.patch
-  # Patch5
-  - type: patch
-    path: notepadqq-1.9.99-icons-bundled.patch
+    path: notepadqq-1.9.99-icons-xdg.patch
     use-git: true
-  # Patch6
-  - type: patch
-    path: notepadqq-1.9.99-icons-fallback.patch
-  # Patch7
-  - type: patch
-    path: notepadqq-1.9.99-icons-alignment.patch
 post-install:
   # create symlink
   - echo 'create symlink';
