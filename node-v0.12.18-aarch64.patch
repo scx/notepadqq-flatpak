@@ -1,0 +1,181 @@
+diff -Naur node-v0.12.18.orig/common.gypi node-v0.12.18/common.gypi
+--- node-v0.12.18.orig/common.gypi	2016-12-21 13:14:28.000000000 +0100
++++ node-v0.12.18/common.gypi	2019-10-12 16:48:15.305231780 +0200
+@@ -12,6 +12,8 @@
+     'clang%': 0,
+     'python%': 'python',
+ 
++    'openssl_fips%': '',
++
+     # Enable disassembler for `--print-code` v8 options
+     'v8_enable_disassembler': 1,
+ 
+@@ -31,6 +33,11 @@
+         'OBJ_DIR': '<(PRODUCT_DIR)/obj.target',
+         'V8_BASE': '<(PRODUCT_DIR)/obj.target/deps/v8/tools/gyp/libv8_base.a',
+       }],
++      ['openssl_fips != ""', {
++        'OPENSSL_PRODUCT': 'libcrypto.a',
++      }, {
++        'OPENSSL_PRODUCT': 'libopenssl.a',
++      }],
+     ],
+   },
+ 
+diff -Naur node-v0.12.18.orig/configure node-v0.12.18/configure
+--- node-v0.12.18.orig/configure	2016-12-21 13:14:28.000000000 +0100
++++ node-v0.12.18/configure	2019-10-12 16:45:06.952669531 +0200
+@@ -37,7 +37,7 @@
+ parser.add_option('--dest-cpu',
+     action='store',
+     dest='dest_cpu',
+-    help='CPU architecture to build for. Valid values are: arm, ia32, x64')
++    help='CPU architecture to build for. Valid values are: arm, arm64, ia32, x64')
+ 
+ parser.add_option('--dest-os',
+     action='store',
+@@ -71,6 +71,11 @@
+     dest="openssl_no_asm",
+     help="Do not build optimized assembly for OpenSSL")
+ 
++parser.add_option('--openssl-fips',
++    action='store',
++    dest='openssl_fips',
++    help='Build OpenSSL using FIPS canister .o file in supplied folder')
++
+ # deprecated
+ parser.add_option('--openssl-includes',
+     action='store',
+@@ -439,6 +444,7 @@
+   k = cc_macros()
+ 
+   matchup = {
++    '__aarch64__' : 'arm64',
+     '__x86_64__'  : 'x64',
+     '__i386__'    : 'ia32',
+     '__arm__'     : 'arm',
+@@ -523,6 +529,7 @@
+     target_arch = 'ia32'
+   o['variables']['host_arch'] = host_arch
+   o['variables']['target_arch'] = target_arch
++  o['variables']['node_byteorder'] = sys.byteorder
+ 
+   if target_arch != host_arch and not options.without_snapshot:
+     o['variables']['want_separate_host_toolset'] = 1
+@@ -679,6 +686,16 @@
+   o['variables']['openssl_no_asm'] = (
+     1 if options.openssl_no_asm else 0)
+ 
++  if options.openssl_fips:
++    o['variables']['openssl_fips'] = options.openssl_fips
++    fips_dir = os.path.join(root_dir, 'deps', 'openssl', 'fips')
++    fips_ld = os.path.abspath(os.path.join(fips_dir, 'fipsld'))
++    o['make_fips_settings'] = [
++      ['LINK', fips_ld + ' <(openssl_fips)/bin/fipsld'],
++    ]
++  else:
++    o['variables']['openssl_fips'] = ''
++
+   if options.without_ssl:
+     return
+ 
+diff -Naur node-v0.12.18.orig/Makefile node-v0.12.18/Makefile
+--- node-v0.12.18.orig/Makefile	2016-12-21 13:14:28.000000000 +0100
++++ node-v0.12.18/Makefile	2019-10-12 14:33:46.348326816 +0200
+@@ -296,10 +296,39 @@
+ NODE_DOC_VERSION=$(VERSION)
+ NPMVERSION=v$(shell cat deps/npm/package.json | grep '"version"' | sed 's/^[^:]*: "\([^"]*\)",.*/\1/')
+ 
+-ifeq ($(findstring x86_64,$(shell uname -m)),x86_64)
++UNAME_M=$(shell uname -m)
++ifeq ($(findstring x86_64,$(UNAME_M)),x86_64)
+ DESTCPU ?= x64
+ else
+-DESTCPU ?= ia32
++ifeq ($(findstring ppc64,$(UNAME_M)),ppc64)
++DESTCPU ?= ppc64
++else
++ifeq ($(findstring ppc,$(UNAME_M)),ppc)
++DESTCPU ?= ppc
++else
++ifeq ($(findstring s390x,$(UNAME_M)),s390x)
++DESTCPU ?= s390x
++else
++ifeq ($(findstring s390,$(UNAME_M)),s390)
++DESTCPU ?= s390
++else
++ifeq ($(findstring arm,$(UNAME_M)),arm)
++DESTCPU ?= arm
++else
++ifeq ($(findstring aarch64,$(UNAME_M)),aarch64)
++DESTCPU ?= aarch64
++else
++ifeq ($(findstring powerpc,$(shell uname -p)),powerpc)
++DESTCPU ?= ppc64
++else
++DESTCPU ?= x86
++endif
++endif
++endif
++endif
++endif
++endif
++endif
+ endif
+ ifeq ($(DESTCPU),x64)
+ ARCH=x64
+@@ -307,9 +336,29 @@
+ ifeq ($(DESTCPU),arm)
+ ARCH=arm
+ else
++ifeq ($(DESTCPU),aarch64)
++ARCH=arm64
++else
++ifeq ($(DESTCPU),ppc64)
++ARCH=ppc64
++else
++ifeq ($(DESTCPU),ppc)
++ARCH=ppc
++else
++ifeq ($(DESTCPU),s390)
++ARCH=s390
++else
++ifeq ($(DESTCPU),s390x)
++ARCH=s390x
++else
+ ARCH=x86
+ endif
+ endif
++endif
++endif
++endif
++endif
++endif
+ 
+ # enforce "x86" over "ia32" as the generally accepted way of referring to 32-bit intel
+ ifeq ($(ARCH),ia32)
+diff -Naur node-v0.12.18.orig/node.gyp node-v0.12.18/node.gyp
+--- node-v0.12.18.orig/node.gyp	2016-12-21 13:14:28.000000000 +0100
++++ node-v0.12.18/node.gyp	2019-10-12 16:34:43.981745363 +0200
+@@ -200,6 +200,9 @@
+             'src/tls_wrap.h'
+           ],
+           'conditions': [
++            ['openssl_fips != ""', {
++              'defines': [ 'NODE_FIPS_MODE' ],
++            }],
+             [ 'node_shared_openssl=="false"', {
+               'dependencies': [
+                 './deps/openssl/openssl.gyp:openssl',
+diff -Naur node-v0.12.18.orig/tools/utils.py node-v0.12.18/tools/utils.py
+--- node-v0.12.18.orig/tools/utils.py	2016-12-21 13:14:28.000000000 +0100
++++ node-v0.12.18/tools/utils.py	2019-10-12 14:27:30.852756482 +0200
+@@ -73,7 +73,7 @@
+ def GuessArchitecture():
+   id = platform.machine()
+   id = id.lower()  # Windows 7 capitalizes 'AMD64'.
+-  if id.startswith('arm'):
++  if id.startswith('arm') or id == 'aarch64':
+     return 'arm'
+   elif (not id) or (not re.match('(x|i[3-6])86$', id) is None):
+     return 'ia32'
