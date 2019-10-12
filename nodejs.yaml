@@ -4,8 +4,18 @@ sources:
   - type: archive
     url: https://nodejs.org/dist/v0.12.18/node-v0.12.18.tar.gz
     sha256: 6b48461dff7a002cedba45a016af81f66a79b465cee1d7bfe5bd74910c1a7bfa
+  - type: archive
+    url: https://nodejs.org/dist/v4.8.7/node-v4.8.7.tar.xz
+    sha256: 03479a8ce6affedde75d80a6c8c351a7afb5a85b8d7e5119ab6f349100e641f8
+    dest: update
+  - type: shell
+    commands:
+      - rm -rf "deps/openssl/";
+      - cp -pR "update/deps/openssl" "deps/";
   - type: patch
     path: node-v0.12.18-xdg.patch
+  - type: patch
+    path: node-v0.12.18-aarch64.patch
 post-install:
   # install licenses
   - echo 'install licenses';
