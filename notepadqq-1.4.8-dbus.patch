@@ -1,0 +1,228 @@
+From 62100842ca97aa91124c3d1b59f5bc325d0c53e9 Mon Sep 17 00:00:00 2001
+From: Teklad <jkinnaird1991@gmail.com>
+Date: Tue, 15 May 2018 01:49:10 -0500
+Subject: [PATCH 1/3] refactor: sort include directives (#680)
+
+---
+ src/ui/singleapplication.cpp                  |  8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/src/ui/singleapplication.cpp b/src/ui/singleapplication.cpp
+index 44bf90f40..586f248b9 100644
+--- a/src/ui/singleapplication.cpp
++++ b/src/ui/singleapplication.cpp
+@@ -1,9 +1,11 @@
+ #include "include/singleapplication.h"
+-#include <QLocalSocket>
++
++#include "include/localcommunication.h"
++
++#include <QDataStream>
+ #include <QDir>
++#include <QLocalSocket>
+ #include <QRegularExpression>
+-#include <QDataStream>
+-#include "include/localcommunication.h"
+ 
+ #if defined(Q_OS_WIN)
+ #include <QLibrary>
+
+From 0636ca446d72e4a68468a8ca8dd08cf097f46548 Mon Sep 17 00:00:00 2001
+From: s3rius <jsbansen@gmail.com>
+Date: Mon, 14 Jan 2019 11:51:38 +0100
+Subject: [PATCH 2/3] feat: Add USE_DBUS option to use DBus for inter-process
+ communication.
+
+---
+ src/ui/include/singleapplication.h |  8 +++-
+ src/ui/main.cpp                    |  2 +-
+ src/ui/singleapplication.cpp       | 63 +++++++++++++++++++++++++++---
+ src/ui/ui.pro                      |  4 +-
+ 4 files changed, 68 insertions(+), 9 deletions(-)
+
+diff --git a/src/ui/include/singleapplication.h b/src/ui/include/singleapplication.h
+index ff59fb77e..24eaf6016 100644
+--- a/src/ui/include/singleapplication.h
++++ b/src/ui/include/singleapplication.h
+@@ -2,8 +2,9 @@
+ #define SINGLEAPPLICATION_H
+ 
+ #include <QApplication>
++#ifndef USE_DBUS
+ #include <QLocalServer>
+-
++#endif
+ /**
+  * @brief QApplication subclass which, using local sockets, makes sure only
+  *        one instance of the application is running at the same time.
+@@ -26,8 +27,10 @@ class SingleApplication : public QApplication
+ signals:
+     void receivedArguments(const QString &workingDirectory, const QStringList &arguments);
+ 
++#ifdef USE_DBUS
+ public slots:
+-
++    Q_SCRIPTABLE void receive(const QString& workingDirectory, const QStringList& arguments);
++#else
+ private:
+     QLocalServer *m_localServer = nullptr;
+ 
+@@ -35,6 +38,7 @@ public slots:
+     QLocalSocket *alreadyRunningInstance();
+     void newConnection();
+     QString socketNameForUser();
++#endif
+ };
+ 
+ #endif // SINGLEAPPLICATION_H
+diff --git a/src/ui/main.cpp b/src/ui/main.cpp
+index 33b568a48..a883b21a1 100644
+--- a/src/ui/main.cpp
++++ b/src/ui/main.cpp
+@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
+         QSharedPointer<QCommandLineParser> parser = Notepadqq::getCommandLineArgumentsParser(arguments);
+         if (parser->isSet("new-window")) {
+             // Open a new window
+-            MainWindow *win = new MainWindow(workingDirectory, arguments, 0);
++            MainWindow *win = new MainWindow(workingDirectory, arguments, nullptr);
+             win->show();
+         } else {
+             // Send the args to the last focused window
+diff --git a/src/ui/singleapplication.cpp b/src/ui/singleapplication.cpp
+index 586f248b9..66475dcae 100644
+--- a/src/ui/singleapplication.cpp
++++ b/src/ui/singleapplication.cpp
+@@ -1,11 +1,13 @@
+ #include "include/singleapplication.h"
+ 
++#ifndef USE_DBUS
+ #include "include/localcommunication.h"
+ 
+ #include <QDataStream>
+ #include <QDir>
+ #include <QLocalSocket>
+ #include <QRegularExpression>
++#endif
+ 
+ #if defined(Q_OS_WIN)
+ #include <QLibrary>
+@@ -17,6 +19,60 @@ static PProcessIdToSessionId pProcessIdToSessionId = 0;
+ #include <unistd.h>
+ #endif
+ 
++SingleApplication::SingleApplication(int &argc, char **argv) :
++    QApplication(argc, argv)
++{
++}
++
++#ifdef USE_DBUS
++
++#include <QtCore/QCoreApplication>
++#include <QtDBus/QtDBus>
++#define SERVICE_NAME "com.notepadqq.Notepadqq"
++
++void SingleApplication::startServer()
++{
++    if (!QDBusConnection::sessionBus().isConnected()) {
++        qDebug() <<  "Cannot connect to the D-Bus session bus.\n"
++                        "To start it, run:\n"
++                        "\teval `dbus-launch --auto-syntax`\n";
++        Q_ASSERT(true);
++    }
++
++    if (!QDBusConnection::sessionBus().registerService(SERVICE_NAME)) {
++        qDebug() << qPrintable(QDBusConnection::sessionBus().lastError().message());
++        Q_ASSERT(true);
++    }
++
++    bool ok = QDBusConnection::sessionBus().registerObject("/", this, QDBusConnection::ExportScriptableSlots);
++    qDebug() << "Started and object registered: " << ok;
++}
++
++bool SingleApplication::attachToOtherInstance() {
++    QDBusInterface iface(SERVICE_NAME, "/", "", QDBusConnection::sessionBus());
++    if (!iface.isValid())
++        return false;
++
++    QDBusReply<void> reply = iface.call("receive", QDir::currentPath(), QApplication::arguments());
++    if (reply.isValid())
++        return true;
++
++    qDebug() <<  "Call to SingleApplication::receive() failed: " << reply.error().message();
++    return false;
++}
++
++void SingleApplication::receive(const QString& workingDirectory, const QStringList& arguments) {
++    if (arguments.isEmpty()) {
++        qWarning() << "Invalid DBus message with empty arguments parameter received.";
++        return;
++    }
++
++    emit receivedArguments(workingDirectory, arguments);
++}
++
++
++#else //ifdef USE_DBUS
++
+ /* ========= PROTOCOLS ===========
+  *
+  * |Ping:
+@@ -35,11 +91,6 @@ static PProcessIdToSessionId pProcessIdToSessionId = 0;
+  *                            [working_dir, arg0, ..., argn]
+  */
+ 
+-SingleApplication::SingleApplication(int &argc, char **argv) :
+-    QApplication(argc, argv)
+-{
+-}
+-
+ QLocalSocket * SingleApplication::alreadyRunningInstance()
+ {
+     QLocalSocket *socket = new QLocalSocket(this);
+@@ -166,3 +217,5 @@ bool SingleApplication::attachToOtherInstance()
+ 
+     return false;
+ }
++
++#endif //ifdef USE_DBUS
+diff --git a/src/ui/ui.pro b/src/ui/ui.pro
+index 092b24046..b5163bc31 100644
+--- a/src/ui/ui.pro
++++ b/src/ui/ui.pro
+@@ -4,10 +4,12 @@
+ #
+ #-------------------------------------------------
+ 
+-QT       += core gui svg widgets webkitwidgets printsupport network
++QT       += core gui svg widgets webkitwidgets printsupport network dbus
+ 
+ CONFIG += c++11
+ 
++DEFINES += USE_DBUS
++
+ !macx: TARGET = notepadqq-bin
+ macx: TARGET = notepadqq
+ 
+
+From 63e4fa5cad32ece65a6e1380eb6ee6363faae719 Mon Sep 17 00:00:00 2001
+From: s3rius <jsbansen@gmail.com>
+Date: Mon, 14 Jan 2019 11:53:09 +0100
+Subject: [PATCH 3/3] Don't use DBus by default.
+
+---
+ src/ui/ui.pro | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/src/ui/ui.pro b/src/ui/ui.pro
+index b5163bc31..90ee1f11b 100644
+--- a/src/ui/ui.pro
++++ b/src/ui/ui.pro
+@@ -8,8 +8,6 @@ QT       += core gui svg widgets webkitwidgets printsupport network dbus
+ 
+ CONFIG += c++11
+ 
+-DEFINES += USE_DBUS
+-
+ !macx: TARGET = notepadqq-bin
+ macx: TARGET = notepadqq
+ 

@@ -2,6 +2,7 @@ name: notepadqq
 buildsystem: qmake
 config-opts:
   - QMAKE_STRIP=
+  - DEFINES+=USE_DBUS
   - INCLUDEPATH+="${FLATPAK_DEST}/include/QtWebKitWidgets"
   - INCLUDEPATH+="${FLATPAK_DEST}/include/QtWebKit"
   - LRELEASE=lrelease
@@ -41,6 +42,13 @@ sources:
   - type: patch
     path: notepadqq-1.4.8-icons-xdg.patch
     use-git: true
+  # Patch5
+  # Enforce single instance
+  # https://github.com/notepadqq/notepadqq/issues/828
+  # https://github.com/JuBan1/notepadqq/commit/62100842ca97aa91124c3d1b59f5bc325d0c53e9#diff-5793aee77250fa9aaefe7bfbe541cd07
+  # https://github.com/notepadqq/notepadqq/pull/829
+  - type: patch
+    path: notepadqq-1.4.8-dbus.patch
 post-install:
   # install docs
   - echo 'install docs';
