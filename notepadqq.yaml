@@ -2,6 +2,7 @@ name: notepadqq
 buildsystem: qmake
 config-opts:
   - QMAKE_STRIP=
+  - DEFINES+=USE_DBUS
   - LRELEASE=lrelease
 build-options:
   env:
@@ -38,6 +39,12 @@ sources:
   - type: patch
     path: notepadqq-1.9.99-icons-xdg.patch
     use-git: true
+  # Patch5
+  # Enforce single instance
+  # https://github.com/notepadqq/notepadqq/issues/828
+  # https://github.com/notepadqq/notepadqq/pull/829
+  - type: patch
+    path: notepadqq-beta-dbus.patch
 post-install:
   # install docs
   - echo 'install docs';
